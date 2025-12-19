@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plateer.aifaq.bo.mapper.LiveStrtEndMapper">
+
+    <resultMap id="LiveStrtEndResultMap" type="LiveStrtEndDto">
+        <id property="id" column="id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="pgmId" column="pgm_id"/>
+        <result property="strtDt" column="start_date"/>
+        <result property="endDt" column="end_date"/>
+        <result property="seq" column="seq"/>
+    </resultMap>
+
+    <select id="maxSeqGroupByPgmId" parameterType="Long" resultType="Integer">
+        SELECT MAX(SEQ)
+        FROM LIVE_START_END
+        GROUP BY PGM_ID
+        HAVING PGM_ID = #{pgmId}
+    </select>
+
+    <select id="findLiveStrtEndsByPgmId" parameterType="Long" resultMap="LiveStrtEndResultMap">
+        SELECT *
+        FROM LIVE_START_END
+        WHERE 1 = 1
+            AND PGM_ID = #{pgmId}
+    </select>
+
+    <select id="findLiveStrtEndsEndDateIsNull" resultType="Integer">
+        SELECT count(*)
+        FROM LIVE_START_END
+        WHERE END_DATE IS NULL
+    </select>
+</mapper>

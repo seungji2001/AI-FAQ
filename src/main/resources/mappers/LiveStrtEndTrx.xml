@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plateer.aifaq.bo.mapper.LiveStrtEndMapper">
+
+    <insert id="insertBatch" parameterType="list">
+        INSERT INTO live_start_end (pgm_id, goods_id, start_date, end_date, seq)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.pgmId}, #{item.goodsId}, now(), null,#{item.seq})
+        </foreach>
+    </insert>
+
+    <update id="updateEndDateBypgmIdAndSeq" parameterType="Long">
+        UPDATE live_start_end
+        SET end_date = NOW()
+        WHERE pgm_id = #{pgmId}
+          AND end_date IS NULL
+    </update>
+</mapper>
