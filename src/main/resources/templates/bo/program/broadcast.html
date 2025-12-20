@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BO - 방송 상세</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" th:href="@{/bo/css/faq.css}">
+</head>
+<body>
+<div id="app">
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <div class="header-left">
+                <button @click="goBack" class="btn btn-secondary">← 목록으로</button>
+                <h1>📺 방송 상세</h1>
+                <span class="subtitle">프로그램 ID: {{ pgmId }}</span>
+            </div>
+            <button @click="loadBroadcasts" class="btn btn-primary" :disabled="loading">
+                🔄 새로고침
+            </button>
+        </header>
+
+        <!-- 방송 목록 -->
+        <div class="detail-list">
+            <div v-if="loading" class="loading">
+                <div class="spinner"></div>
+                <p>데이터를 불러오는 중...</p>
+            </div>
+
+            <div v-else-if="broadcasts.length === 0" class="empty">
+                <p>📭 방송 정보가 없습니다.</p>
+            </div>
+
+            <div
+                    v-else
+                    v-for="(broadcast, index) in broadcasts"
+                    :key="broadcast.id"
+                    class="detail-card"
+            >
+                <div class="detail-header">
+                    <div class="detail-number">{{ index + 1 }}</div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span class="detail-id">SEQ: {{ broadcast.seq }}</span>
+                        <span :class="['display-yn', broadcast.endDt ? 'inactive' : 'active']">
+                            {{ broadcast.endDt ? '⏹️ 종료' : '🔴 방송중' }}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-body">
+                    <div class="broadcast-info">
+                        <div class="info-row">
+                            <span class="info-label">🛍️ 상품 ID:</span>
+                            <span class="info-value">{{ broadcast.goodsId }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">📺 프로그램 ID:</span>
+                            <span class="info-value">{{ broadcast.pgmId }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">🎬 시작:</span>
+                            <span class="info-value">{{ formatDateTime(broadcast.strtDt) }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">⏹️ 종료:</span>
+                            <span class="info-value">{{ formatDateTime(broadcast.endDt) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/bo/js/program-broadcast.js}"></script>
+</body>
+</html>

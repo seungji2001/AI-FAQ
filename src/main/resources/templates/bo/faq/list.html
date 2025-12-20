@@ -14,13 +14,19 @@
         <!-- 헤더 -->
         <header class="header">
             <div class="header-left">
+                <button onclick="location.href='/bo/home'" class="btn btn-secondary">🏠 홈</button>
                 <h1>📋 FAQ 관리</h1>
                 <span class="subtitle">Back Office</span>
             </div>
-            <button @click="refreshList" class="btn btn-primary" :disabled="loading">
-                <span v-if="!loading">🔄 새로고침</span>
-                <span v-else>⏳ 로딩중...</span>
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <button @click="openSummaryModal" class="btn btn-generate">
+                    ⚡ 요약전송
+                </button>
+                <button @click="refreshList" class="btn btn-primary" :disabled="loading">
+                    <span v-if="!loading">🔄 새로고침</span>
+                    <span v-else>⏳ 로딩중...</span>
+                </button>
+            </div>
         </header>
 
         <!-- 통계 카드 -->
@@ -81,8 +87,8 @@
                 <div class="faq-header">
                     <span class="faq-id">ID: {{ faq.id }}</span>
                     <span :class="['status', getStatusClass(faq.linkStatus)]">
-                            {{ getStatusText(faq.linkStatus) }}
-                        </span>
+                        {{ getStatusText(faq.linkStatus) }}
+                    </span>
                 </div>
                 <div class="faq-body">
                     <h3>📺 프로그램 ID: {{ faq.pgmId }}</h3>
@@ -104,8 +110,8 @@
                 ← 이전
             </button>
             <span class="page-info">
-                    {{ currentPage }} / {{ totalPages }}
-                </span>
+                {{ currentPage }} / {{ totalPages }}
+            </span>
             <button
                     @click="currentPage++"
                     :disabled="currentPage === totalPages"
@@ -113,6 +119,74 @@
             >
                 다음 →
             </button>
+        </div>
+    </div>
+
+    <!-- 요약전송 모달 -->
+    <div v-if="showSummaryModal" class="modal-overlay" @click="closeSummaryModal">
+        <div class="modal-container" @click.stop>
+            <div class="modal-header">
+                <h2>📺 프로그램 선택</h2>
+                <button class="modal-close" @click="closeSummaryModal">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- 검색 -->
+                <div class="modal-search">
+                    <input
+                            v-model="programSearch"
+                            @input="filterPrograms"
+                            type="text"
+                            placeholder="🔍 프로그램명으로 검색..."
+                            class="search-input"
+                    >
+                </div>
+
+                <!-- 프로그램 목록 -->
+                <div class="program-list">
+                    <div v-if="loadingPrograms" class="loading">
+                        <div class="spinner"></div>
+                        <p>프로그램 목록을 불러오는 중...</p>
+                    </div>
+
+                    <div v-else-if="filteredPrograms.length === 0" class="empty">
+                        <p>검색 결과가 없습니다.</p>
+                    </div>
+
+                    <div
+                            v-else
+                            v-for="program in filteredPrograms"
+                            :key="program.id"
+                            :class="['program-item', { selected: selectedProgram?.id === program.id }]"
+                            @click="selectProgram(program)"
+                    >
+                        <div class="program-info">
+                            <h4>{{ program.pgmNm }}</h4>
+                            <div class="program-meta">
+                                <span>📅 시작: {{ formatDate(program.strtDt) }}</span>
+                                <span>📅 종료: {{ formatDate(program.endDt) }}</span>
+                            </div>
+                        </div>
+                        <div class="program-check">
+                            <span v-if="selectedProgram?.id === program.id">✓</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button @click="closeSummaryModal" class="btn btn-secondary">
+                    취소
+                </button>
+                <button
+                        @click="sendSummary"
+                        class="btn btn-primary"
+                        :disabled="!selectedProgram || sendingRequest"
+                >
+                    <span v-if="!sendingRequest">⚡ 요약전송</span>
+                    <span v-else>⏳ 전송중...</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>

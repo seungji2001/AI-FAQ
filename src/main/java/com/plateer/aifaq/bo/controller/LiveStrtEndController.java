@@ -87,4 +87,6 @@ public class LiveStrtEndController {
         faqSumrInfoService.insertMstGoods(liveStrtEndDtos);
         return ResponseEntity.ok(liveStrtEndDtos);
     }
+
+    //todo 현재 진행중인 방송 조회 api
 }

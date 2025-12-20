@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BO - 프로그램 관리</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" th:href="@{/bo/css/faq.css}">
+</head>
+<body>
+<div id="app">
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <div class="header-left">
+                <button onclick="location.href='/bo/home'" class="btn btn-secondary">🏠 홈</button>
+                <h1>📺 프로그램 관리</h1>
+                <button @click="viewCurrentBroadcast" class="subtitle subtitle-clickable">
+                    진행중인 프로그램
+                </button>
+            </div>
+            <button @click="refreshList" class="btn btn-primary" :disabled="loading">
+                <span v-if="!loading">🔄 새로고침</span>
+                <span v-else>⏳ 로딩중...</span>
+            </button>
+        </header>
+
+        <!-- 통계 카드 -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">전체 프로그램</div>
+                <div class="stat-value">{{ programs.length }}</div>
+            </div>
+        </div>
+
+        <!-- 프로그램 목록 -->
+        <div class="faq-list">
+            <div v-if="loading" class="loading">
+                <div class="spinner"></div>
+                <p>데이터를 불러오는 중...</p>
+            </div>
+
+            <div v-else-if="programs.length === 0" class="empty">
+                <p>📭 진행중인 프로그램이 없습니다.</p>
+            </div>
+
+            <div
+                    v-else
+                    v-for="program in programs"
+                    :key="program.id"
+                    class="faq-card"
+                    @click="selectProgram(program)"
+            >
+                <div class="faq-header">
+                    <span class="faq-id">ID: {{ program.id }}</span>
+                </div>
+                <div class="faq-body">
+                    <h3>📺 {{ program.pgmNm }}</h3>
+                    <div class="faq-meta">
+                        <span>📅 시작: {{ formatDate(program.strtDt) }}</span>
+                        <span>📅 종료: {{ formatDate(program.endDt) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 상품 선택 모달 -->
+    <div v-if="showGoodsModal" class="modal-overlay" @click="closeGoodsModal">
+        <div class="modal-container" @click.stop style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>🛍️ 상품 선택</h2>
+                <button class="modal-close" @click="closeGoodsModal">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- 선택된 프로그램 정보 -->
+                <div class="selected-program-info">
+                    <h3>{{ selectedProgram.pgmNm }}</h3>
+                    <p>{{ formatDate(selectedProgram.strtDt) }} ~ {{ formatDate(selectedProgram.endDt) }}</p>
+                </div>
+
+                <!-- 검색 -->
+                <div class="modal-search">
+                    <input
+                            v-model="goodsSearch"
+                            @input="filterGoods"
+                            type="text"
+                            placeholder="🔍 상품명으로 검색..."
+                            class="search-input"
+                    >
+                </div>
+
+                <!-- 상품 목록 -->
+                <div class="goods-list">
+                    <div v-if="loadingGoods" class="loading">
+                        <div class="spinner"></div>
+                        <p>상품 목록을 불러오는 중...</p>
+                    </div>
+
+                    <div v-else-if="filteredGoods.length === 0" class="empty">
+                        <p>검색 결과가 없습니다.</p>
+                    </div>
+
+                    <div
+                            v-else
+                            v-for="goods in filteredGoods"
+                            :key="goods.id"
+                            :class="['goods-item', { selected: isSelected(goods.id) }]"
+                            @click="toggleGoods(goods)"
+                    >
+                        <div class="goods-check">
+                            <input type="checkbox" :checked="isSelected(goods.id)" @click.stop>
+                        </div>
+                        <div class="goods-info">
+                            <h4>{{ goods.goodsNm }}</h4>
+                            <p class="goods-price">{{ formatPrice(goods.price) }}원</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 선택된 상품 개수 -->
+                <div class="selected-count">
+                    선택된 상품: {{ selectedGoods.length }}개
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button @click="closeGoodsModal" class="btn btn-secondary">
+                    취소
+                </button>
+                <button
+                        @click="startBroadcast"
+                        class="btn btn-primary"
+                        :disabled="selectedGoods.length === 0 || startingBroadcast"
+                >
+                    <span v-if="!startingBroadcast">🎬 방송 시작하기</span>
+                    <span v-else>⏳ 처리중...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/bo/js/program-list.js}"></script>
+</body>
+</html>
