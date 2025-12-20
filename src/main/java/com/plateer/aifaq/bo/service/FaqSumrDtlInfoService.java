@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface FaqSumrDtlInfoService {
     public void insert(List<FaqSumrDtlDto> faqSumrDtlDto);
+    public List<FaqSumrDtlDto> findAllByFaqId(Long faqId);
 }

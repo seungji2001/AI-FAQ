@@ -31,4 +31,9 @@ public class FaqSumrInfoServiceImpl implements FaqSumrInfoService {
     public void updateLinkStatus(FaqSumrDto faqSumrInfo) {
         faqSumrInfoMapper.updateLinkStatus(faqSumrInfo);
     }
+
+    @Override
+    public List<FaqSumrDto> findAllOrderByIdDesc() {
+        return faqSumrInfoMapper.findAllOrderByIdDesc();
+    }
 }

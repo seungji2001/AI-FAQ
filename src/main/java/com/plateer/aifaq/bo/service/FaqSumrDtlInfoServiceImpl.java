@@ -20,4 +20,9 @@ public class FaqSumrDtlInfoServiceImpl implements FaqSumrDtlInfoService {
     public void insert(List<FaqSumrDtlDto> faqSumrDtlDto) {
         faqSumrDtlInfoMapper.insert(faqSumrDtlDto);
     }
+
+    @Override
+    public List<FaqSumrDtlDto> findAllByFaqId(Long faqId) {
+        return faqSumrDtlInfoMapper.findAllByFaqId(faqId);
+    }
 }

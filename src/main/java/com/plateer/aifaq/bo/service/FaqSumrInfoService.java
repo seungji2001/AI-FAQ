@@ -9,4 +9,5 @@ public interface FaqSumrInfoService {
     public void insertMstGoods(List<LiveStrtEndDto> liveStrtEndDtos);
     public List<FaqSumrDto> findWaitingItems();
     public void updateLinkStatus(FaqSumrDto faqSumrInfo);
+    public List<FaqSumrDto> findAllOrderByIdDesc();
 }

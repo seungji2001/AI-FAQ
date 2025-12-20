@@ -8,4 +8,5 @@ import java.util.List;
 @Mapper
 public interface FaqSumrDtlInfoMapper {
     public void insert(List<FaqSumrDtlDto> faqSumrDtlDto);
+    public List<FaqSumrDtlDto> findAllByFaqId(Long faqId);
 }

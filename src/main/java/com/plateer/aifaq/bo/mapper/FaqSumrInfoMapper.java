@@ -12,4 +12,5 @@ public interface FaqSumrInfoMapper {
     void insertMstGoods(List<LiveStrtEndDto> liveStrtEndDtos);
     List<FaqSumrDto> findByLinkStatus(@Param("linkStatus") String linkStatus);
     void updateLinkStatus(FaqSumrDto faqSumrInfo);
+    List<FaqSumrDto> findAllOrderByIdDesc();
 }
