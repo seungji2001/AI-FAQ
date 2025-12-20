@@ -18,10 +18,29 @@
                 <h1>📄 FAQ 상세</h1>
                 <span class="subtitle">FAQ ID: {{ faqId }}</span>
             </div>
-            <button @click="loadDetails" class="btn btn-primary" :disabled="loading">
-                🔄 새로고침
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <button @click="loadDetails" class="btn btn-primary" :disabled="loading">
+                    <span v-if="!loading">🔄 새로고침</span>
+                    <span v-else>⏳ 로딩중...</span>
+                </button>
+            </div>
         </header>
+
+        <!-- 통계 정보 -->
+        <div class="stats-container" v-if="!loading && details.length > 0">
+            <div class="stat-card">
+                <div class="stat-label">전체 FAQ</div>
+                <div class="stat-value">{{ details.length }}</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-label">노출 중</div>
+                <div class="stat-value">{{ getDisplayCount('Y') }}</div>
+            </div>
+            <div class="stat-card fail">
+                <div class="stat-label">비노출</div>
+                <div class="stat-value">{{ getDisplayCount('N') }}</div>
+            </div>
+        </div>
 
         <!-- FAQ 상세 목록 -->
         <div class="detail-list">
@@ -32,6 +51,9 @@
 
             <div v-else-if="details.length === 0" class="empty">
                 <p>📭 등록된 FAQ 상세가 없습니다.</p>
+                <button @click="goBack" class="btn btn-primary" style="margin-top: 20px;">
+                    목록으로 돌아가기
+                </button>
             </div>
 
             <div
@@ -42,9 +64,12 @@
             >
                 <div class="detail-header">
                     <div class="detail-number">{{ index + 1 }}</div>
-                    <span :class="['display-yn', detail.dispYn === 'Y' ? 'active' : 'inactive']">
-                            {{ detail.dispYn === 'Y' ? '✅ 노출' : '❌ 비노출' }}
-                        </span>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span class="detail-id">ID: {{ detail.id }}</span>
+                        <span :class="['display-yn', detail.dispYn === 'Y' ? 'active' : 'inactive']">
+                                {{ detail.dispYn === 'Y' ? '✅ 노출' : '❌ 비노출' }}
+                            </span>
+                    </div>
                 </div>
                 <div class="detail-body">
                     <div class="question">
@@ -55,6 +80,9 @@
                         <h4>💡 A.</h4>
                         <p>{{ detail.ansCont }}</p>
                     </div>
+                </div>
+                <div class="detail-footer">
+                    <span class="detail-meta">FAQ 상세 ID: {{ detail.faqId }}</span>
                 </div>
             </div>
         </div>

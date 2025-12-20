@@ -17,12 +17,13 @@ createApp({
 
             this.loading = true;
             try {
-                const response = await axios.get(`/api/bo/faq/${this.faqId}/details`);
-                this.details = response.data;
-                console.log('FAQ 상세 로드 완료:', this.details.length);
+                const response = await axios.get(`/api/faq/dtl/${this.faqId}`);
+                this.details = response.data || [];
+
             } catch (error) {
-                console.error('FAQ 상세 로드 실패:', error);
-                alert('FAQ 상세를 불러오는데 실패했습니다.');
+                this.details = [];
+                alert('FAQ 상세를 불러오는데 실패했습니다.\n' +
+                    (error.response?.data?.message || error.message));
             } finally {
                 this.loading = false;
             }
@@ -35,10 +36,15 @@ createApp({
         getFaqIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('faqId');
+        },
+
+        getDisplayCount(dispYn) {
+            return this.details.filter(detail => detail.dispYn === dispYn).length;
         }
     },
     mounted() {
         this.faqId = this.getFaqIdFromUrl();
+
         if (this.faqId) {
             this.loadDetails();
         } else {
