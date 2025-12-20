@@ -1,0 +1,11 @@
+package com.plateer.aifaq.bo.mapper;
+
+import com.plateer.aifaq.bo.dto.FaqSumrDtlDto;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface FaqSumrDtlInfoMapper {
+    public void insert(List<FaqSumrDtlDto> faqSumrDtlDto);
+}

@@ -1,5 +1,6 @@
 package com.plateer.aifaq.bo.service;
 
+import com.plateer.aifaq.bo.dto.FaqSumrDto;
 import com.plateer.aifaq.bo.dto.LiveStrtEndDto;
 import com.plateer.aifaq.bo.mapper.FaqSumrInfoMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,16 @@ public class FaqSumrInfoServiceImpl implements FaqSumrInfoService {
     @Override
     public void insertMstGoods(List<LiveStrtEndDto> liveStrtEndDtos) {
         faqSumrInfoMapper.insertMstGoods(liveStrtEndDtos);
+    }
+
+    @Override
+    public List<FaqSumrDto> findWaitingItems() {
+        return faqSumrInfoMapper.findByLinkStatus("W");
+    }
+
+    @Transactional
+    @Override
+    public void updateLinkStatus(FaqSumrDto faqSumrInfo) {
+        faqSumrInfoMapper.updateLinkStatus(faqSumrInfo);
     }
 }

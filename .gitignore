@@ -17,6 +17,10 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+# Secure properties
+**/application-secure.properties
+application-secure.properties
+
 ### IntelliJ IDEA ###
 .idea
 *.iws

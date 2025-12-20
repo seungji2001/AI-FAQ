@@ -2,12 +2,14 @@ package com.plateer.aifaq.bo.dto.base;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class BaseFaqSumrInfo {
+@SuperBuilder
+public class BaseFaqSumrDto {
     private Long id;
     private Long pgmId;
     private Long goodsId;

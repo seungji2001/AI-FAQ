@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.plateer.aifaq.bo.mapper.FaqSumrInfoMapper">
-    <update id="updateLinkStatus">
+    <update id="updateLinkStatus" parameterType="FaqSumrDto">
         UPDATE FAQ_SUMR_INFO
         SET LINK_STATUS = #{linkStatus}
         WHERE ID = #{id}
