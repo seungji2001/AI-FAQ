@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.plateer.aifaq.bo.mapper")
+@MapperScan({"com.plateer.aifaq.bo.mapper"})
 public class AiFaqApplication {
 
     public static void main(String[] args) {

@@ -1,6 +1,6 @@
-package com.plateer.aifaq.batch.dto;
+package com.plateer.aifaq.bo.dto;
 
-import com.plateer.aifaq.batch.dto.base.BaseFaqSumrInfo;
+import com.plateer.aifaq.bo.dto.base.BaseFaqSumrInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,6 +11,4 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class FaqSumrInfo extends BaseFaqSumrInfo {
-    private String userMsg;
-    private String pdMsg;
 }

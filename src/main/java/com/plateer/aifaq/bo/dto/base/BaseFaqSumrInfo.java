@@ -1,11 +1,9 @@
-package com.plateer.aifaq.batch.dto.base;
+package com.plateer.aifaq.bo.dto.base;
 
-import com.plateer.aifaq.batch.enums.LinkStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
