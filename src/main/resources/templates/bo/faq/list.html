@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BO - FAQ 관리</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" th:href="@{/bo/css/faq.css}">
+</head>
+<body>
+<div id="app">
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <div class="header-left">
+                <h1>📋 FAQ 관리</h1>
+                <span class="subtitle">Back Office</span>
+            </div>
+            <button @click="refreshList" class="btn btn-primary" :disabled="loading">
+                <span v-if="!loading">🔄 새로고침</span>
+                <span v-else>⏳ 로딩중...</span>
+            </button>
+        </header>
+
+        <!-- 통계 카드 -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">전체 FAQ</div>
+                <div class="stat-value">{{ faqList.length }}</div>
+            </div>
+            <div class="stat-card fail">
+                <div class="stat-label">대기</div>
+                <div class="stat-value">{{ getStatusCount('W') }}</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-label">완료</div>
+                <div class="stat-value">{{ getStatusCount('A') }}</div>
+            </div>
+            <div class="stat-card fail">
+                <div class="stat-label">실패</div>
+                <div class="stat-value">{{ getStatusCount('F') }}</div>
+            </div>
+        </div>
+
+        <!-- 검색 및 필터 -->
+        <div class="filter-container">
+            <input
+                    v-model="searchKeyword"
+                    @input="filterFaqs"
+                    type="text"
+                    placeholder="🔍 프로그램 ID로 검색..."
+                    class="search-input"
+            >
+            <select v-model="filterStatus" @change="filterFaqs" class="filter-select">
+                <option value="">전체 상태</option>
+                <option value="W">대기</option>
+                <option value="A">완료</option>
+                <option value="F">실패</option>
+            </select>
+        </div>
+
+        <!-- FAQ 목록 -->
+        <div class="faq-list">
+            <div v-if="loading" class="loading">
+                <div class="spinner"></div>
+                <p>데이터를 불러오는 중...</p>
+            </div>
+
+            <div v-else-if="filteredFaqList.length === 0" class="empty">
+                <p>📭 등록된 FAQ가 없습니다.</p>
+            </div>
+
+            <div
+                    v-else
+                    v-for="faq in paginatedFaqList"
+                    :key="faq.id"
+                    class="faq-card"
+                    @click="goToDetail(faq.id)"
+            >
+                <div class="faq-header">
+                    <span class="faq-id">ID: {{ faq.id }}</span>
+                    <span :class="['status', getStatusClass(faq.linkStatus)]">
+                            {{ getStatusText(faq.linkStatus) }}
+                        </span>
+                </div>
+                <div class="faq-body">
+                    <h3>📺 프로그램 ID: {{ faq.pgmId }}</h3>
+                    <div class="faq-meta">
+                        <span v-if="faq.startDate">📅 {{ formatDate(faq.startDate) }}</span>
+                        <span v-if="faq.goodsId">🛍️ 상품 ID: {{ faq.goodsId }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div v-if="totalPages > 1" class="pagination">
+            <button
+                    @click="currentPage--"
+                    :disabled="currentPage === 1"
+                    class="btn-page"
+            >
+                ← 이전
+            </button>
+            <span class="page-info">
+                    {{ currentPage }} / {{ totalPages }}
+                </span>
+            <button
+                    @click="currentPage++"
+                    :disabled="currentPage === totalPages"
+                    class="btn-page"
+            >
+                다음 →
+            </button>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/bo/js/faq-list.js}"></script>
+</body>
+</html>

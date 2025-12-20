@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BO - FAQ 상세</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" th:href="@{/bo/css/faq.css}">
+</head>
+<body>
+<div id="app">
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <div class="header-left">
+                <button @click="goBack" class="btn btn-secondary">← 목록으로</button>
+                <h1>📄 FAQ 상세</h1>
+                <span class="subtitle">FAQ ID: {{ faqId }}</span>
+            </div>
+            <button @click="loadDetails" class="btn btn-primary" :disabled="loading">
+                🔄 새로고침
+            </button>
+        </header>
+
+        <!-- FAQ 상세 목록 -->
+        <div class="detail-list">
+            <div v-if="loading" class="loading">
+                <div class="spinner"></div>
+                <p>데이터를 불러오는 중...</p>
+            </div>
+
+            <div v-else-if="details.length === 0" class="empty">
+                <p>📭 등록된 FAQ 상세가 없습니다.</p>
+            </div>
+
+            <div
+                    v-else
+                    v-for="(detail, index) in details"
+                    :key="detail.id"
+                    class="detail-card"
+            >
+                <div class="detail-header">
+                    <div class="detail-number">{{ index + 1 }}</div>
+                    <span :class="['display-yn', detail.dispYn === 'Y' ? 'active' : 'inactive']">
+                            {{ detail.dispYn === 'Y' ? '✅ 노출' : '❌ 비노출' }}
+                        </span>
+                </div>
+                <div class="detail-body">
+                    <div class="question">
+                        <h4>❓ Q.</h4>
+                        <p>{{ detail.questCont }}</p>
+                    </div>
+                    <div class="answer">
+                        <h4>💡 A.</h4>
+                        <p>{{ detail.ansCont }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/bo/js/faq-detail.js}"></script>
+</body>
+</html>
