@@ -9,4 +9,5 @@ import java.util.List;
 public interface PgmMapper {
     List<PgmDto> findAll();
     PgmDto findPgmById(Long id);
+    List<PgmDto> findAllByEnd();
 }

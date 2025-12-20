@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class GoodsServiceImpl implements GoodsService {
 
-    public final GoodsMapper goodsMapper;
+    private final GoodsMapper goodsMapper;
 
     @Override
     public List<GoodsDto> findAll(){

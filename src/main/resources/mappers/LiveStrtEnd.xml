@@ -32,4 +32,24 @@
         FROM LIVE_START_END
         WHERE END_DATE IS NULL
     </select>
+
+    <select id="findMstGoodsByPgmId" resultMap="LiveStrtEndResultMap" parameterType="Long">
+        SELECT *
+        FROM (SELECT
+                ID,
+                PGM_ID,
+                GOODS_ID,
+                ROW_NUMBER() OVER (PARTITION BY SEQ ORDER BY GOODS_ID) AS RNK,
+                START_DATE,
+                END_DATE
+              FROM LIVE_START_END
+              WHERE PGM_ID = #{pgmId}) MST_GOODS
+        WHERE 1 = 1
+            AND MST_GOODS.RNK = 1
+            AND NOT EXISTS (
+                SELECT 1
+                FROM faq_sumr_info fsi
+                WHERE fsi.live_start_end_id = mst_goods.id
+            )
+    </select>
 </mapper>

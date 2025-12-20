@@ -49,4 +49,9 @@ public class LiveStrtEndServiceImpl implements LiveStrtEndService {
     public int findLiveStrtEndsEndDateIsNull() {
         return liveStrtEndMapper.findLiveStrtEndsEndDateIsNull();
     }
+
+    @Override
+    public List<LiveStrtEndDto> findMstGoodsByPgmId(Long pgmId) {
+        return liveStrtEndMapper.findMstGoodsByPgmId(pgmId);
+    }
 }

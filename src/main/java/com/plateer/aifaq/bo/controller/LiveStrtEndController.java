@@ -4,6 +4,7 @@ import com.plateer.aifaq.bo.dto.GoodsDto;
 import com.plateer.aifaq.bo.dto.LiveStrtEndDto;
 import com.plateer.aifaq.bo.dto.PgmDto;
 import com.plateer.aifaq.bo.dto.request.PgmGoodsRequestDto;
+import com.plateer.aifaq.bo.service.FaqSumrInfoService;
 import com.plateer.aifaq.bo.service.GoodsService;
 import com.plateer.aifaq.bo.service.LiveStrtEndService;
 import com.plateer.aifaq.bo.service.PgmService;
@@ -19,20 +20,14 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/liveStrtEnd")
+@RequestMapping("/api/live-start-end")
 @RequiredArgsConstructor
 public class LiveStrtEndController {
 
     private final LiveStrtEndService liveStrtEndService;
     private final PgmService pgmService;
     private final GoodsService goodsService;
-
-    /*
-    testcase
-    1. 프로그램에 여러 상품을 넣을 수 있으나, seq는 다르다
-    2. 프로그램은 진행중인 프로그램만 가능하다.
-    3. 만약 종료된 방송상품이 없다면 새로운 프로그램 불가능
-     */
+    private final FaqSumrInfoService faqSumrInfoService;
 
     @PostMapping("/insert")
     public ResponseEntity<LiveStrtEndDto> insert(@RequestBody PgmGoodsRequestDto pgmGoodsRequestDto) {
@@ -83,4 +78,13 @@ public class LiveStrtEndController {
         return ResponseEntity.ok(true);
     }
 
+    @GetMapping("/program/{pgmId}/mst-goods")
+    public ResponseEntity<List<LiveStrtEndDto>> findMstGoodsByPgmId(@PathVariable Long pgmId) {
+        List<LiveStrtEndDto> liveStrtEndDtos = liveStrtEndService.findMstGoodsByPgmId(pgmId);
+        if(liveStrtEndDtos.isEmpty()){
+            throw new IllegalArgumentException("삽입할 대상 방송상품이 없습니다.");
+        }
+        faqSumrInfoService.insertMstGoods(liveStrtEndDtos);
+        return ResponseEntity.ok(liveStrtEndDtos);
+    }
 }

@@ -20,6 +20,7 @@
             END_DATE
         FROM PROGRAM
         WHERE 1 = 1
+            AND START_DATE &lt;= now()
             AND now() &lt;= END_DATE
     </select>
 
@@ -30,5 +31,12 @@
             AND ID = #{pgmId}
             AND START_DATE &lt; now()
             AND now() &lt;= END_DATE
+    </select>
+
+    <select id="findAllByEnd" resultMap="PgmResultMap">
+        SELECT *
+        FROM PROGRAM
+        WHERE 1 = 1
+            AND END_DATE &lt;= NOW()
     </select>
 </mapper>

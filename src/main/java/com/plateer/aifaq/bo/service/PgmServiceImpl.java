@@ -22,4 +22,9 @@ public class PgmServiceImpl implements PgmService {
     public PgmDto findPgmById(Long id) {
         return pgmMapper.findPgmById(id);
     }
+
+    @Override
+    public List<PgmDto> findAllByEnd() {
+        return pgmMapper.findAllByEnd();
+    }
 }
