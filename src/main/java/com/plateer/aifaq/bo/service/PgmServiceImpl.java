@@ -27,4 +27,9 @@ public class PgmServiceImpl implements PgmService {
     public List<PgmDto> findAllByEnd() {
         return pgmMapper.findAllByEnd();
     }
+
+    @Override
+    public List<PgmDto> findAllInFaq() {
+        return pgmMapper.findAllInFaq();
+    }
 }

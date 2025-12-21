@@ -1,6 +1,7 @@
 package com.plateer.aifaq.bo.service;
 
 import com.plateer.aifaq.bo.dto.FaqSumrDtlDto;
+import com.plateer.aifaq.bo.dto.request.FaqSumrDtlRequestDto;
 import com.plateer.aifaq.bo.mapper.FaqSumrDtlInfoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,5 +25,11 @@ public class FaqSumrDtlInfoServiceImpl implements FaqSumrDtlInfoService {
     @Override
     public List<FaqSumrDtlDto> findAllByFaqId(Long faqId) {
         return faqSumrDtlInfoMapper.findAllByFaqId(faqId);
+    }
+
+    @Transactional
+    @Override
+    public void updateDispYn(FaqSumrDtlRequestDto faqSumrDtlRequestDto) {
+        faqSumrDtlInfoMapper.updateDispYn(faqSumrDtlRequestDto);
     }
 }

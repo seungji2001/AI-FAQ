@@ -6,7 +6,6 @@ createApp({
             faqList: [],
             filteredFaqList: [],
             searchKeyword: '',
-            filterStatus: '',
             loading: false,
             currentPage: 1,
             itemsPerPage: 9,
@@ -35,9 +34,10 @@ createApp({
         async loadFaqList() {
             this.loading = true;
             try {
-                const response = await axios.get('/api/faq');
+                const response = await axios.get('/api/programs/faq');
                 this.faqList = response.data || [];
                 this.filteredFaqList = response.data || [];
+                console.log('완료된 FAQ 프로그램 로드:', this.faqList.length);
             } catch (error) {
                 console.error('FAQ 목록 로드 실패:', error);
                 this.faqList = [];
@@ -48,55 +48,19 @@ createApp({
         },
 
         filterFaqs() {
-            let filtered = this.faqList;
-
-            if (this.searchKeyword.trim()) {
-                filtered = filtered.filter(faq =>
-                    String(faq.pgmId || '').includes(this.searchKeyword)
-                );
+            if (!this.searchKeyword.trim()) {
+                this.filteredFaqList = this.faqList;
+                return;
             }
 
-            if (this.filterStatus) {
-                filtered = filtered.filter(faq =>
-                    faq.linkStatus === this.filterStatus
-                );
-            }
-
-            this.filteredFaqList = filtered;
+            this.filteredFaqList = this.faqList.filter(program =>
+                program.pgmNm.toLowerCase().includes(this.searchKeyword.toLowerCase())
+            );
             this.currentPage = 1;
         },
 
-        goToDetail(faqId) {
-            window.location.href = `/bo/faq/detail?faqId=${faqId}`;
-        },
-
-        getStatusCount(status) {
-            return this.faqList.filter(faq => faq.linkStatus === status).length;
-        },
-
-        getStatusText(status) {
-            const statusMap = { 'A': '완료', 'F': '실패', 'W': '대기' };
-            return statusMap[status] || '알 수 없음';
-        },
-
-        getStatusClass(status) {
-            const classMap = { 'A': 'success', 'F': 'fail', 'W': 'wait' };
-            return classMap[status] || 'unknown';
-        },
-
-        formatDate(dateString) {
-            if (!dateString) return '-';
-            try {
-                return new Date(dateString).toLocaleString('ko-KR', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            } catch {
-                return '-';
-            }
+        goToDetail(pgmId) {
+            window.location.href = `/bo/faq/detail?pgmId=${pgmId}`;
         },
 
         refreshList() {
@@ -104,13 +68,13 @@ createApp({
             this.loadFaqList();
         },
 
-        // ========== 모달 관련 메서드 ==========
+        // ========== 요약전송 모달 ==========
         async openSummaryModal() {
             this.showSummaryModal = true;
             this.selectedProgram = null;
             this.programSearch = '';
+            document.body.classList.add('modal-open');
             await this.loadPrograms();
-            document.body.classList.add('modal-open'); // 추가
         },
 
         closeSummaryModal() {
@@ -119,7 +83,7 @@ createApp({
             this.programSearch = '';
             this.programs = [];
             this.filteredPrograms = [];
-            document.body.classList.remove('modal-open'); // 추가
+            document.body.classList.remove('modal-open');
         },
 
         async loadPrograms() {
@@ -128,10 +92,9 @@ createApp({
                 const response = await axios.get('/api/programs/ends');
                 this.programs = response.data || [];
                 this.filteredPrograms = response.data || [];
-                console.log('프로그램 목록 로드 완료:', this.programs.length);
+                console.log('프로그램 목록 로드:', this.programs.length);
             } catch (error) {
                 console.error('프로그램 목록 로드 실패:', error);
-                alert('프로그램 목록을 불러오는데 실패했습니다.');
                 this.programs = [];
                 this.filteredPrograms = [];
             } finally {
@@ -166,43 +129,38 @@ createApp({
 
             this.sendingRequest = true;
             try {
-                // 기존 API 대신 새로운 API 호출
                 const response = await axios.get(`/api/live-start-end/program/${this.selectedProgram.id}/mst-goods`);
 
-                alert('요약 전송이 완료되었습니다.');
+                const errorMsg = response.data || error.message;
+                alert(errorMsg);
+
                 this.closeSummaryModal();
                 this.refreshList();
 
             } catch (error) {
                 console.error('요약 전송 실패:', error);
 
-                // 에러 메시지 추출
                 let errorMessage = '요약 전송에 실패했습니다.';
-
-                if (error.response) {
-                    // 서버에서 반환한 에러 메시지 확인
-                    if (error.response.data) {
-                        // String으로 온 경우
-                        if (typeof error.response.data === 'string') {
-                            errorMessage = error.response.data;
-                        }
-                        // 객체로 온 경우 (message 필드)
-                        else if (error.response.data.message) {
-                            errorMessage = error.response.data.message;
-                        }
-                        // 그 외의 경우
-                        else {
-                            errorMessage = JSON.stringify(error.response.data);
-                        }
+                if (error.response?.data) {
+                    if (typeof error.response.data === 'string') {
+                        errorMessage = error.response.data;
+                    } else if (error.response.data.message) {
+                        errorMessage = error.response.data.message;
                     }
-                } else if (error.message) {
-                    errorMessage = error.message;
                 }
 
                 alert(errorMessage);
-
             } finally {
                 this.sendingRequest = false;
+            }
+        },
+
+        formatDate(dateString) {
+            if (!dateString) return '-';
+            try {
+                return new Date(dateString).toLocaleDateString('ko-KR');
+            } catch {
+                return '-';
             }
         }
     },

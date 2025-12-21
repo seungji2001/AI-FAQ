@@ -31,4 +31,12 @@ public class PgmController {
     public ResponseEntity<List<PgmDto>> findAllByEnd() {
         return ResponseEntity.ok(pgmService.findAllByEnd());
     }
+
+    /*
+     * faq 요약 전송을 요청한 프로그램 조회
+     * */
+    @GetMapping("/faq")
+    public ResponseEntity<List<PgmDto>> findAllInFaq() {
+        return ResponseEntity.ok(pgmService.findAllInFaq());
+    }
 }

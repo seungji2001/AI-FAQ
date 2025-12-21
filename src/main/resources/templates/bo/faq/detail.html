@@ -6,7 +6,7 @@
     <title>BO - FAQ 상세</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" th:href="@{/bo/css/faq.css}">
+    <link rel="stylesheet" th:href="@{/bo/css/faq-improved.css}">
 </head>
 <body>
 <div id="app">
@@ -16,73 +16,195 @@
             <div class="header-left">
                 <button @click="goBack" class="btn btn-secondary">← 목록으로</button>
                 <h1>📄 FAQ 상세</h1>
-                <span class="subtitle">FAQ ID: {{ faqId }}</span>
+                <span class="subtitle">프로그램 ID: {{ pgmId }}</span>
             </div>
-            <div style="display: flex; gap: 10px;">
-                <button @click="loadDetails" class="btn btn-primary" :disabled="loading">
-                    <span v-if="!loading">🔄 새로고침</span>
-                    <span v-else>⏳ 로딩중...</span>
-                </button>
-            </div>
+            <button @click="loadGoods" class="btn btn-primary" :disabled="loading">
+                🔄 새로고침
+            </button>
         </header>
 
         <!-- 통계 정보 -->
-        <div class="stats-container" v-if="!loading && details.length > 0">
+        <div class="stats-container" v-if="!loading && goodsList.length > 0">
             <div class="stat-card">
-                <div class="stat-label">전체 FAQ</div>
-                <div class="stat-value">{{ details.length }}</div>
+                <div class="stat-label">전체 상품</div>
+                <div class="stat-value">{{ goodsList.length }}</div>
             </div>
             <div class="stat-card success">
-                <div class="stat-label">노출 중</div>
-                <div class="stat-value">{{ getDisplayCount('Y') }}</div>
-            </div>
-            <div class="stat-card fail">
-                <div class="stat-label">비노출</div>
-                <div class="stat-value">{{ getDisplayCount('N') }}</div>
+                <div class="stat-label">전체 FAQ</div>
+                <div class="stat-value">{{ totalFaqCount }}</div>
             </div>
         </div>
 
-        <!-- FAQ 상세 목록 -->
-        <div class="detail-list">
-            <div v-if="loading" class="loading">
-                <div class="spinner"></div>
-                <p>데이터를 불러오는 중...</p>
-            </div>
+        <!-- 3단 레이아웃 -->
+        <div class="three-column-layout">
+            <!-- 왼쪽: 상품 목록 -->
+            <div class="column goods-column">
+                <div class="column-header">
+                    <h3>🛍️ 상품 목록</h3>
+                    <span class="badge">{{ goodsList.length }}개</span>
+                </div>
 
-            <div v-else-if="details.length === 0" class="empty">
-                <p>📭 등록된 FAQ 상세가 없습니다.</p>
-                <button @click="goBack" class="btn btn-primary" style="margin-top: 20px;">
-                    목록으로 돌아가기
-                </button>
-            </div>
+                <div v-if="loading" class="loading-inline">
+                    <div class="spinner-small"></div>
+                    <p>로딩 중...</p>
+                </div>
 
-            <div
-                    v-else
-                    v-for="(detail, index) in details"
-                    :key="detail.id"
-                    class="detail-card"
-            >
-                <div class="detail-header">
-                    <div class="detail-number">{{ index + 1 }}</div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <span class="detail-id">ID: {{ detail.id }}</span>
-                        <span :class="['display-yn', detail.dispYn === 'Y' ? 'active' : 'inactive']">
-                                {{ detail.dispYn === 'Y' ? '✅ 노출' : '❌ 비노출' }}
-                            </span>
+                <div v-else-if="goodsList.length === 0" class="empty-inline">
+                    <p>📭 상품이 없습니다</p>
+                </div>
+
+                <div v-else class="goods-list-scroll">
+                    <div
+                            v-for="goods in goodsList"
+                            :key="goods.id"
+                            :class="['goods-card', { selected: selectedGoodsId === goods.id }]"
+                            @click="selectGoods(goods.id)"
+                    >
+                        <div class="goods-card-icon">🛍️</div>
+                        <div class="goods-card-info">
+                            <h4>{{ goods.goodsNm }}</h4>
+                            <p class="goods-id">ID: {{ goods.id }}</p>
+                            <p class="goods-price">{{ formatPrice(goods.price) }}원</p>
+                        </div>
+                        <div class="goods-card-badge" v-if="goodsFaqCount[goods.id]">
+                            {{ goodsFaqCount[goods.id] }}개
+                        </div>
                     </div>
                 </div>
-                <div class="detail-body">
-                    <div class="question">
-                        <h4>❓ Q.</h4>
-                        <p>{{ detail.questCont }}</p>
-                    </div>
-                    <div class="answer">
-                        <h4>💡 A.</h4>
-                        <p>{{ detail.ansCont }}</p>
+            </div>
+
+            <!-- 가운데: FAQ 요약 정보 -->
+            <div class="column summary-column">
+                <div class="column-header">
+                    <h3>📊 FAQ 요약</h3>
+                </div>
+
+                <div v-if="!selectedGoodsId" class="empty-state">
+                    <div class="empty-icon">👈</div>
+                    <p>왼쪽에서 상품을 선택해주세요</p>
+                </div>
+
+                <div v-else-if="loadingFaqSumr[selectedGoodsId]" class="loading-inline">
+                    <div class="spinner-small"></div>
+                    <p>요약 정보 로딩 중...</p>
+                </div>
+
+                <div v-else-if="goodsFaqSumr[selectedGoodsId] && goodsFaqSumr[selectedGoodsId].length > 0" class="summary-content">
+                    <!-- FAQ 요약이 여러 개일 수 있으므로 반복 -->
+                    <div
+                            v-for="(sumr, index) in goodsFaqSumr[selectedGoodsId]"
+                            :key="sumr.id"
+                            class="summary-group"
+                            :class="{ selected: selectedFaqSumrId === sumr.id }"
+                            @click="selectFaqSumr(sumr.id)"
+                    >
+                        <div class="summary-group-header" v-if="goodsFaqSumr[selectedGoodsId].length > 1">
+                            <span class="group-badge">FAQ 요약 {{ index + 1 }}</span>
+                            <span class="group-count">{{ sumr.details?.length || 0 }}개</span>
+                        </div>
+
+                        <div class="info-grid">
+                            <p class="info-label">방송 ID: {{ sumr.liveStartEndId }}</p>
+
+                            <div class="info-card full-width">
+                                <span class="info-icon">🎬</span>
+                                <div>
+                                    <p class="info-label">시작 시간</p>
+                                    <p class="info-value">{{ formatDateTime(sumr.startDate) }}</p>
+                                </div>
+                            </div>
+
+                            <div class="info-card full-width">
+                                <span class="info-icon">⏹️</span>
+                                <div>
+                                    <p class="info-label">종료 시간</p>
+                                    <p class="info-value">{{ formatDateTime(sumr.endDate) }}</p>
+                                </div>
+                            </div>
+
+                            <div class="info-card full-width">
+                                <span class="info-icon">📊</span>
+                                <div>
+                                    <p class="info-label">상태</p>
+                                    <span :class="['status-badge', getStatusClass(sumr.linkStatus)]">
+                                        {{ getStatusText(sumr.linkStatus) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="detail-footer">
-                    <span class="detail-meta">FAQ 상세 ID: {{ detail.faqId }}</span>
+
+                <div v-else class="empty-state">
+                    <div class="empty-icon">❌</div>
+                    <p>FAQ 요약 정보가 없습니다</p>
+                </div>
+            </div>
+
+            <!-- 오른쪽: FAQ 상세 목록 -->
+            <div class="column details-column">
+                <div class="column-header">
+                    <h3>💬 FAQ 상세</h3>
+                    <span class="badge" v-if="getSelectedFaqDetails().length > 0">
+                        {{ getSelectedFaqDetails().length }}개
+                    </span>
+                </div>
+
+                <div v-if="!selectedGoodsId" class="empty-state">
+                    <div class="empty-icon">👈</div>
+                    <p>왼쪽에서 상품을 선택해주세요</p>
+                </div>
+
+                <div v-else-if="!selectedFaqSumrId" class="empty-state">
+                    <div class="empty-icon">👈</div>
+                    <p>가운데에서 FAQ를 선택해주세요</p>
+                </div>
+
+                <div v-else-if="loadingFaqSumr[selectedGoodsId]" class="loading-inline">
+                    <div class="spinner-small"></div>
+                    <p>FAQ 상세 로딩 중...</p>
+                </div>
+
+                <div v-else-if="getSelectedFaqDetails().length > 0" class="faq-list-scroll">
+                    <div
+                            v-for="(faq, index) in getSelectedFaqDetails()"
+                            :key="faq.id"
+                            class="faq-detail-card"
+                    >
+                        <div class="faq-detail-header">
+                            <div class="faq-number">{{ index + 1 }}</div>
+                            <span
+                                    :class="['display-badge', faq.dispYn === 'Y' ? 'active' : 'inactive']"
+                                    @click.stop="toggleDispYn(faq, selectedGoodsId)"
+                                    style="cursor: pointer;"
+                            >
+        {{ faq.dispYn === 'Y' ? '✅ 노출' : '❌ 비노출' }}
+    </span>
+                        </div>
+
+                        <div class="faq-detail-body">
+                            <div class="question-section">
+                                <div class="question-header">
+                                    <span class="q-icon">❓</span>
+                                    <span class="q-label">질문</span>
+                                </div>
+                                <p class="question-text">{{ faq.questCont }}</p>
+                            </div>
+
+                            <div class="answer-section">
+                                <div class="answer-header">
+                                    <span class="a-icon">💡</span>
+                                    <span class="a-label">답변</span>
+                                </div>
+                                <p class="answer-text">{{ faq.ansCont }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>등록된 FAQ가 없습니다</p>
                 </div>
             </div>
         </div>

@@ -1447,12 +1447,47 @@ body.modal-open {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 2px solid #E2E8F0;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.summary-group:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.summary-group.selected {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(79, 70, 229, 0.02));
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+}
+
+.summary-group:not(:last-child) {
+    margin-bottom: var(--spacing-md);
 }
 
 .summary-group-header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    border-bottom: 2px solid #F1F5F9;
+}
+
+.group-count {
+    background: linear-gradient(135deg, var(--success-color), #059669);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
 }
 
 .group-badge {
@@ -1671,4 +1706,42 @@ body.modal-open {
     .info-card {
         grid-column: 1;
     }
+}
+
+.display-badge {
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.display-badge:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+.display-badge:active {
+    transform: scale(0.95);
+}
+
+.display-badge.active {
+    background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+    color: #065F46;
+}
+
+.display-badge.active:hover {
+    background: linear-gradient(135deg, #A7F3D0, #6EE7B7);
+}
+
+.display-badge.inactive {
+    background: linear-gradient(135deg, #FEE2E2, #FECACA);
+    color: #991B1B;
+}
+
+.display-badge.inactive:hover {
+    background: linear-gradient(135deg, #FECACA, #FCA5A5);
 }

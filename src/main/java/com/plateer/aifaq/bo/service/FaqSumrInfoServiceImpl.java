@@ -1,7 +1,10 @@
 package com.plateer.aifaq.bo.service;
 
 import com.plateer.aifaq.bo.dto.FaqSumrDto;
+import com.plateer.aifaq.bo.dto.GoodsDto;
 import com.plateer.aifaq.bo.dto.LiveStrtEndDto;
+import com.plateer.aifaq.bo.dto.request.FaqSumrDtlRequestDto;
+import com.plateer.aifaq.bo.dto.request.FaqSumrRequestDto;
 import com.plateer.aifaq.bo.mapper.FaqSumrInfoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,7 +36,12 @@ public class FaqSumrInfoServiceImpl implements FaqSumrInfoService {
     }
 
     @Override
-    public List<FaqSumrDto> findAllOrderByIdDesc() {
-        return faqSumrInfoMapper.findAllOrderByIdDesc();
+    public List<FaqSumrDto> findAllOrderByIdDesc(FaqSumrRequestDto faqSumrRequestDto) {
+        return faqSumrInfoMapper.findAllOrderByIdDesc(faqSumrRequestDto);
+    }
+
+    @Override
+    public List<GoodsDto> findGoodsByFaqPgmId(Long faqPgmId) {
+        return faqSumrInfoMapper.findGoodsByFaqPgmId(faqPgmId);
     }
 }
