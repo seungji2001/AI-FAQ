@@ -54,4 +54,9 @@ public class LiveStrtEndServiceImpl implements LiveStrtEndService {
     public List<LiveStrtEndDto> findMstGoodsByPgmId(Long pgmId) {
         return liveStrtEndMapper.findMstGoodsByPgmId(pgmId);
     }
+
+    @Override
+    public Long findCurrentPgm() {
+        return liveStrtEndMapper.findCurrentPgm();
+    }
 }

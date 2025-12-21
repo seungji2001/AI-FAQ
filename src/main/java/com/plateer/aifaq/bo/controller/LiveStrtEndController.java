@@ -88,5 +88,9 @@ public class LiveStrtEndController {
         return ResponseEntity.ok(liveStrtEndDtos);
     }
 
-    //todo 현재 진행중인 방송 조회 api
+    @GetMapping("/current")
+    public ResponseEntity<Long> findCurrentPgm() {
+        Long pgmId = liveStrtEndService.findCurrentPgm();
+        return ResponseEntity.ok(pgmId);
+    }
 }

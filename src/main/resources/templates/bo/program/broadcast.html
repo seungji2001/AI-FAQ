@@ -67,6 +67,17 @@
                             <span class="info-label">⏹️ 종료:</span>
                             <span class="info-value">{{ formatDateTime(broadcast.endDt) }}</span>
                         </div>
+
+                        <!-- ⭐ 방송 종료 버튼 추가 -->
+                        <div class="info-row" v-if="!broadcast.endDt">
+                            <button
+                                    @click="endBroadcast(broadcast)"
+                                    class="btn btn-danger"
+                                    style="width: 100%;"
+                            >
+                                🛑 방송 종료하기
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -45,7 +45,39 @@ createApp({
         getPgmIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('pgmId');
-        }
+        },
+
+        // ⭐ 방송 종료 메서드 추가
+        async endBroadcast(broadcast) {
+            if (!confirm('방송을 종료하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                const response = await axios.put(`/api/live-start-end/program/${broadcast.pgmId}/fin`);
+
+                if (response.data) {
+                    alert('방송이 종료되었습니다.');
+                    // 목록 새로고침
+                    await this.loadBroadcasts();
+                } else {
+                    alert('방송 종료에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('방송 종료 실패:', error);
+
+                let errorMessage = '방송 종료에 실패했습니다.';
+                if (error.response?.data) {
+                    if (typeof error.response.data === 'string') {
+                        errorMessage = error.response.data;
+                    } else if (error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    }
+                }
+
+                alert(errorMessage);
+            }
+        },
     },
     mounted() {
         this.pgmId = this.getPgmIdFromUrl();

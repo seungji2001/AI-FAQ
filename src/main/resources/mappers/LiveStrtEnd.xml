@@ -52,4 +52,11 @@
                 WHERE fsi.live_start_end_id = mst_goods.id
             )
     </select>
+
+    <select id="findCurrentPgm" resultType="Long">
+        SELECT PGM_ID
+        FROM LIVE_START_END
+        WHERE END_DATE IS NULL
+        LIMIT 1
+    </select>
 </mapper>

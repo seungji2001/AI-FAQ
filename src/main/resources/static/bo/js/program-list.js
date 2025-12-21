@@ -98,9 +98,9 @@ createApp({
                 // 현재 진행중인 방송 조회 API 호출
                 const response = await axios.get('/api/live-start-end/current');
 
-                if (response.data && response.data.pgmId) {
+                if (response.data) {
                     // 진행중인 방송이 있으면 해당 페이지로 이동
-                    window.location.href = `/bo/program/broadcast?pgmId=${response.data.pgmId}`;
+                    window.location.href = `/bo/program/broadcast?pgmId=${response.data}`;
                 } else {
                     alert('현재 진행중인 방송이 없습니다.');
                 }
@@ -109,7 +109,7 @@ createApp({
                 alert('진행중인 방송 정보를 가져오는데 실패했습니다.');
             }
         },
-        
+
         async startBroadcast() {
             if (this.selectedGoods.length === 0) {
                 alert('상품을 선택해주세요.');

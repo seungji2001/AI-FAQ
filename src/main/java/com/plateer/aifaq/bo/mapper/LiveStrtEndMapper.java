@@ -15,4 +15,5 @@ public interface LiveStrtEndMapper {
     public List<LiveStrtEndDto> findLiveStrtEndsByPgmId(Long pgmId);
     public int findLiveStrtEndsEndDateIsNull();
     public List<LiveStrtEndDto> findMstGoodsByPgmId(Long pgmId);
+    public Long findCurrentPgm();
 }
