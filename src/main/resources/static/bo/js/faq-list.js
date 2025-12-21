@@ -131,9 +131,6 @@ createApp({
             try {
                 const response = await axios.get(`/api/live-start-end/program/${this.selectedProgram.id}/mst-goods`);
 
-                const errorMsg = response.data || error.message;
-                alert(errorMsg);
-
                 this.closeSummaryModal();
                 this.refreshList();
 

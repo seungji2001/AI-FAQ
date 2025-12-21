@@ -40,7 +40,7 @@ public class FaqSummarizationService {
             }
 
             // AI 요약 생성
-//            String aiResult = aiSummarizationService.generateFaqSummary(chatHistory);
+            //String aiResult = aiSummarizationService.generateFaqSummary(chatHistory);
             String aiResult = """
                     [
                       {
@@ -91,6 +91,7 @@ public class FaqSummarizationService {
                     .build();
             faqSumrService.updateLinkStatus(faqSumrInfo);
         } catch (Exception e) {
+            log.error(e.getMessage());
             FaqSumrDto faqSumrInfo = FaqSumrDto.builder()
                     .pgmId(faqItem.getPgmId())
                     .linkStatus("F")

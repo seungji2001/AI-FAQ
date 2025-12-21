@@ -1,10 +1,7 @@
 package com.plateer.aifaq.bo.dto;
 
 import com.plateer.aifaq.bo.dto.base.BaseFaqSumrDtlDto;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Data
@@ -12,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @SuperBuilder
+@AllArgsConstructor
 public class FaqSumrDtlDto extends BaseFaqSumrDtlDto {
     private String intent;
 }

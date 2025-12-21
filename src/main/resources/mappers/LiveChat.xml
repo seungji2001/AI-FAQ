@@ -5,10 +5,10 @@
 <mapper namespace="com.plateer.aifaq.bo.mapper.LiveChatMapper">
     <select id="findByStartDtAndEndDt" parameterType="FaqSumrDto" resultType="LiveChatInfo">
         SELECT
-            CONCAT('[',LC.USER_TYPE,']',LC.MESSAGE) AS USER_MSG,
-            CONCAT('[', CLC.USER_TYPE,']', CLC.MESSAGE) AS PD_MSG
-        FROM
-            LIVE_CHAT LC INNER JOIN LIVE_CHAT CLC ON LC.ID = CLC.PARENT_ID
+            CONCAT('[', LC.USER_TYPE, ']', LC.MESSAGE) AS USER_MSG,
+            CONCAT('[', CLC.USER_TYPE, ']', CLC.MESSAGE) AS PD_MSG
+        FROM LIVE_CHAT LC
+                 INNER JOIN LIVE_CHAT CLC ON LC.PARENT_ID = CLC.ID
         WHERE 1=1
             AND #{startDate} &lt;= LC.CREATED_AT
             AND LC.CREATED_AT &lt;= #{endDate}
