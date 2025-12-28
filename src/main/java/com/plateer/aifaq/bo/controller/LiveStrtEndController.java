@@ -33,15 +33,9 @@ public class LiveStrtEndController {
     public ResponseEntity<LiveStrtEndDto> insert(@RequestBody PgmGoodsRequestDto pgmGoodsRequestDto) {
         // 프로그램이 진행중이어야한다
         PgmDto pgmDto = pgmService.findPgmById(pgmGoodsRequestDto.getPgmId());
-        if(pgmDto == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
         // 방송중인 프로그램이 있을 경우 종료 후 새로운 프로그램 시작이 가능하다
-        boolean isLiveStrtEndFin = liveStrtEndService.findLiveStrtEndsEndDateIsNull() <= 0;
-        if(!isLiveStrtEndFin){
-            throw new IllegalArgumentException("진행중인 방송이 있습니다.");
-        }
+        liveStrtEndService.findLiveStrtEndsEndDateIsNull();
 
         // 프로그램 아이디중 가장 큰 seq를 찾는다
         Integer maxSeq = liveStrtEndService.maxSeq(pgmGoodsRequestDto.getPgmId()).orElse(0) + 1;

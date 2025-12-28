@@ -8,8 +8,10 @@ import com.plateer.aifaq.bo.dto.request.FaqSumrRequestDto;
 import com.plateer.aifaq.bo.service.FaqSumrDtlInfoService;
 import com.plateer.aifaq.bo.service.FaqSumrInfoService;
 import com.plateer.aifaq.bo.service.GoodsService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

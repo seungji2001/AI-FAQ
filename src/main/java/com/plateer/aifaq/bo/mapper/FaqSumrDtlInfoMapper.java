@@ -8,7 +8,7 @@ import java.util.List;
 
 @Mapper
 public interface FaqSumrDtlInfoMapper {
-    public void insert(List<FaqSumrDtlDto> faqSumrDtlDto);
+    public int insert(List<FaqSumrDtlDto> faqSumrDtlDto);
     public List<FaqSumrDtlDto> findAllByFaqId(Long faqId);
-    void updateDispYn(FaqSumrDtlRequestDto faqSumrDtlRequestDto);
+    public int updateDispYn(FaqSumrDtlRequestDto faqSumrDtlRequestDto);
 }

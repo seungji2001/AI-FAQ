@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface LiveStrtEndMapper {
     public Optional<Integer> maxSeqGroupByPgmId(Long pgmId);
     public int insertBatch(List<LiveStrtEndDto> liveStrtEndDto);
-    public void updateEndDateBypgmIdAndSeq(Long pgmId);
+    public int updateEndDateBypgmIdAndSeq(Long pgmId);
     public List<LiveStrtEndDto> findLiveStrtEndsByPgmId(Long pgmId);
     public int findLiveStrtEndsEndDateIsNull();
     public List<LiveStrtEndDto> findMstGoodsByPgmId(Long pgmId);
