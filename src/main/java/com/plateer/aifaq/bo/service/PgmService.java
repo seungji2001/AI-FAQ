@@ -7,4 +7,6 @@ import java.util.List;
 public interface PgmService {
     List<PgmDto> findAll();
     PgmDto findPgmById(Long id);
+    List<PgmDto> findAllByEnd();
+    List<PgmDto> findAllInFaq();
 }

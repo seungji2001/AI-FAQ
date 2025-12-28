@@ -11,6 +11,8 @@
         <result property="strtDt" column="start_date"/>
         <result property="endDt" column="end_date"/>
         <result property="seq" column="seq"/>
+        <result property="goodsNm" column="goods_nm"/>
+        <result property="pgmNm" column="pgm_nm"/>
     </resultMap>
 
     <select id="maxSeqGroupByPgmId" parameterType="Long" resultType="Integer">
@@ -21,15 +23,51 @@
     </select>
 
     <select id="findLiveStrtEndsByPgmId" parameterType="Long" resultMap="LiveStrtEndResultMap">
-        SELECT *
-        FROM LIVE_START_END
+        SELECT LSE.ID,
+               LSE.START_DATE,
+               LSE.PGM_ID,
+               LSE.GOODS_ID,
+               LSE.END_DATE,
+               LSE.SEQ,
+               G.GOODS_NM,
+               P.PGM_NM
+        FROM LIVE_START_END LSE
+                 INNER JOIN GOODS G ON LSE.GOODS_ID = G.ID
+                 INNER JOIN PROGRAM P ON LSE.PGM_ID = P.ID
         WHERE 1 = 1
-            AND PGM_ID = #{pgmId}
+          AND PGM_ID = #{pgmId}
     </select>
 
     <select id="findLiveStrtEndsEndDateIsNull" resultType="Integer">
         SELECT count(*)
         FROM LIVE_START_END
         WHERE END_DATE IS NULL
+    </select>
+
+    <select id="findMstGoodsByPgmId" resultMap="LiveStrtEndResultMap" parameterType="Long">
+        SELECT *
+        FROM (SELECT
+                ID,
+                PGM_ID,
+                GOODS_ID,
+                ROW_NUMBER() OVER (PARTITION BY SEQ ORDER BY GOODS_ID) AS RNK,
+                START_DATE,
+                END_DATE
+              FROM LIVE_START_END
+              WHERE PGM_ID = #{pgmId}) MST_GOODS
+        WHERE 1 = 1
+            AND MST_GOODS.RNK = 1
+            AND NOT EXISTS (
+                SELECT 1
+                FROM faq_sumr_info fsi
+                WHERE fsi.live_start_end_id = mst_goods.id
+            )
+    </select>
+
+    <select id="findCurrentPgm" resultType="Long">
+        SELECT PGM_ID
+        FROM LIVE_START_END
+        WHERE END_DATE IS NULL
+        LIMIT 1
     </select>
 </mapper>

@@ -10,4 +10,6 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @SuperBuilder
 public class LiveStrtEndDto extends BaseLiveStrtEndDto {
+    private String goodsNm;
+    private String pgmNm;
 }

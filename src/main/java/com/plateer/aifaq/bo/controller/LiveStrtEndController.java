@@ -4,6 +4,7 @@ import com.plateer.aifaq.bo.dto.GoodsDto;
 import com.plateer.aifaq.bo.dto.LiveStrtEndDto;
 import com.plateer.aifaq.bo.dto.PgmDto;
 import com.plateer.aifaq.bo.dto.request.PgmGoodsRequestDto;
+import com.plateer.aifaq.bo.service.FaqSumrInfoService;
 import com.plateer.aifaq.bo.service.GoodsService;
 import com.plateer.aifaq.bo.service.LiveStrtEndService;
 import com.plateer.aifaq.bo.service.PgmService;
@@ -19,34 +20,22 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/liveStrtEnd")
+@RequestMapping("/api/live-start-end")
 @RequiredArgsConstructor
 public class LiveStrtEndController {
 
     private final LiveStrtEndService liveStrtEndService;
     private final PgmService pgmService;
     private final GoodsService goodsService;
-
-    /*
-    testcase
-    1. 프로그램에 여러 상품을 넣을 수 있으나, seq는 다르다
-    2. 프로그램은 진행중인 프로그램만 가능하다.
-    3. 만약 종료된 방송상품이 없다면 새로운 프로그램 불가능
-     */
+    private final FaqSumrInfoService faqSumrInfoService;
 
     @PostMapping("/insert")
     public ResponseEntity<LiveStrtEndDto> insert(@RequestBody PgmGoodsRequestDto pgmGoodsRequestDto) {
         // 프로그램이 진행중이어야한다
         PgmDto pgmDto = pgmService.findPgmById(pgmGoodsRequestDto.getPgmId());
-        if(pgmDto == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
         // 방송중인 프로그램이 있을 경우 종료 후 새로운 프로그램 시작이 가능하다
-        boolean isLiveStrtEndFin = liveStrtEndService.findLiveStrtEndsEndDateIsNull() <= 0;
-        if(!isLiveStrtEndFin){
-            throw new IllegalArgumentException("진행중인 방송이 있습니다.");
-        }
+        liveStrtEndService.findLiveStrtEndsEndDateIsNull();
 
         // 프로그램 아이디중 가장 큰 seq를 찾는다
         Integer maxSeq = liveStrtEndService.maxSeq(pgmGoodsRequestDto.getPgmId()).orElse(0) + 1;
@@ -83,4 +72,19 @@ public class LiveStrtEndController {
         return ResponseEntity.ok(true);
     }
 
+    @GetMapping("/program/{pgmId}/mst-goods")
+    public ResponseEntity<List<LiveStrtEndDto>> findMstGoodsByPgmId(@PathVariable Long pgmId) {
+        List<LiveStrtEndDto> liveStrtEndDtos = liveStrtEndService.findMstGoodsByPgmId(pgmId);
+        if(liveStrtEndDtos.isEmpty()){
+            throw new IllegalArgumentException("삽입할 대상 방송상품이 없습니다.");
+        }
+        faqSumrInfoService.insertMstGoods(liveStrtEndDtos);
+        return ResponseEntity.ok(liveStrtEndDtos);
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<Long> findCurrentPgm() {
+        Long pgmId = liveStrtEndService.findCurrentPgm();
+        return ResponseEntity.ok(pgmId);
+    }
 }

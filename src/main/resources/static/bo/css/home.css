@@ -1,0 +1,347 @@
+/* ========== 기본 설정 ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #4F46E5;
+    --primary-hover: #4338CA;
+    --secondary-color: #64748B;
+    --success-color: #10B981;
+    --danger-color: #EF4444;
+    --warning-color: #F59E0B;
+
+    --bg-primary: #F8FAFC;
+    --bg-secondary: #FFFFFF;
+    --bg-hover: #F1F5F9;
+
+    --text-primary: #1E293B;
+    --text-secondary: #64748B;
+    --text-tertiary: #94A3B8;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+}
+
+body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: var(--spacing-lg);
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    min-height: calc(100vh - 48px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== 헤더 ========== */
+.header {
+    padding: var(--spacing-xl);
+    border-bottom: 2px solid #E2E8F0;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.logo h1 {
+    font-size: clamp(28px, 5vw, 40px);
+    color: white;
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+/* ========== 메인 컨텐츠 ========== */
+.main-content {
+    flex: 1;
+    padding: var(--spacing-xl);
+}
+
+.welcome-section {
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+    margin-bottom: var(--spacing-xl);
+}
+
+.welcome-section h2 {
+    font-size: clamp(24px, 4vw, 36px);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.welcome-section p {
+    font-size: 18px;
+    color: var(--text-secondary);
+}
+
+/* ========== 메뉴 카드 ========== */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.menu-card {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), #3B82F6);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.menu-card:not(.disabled):hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-color);
+}
+
+.menu-card:not(.disabled):hover::before {
+    transform: scaleX(1);
+}
+
+.menu-card.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.menu-card.disabled:hover {
+    transform: none;
+}
+
+.card-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+}
+
+.menu-card h3 {
+    font-size: 24px;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.menu-card p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+.card-arrow {
+    font-size: 24px;
+    color: var(--primary-color);
+    font-weight: bold;
+    text-align: right;
+}
+
+.card-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    color: #92400E;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+}
+
+/* ========== 최근 활동 ========== */
+.recent-activity {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.recent-activity h3 {
+    font-size: 20px;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.activity-item {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--bg-hover);
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+}
+
+.activity-item:hover {
+    background: #E2E8F0;
+}
+
+.activity-time {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    min-width: 80px;
+}
+
+.activity-content {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* ========== 푸터 ========== */
+.footer {
+    padding: var(--spacing-lg);
+    text-align: center;
+    border-top: 2px solid #E2E8F0;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* ========== 애니메이션 ========== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.menu-card:nth-child(1) { animation-delay: 0.1s; }
+.menu-card:nth-child(2) { animation-delay: 0.2s; }
+.menu-card:nth-child(3) { animation-delay: 0.3s; }
+.menu-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* ========== 반응형 ========== */
+@media (max-width: 768px) {
+    body {
+        padding: var(--spacing-sm);
+    }
+
+    .container {
+        border-radius: var(--radius-md);
+    }
+
+    .header {
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
+    .main-content {
+        padding: var(--spacing-lg);
+    }
+
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome-section {
+        padding: var(--spacing-lg) 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size: 24px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+    }
+
+    .welcome-section h2 {
+        font-size: 24px;
+    }
+
+    .welcome-section p {
+        font-size: 16px;
+    }
+
+    .menu-card {
+        padding: var(--spacing-lg);
+    }
+
+    .card-icon {
+        font-size: 36px;
+    }
+
+    .menu-card h3 {
+        font-size: 20px;
+    }
+}
+
+/* ========== 스크롤바 커스터마이징 ========== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F1F5F9;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+}

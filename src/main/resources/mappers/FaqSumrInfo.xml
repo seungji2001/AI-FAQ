@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plateer.aifaq.bo.mapper.FaqSumrInfoMapper">
+    <select id="findAllOrderByIdDesc" parameterType="FaqSumrRequestDto" resultType="FaqSumrDto">
+        SELECT *
+        FROM FAQ_SUMR_INFO
+        WHERE 1 = 1
+            <if test="pgmId != null and pgmId != ''">
+                AND PGM_ID = #{pgmId}
+            </if>
+            <if test="goodsId != null and goodsId != ''">
+                AND GOODS_ID = #{goodsId}
+            </if>
+        ORDER BY ID DESC
+    </select>
+
+    <select id="findGoodsByFaqPgmId" parameterType="Long" resultType="GoodsDto">
+        SELECT
+            FSI.PGM_ID,
+            G.ID,
+            G.GOODS_NM,
+            G.PRICE
+        FROM GOODS G INNER JOIN (
+            SELECT GOODS_ID, PGM_ID
+            FROM FAQ_SUMR_INFO FSI
+            WHERE PGM_ID = #{pgmId}
+            GROUP BY GOODS_ID) FSI ON G.ID = FSI.GOODS_ID
+    </select>
+</mapper>

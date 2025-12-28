@@ -20,6 +20,7 @@
             END_DATE
         FROM PROGRAM
         WHERE 1 = 1
+            AND START_DATE &lt;= now()
             AND now() &lt;= END_DATE
     </select>
 
@@ -30,5 +31,22 @@
             AND ID = #{pgmId}
             AND START_DATE &lt; now()
             AND now() &lt;= END_DATE
+    </select>
+
+    <select id="findAllByEnd" resultMap="PgmResultMap">
+        SELECT *
+        FROM PROGRAM
+        WHERE 1 = 1
+            AND END_DATE &lt;= NOW()
+    </select>
+
+    <select id="findAllInFaq" resultMap="PgmResultMap">
+        SELECT P.ID,
+               P.PGM_NM,
+               P.START_DATE,
+               P.END_DATE
+        FROM PROGRAM P INNER JOIN (SELECT PGM_ID
+                                   FROM FAQ_SUMR_INFO FSI
+                                   GROUP BY PGM_ID) FSI ON P.ID = PGM_ID
     </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.plateer.aifaq.bo.mapper;
 
+import com.plateer.aifaq.bo.dto.GoodsDto;
 import com.plateer.aifaq.bo.dto.PgmDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -9,4 +10,6 @@ import java.util.List;
 public interface PgmMapper {
     List<PgmDto> findAll();
     PgmDto findPgmById(Long id);
+    List<PgmDto> findAllByEnd();
+    List<PgmDto> findAllInFaq();
 }

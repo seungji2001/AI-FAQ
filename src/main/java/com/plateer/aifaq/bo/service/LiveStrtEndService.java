@@ -11,4 +11,6 @@ public interface LiveStrtEndService {
     public void updateEndDateBypgmIdAndSeq(Long pgmId);
     public List<LiveStrtEndDto> findLiveStrtEndsByPgmId(Long pgmId);
     public int findLiveStrtEndsEndDateIsNull();
+    public List<LiveStrtEndDto> findMstGoodsByPgmId(Long pgmId);
+    public Long findCurrentPgm();
 }

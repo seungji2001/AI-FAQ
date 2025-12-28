@@ -1,6 +1,10 @@
 package com.plateer.aifaq.bo.service;
 
 import com.plateer.aifaq.bo.dto.LiveStrtEndDto;
+import com.plateer.aifaq.bo.enums.ErrorCode;
+import com.plateer.aifaq.bo.exception.BusinessException;
+import com.plateer.aifaq.bo.exception.InvalidRequestException;
+import com.plateer.aifaq.bo.exception.ResourceNotFoundException;
 import com.plateer.aifaq.bo.mapper.LiveStrtEndMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,9 @@ public class LiveStrtEndServiceImpl implements LiveStrtEndService {
 
     @Override
     public Optional<Integer> maxSeq(Long pgmId) {
+        if(pgmId == null){
+            throw new InvalidRequestException(ErrorCode.INVALID_REQUEST);
+        }
         return liveStrtEndMapper.maxSeqGroupByPgmId(pgmId);
     }
 
@@ -25,7 +32,7 @@ public class LiveStrtEndServiceImpl implements LiveStrtEndService {
     public int insertBatch(List<LiveStrtEndDto> liveStrtEndDto) {
         int result = liveStrtEndMapper.insertBatch(liveStrtEndDto);
         if(result == 0){
-            throw new RuntimeException("Error inserting LiveStrtEnd");
+            throw new BusinessException(ErrorCode.FAQ_INSERTED_FAILED);
         }
         return result;
     }
@@ -33,20 +40,50 @@ public class LiveStrtEndServiceImpl implements LiveStrtEndService {
     @Transactional
     @Override
     public void updateEndDateBypgmIdAndSeq(Long pgmId) {
+        if(pgmId == null){
+            throw new InvalidRequestException(ErrorCode.INVALID_REQUEST);
+        }
         List<LiveStrtEndDto> liveStrtEndDto = this.findLiveStrtEndsByPgmId(pgmId);
         if(liveStrtEndDto.isEmpty()){
-            throw new IllegalArgumentException(pgmId + " 프로그램에 대한 정보가 없습니다");
+            throw new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND);
         }
-        liveStrtEndMapper.updateEndDateBypgmIdAndSeq(pgmId);
+        int updatedPgm = liveStrtEndMapper.updateEndDateBypgmIdAndSeq(pgmId);
+        if(updatedPgm == 0){
+            throw new BusinessException(ErrorCode.PGM_END_DATE_UPDATED_FAILED);
+        }
     }
 
     @Override
     public List<LiveStrtEndDto> findLiveStrtEndsByPgmId(Long pgmId) {
-        return liveStrtEndMapper.findLiveStrtEndsByPgmId(pgmId);
+        if(pgmId == null){
+            throw new InvalidRequestException(ErrorCode.INVALID_REQUEST);
+        }
+        List<LiveStrtEndDto> liveStrtEndDtos = liveStrtEndMapper.findLiveStrtEndsByPgmId(pgmId);
+        if(liveStrtEndDtos.isEmpty()){
+            throw new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND);
+        }
+        return liveStrtEndDtos;
     }
 
     @Override
     public int findLiveStrtEndsEndDateIsNull() {
-        return liveStrtEndMapper.findLiveStrtEndsEndDateIsNull();
+        int currentLiveStrtEnds = liveStrtEndMapper.findLiveStrtEndsEndDateIsNull();
+        if(currentLiveStrtEnds > 0){
+            throw new ResourceNotFoundException(ErrorCode.PGM_ALREADY_STARTED);
+        }
+        return currentLiveStrtEnds;
+    }
+
+    @Override
+    public List<LiveStrtEndDto> findMstGoodsByPgmId(Long pgmId) {
+        if(pgmId == null){
+            throw new InvalidRequestException(ErrorCode.INVALID_REQUEST);
+        }
+        return liveStrtEndMapper.findMstGoodsByPgmId(pgmId);
+    }
+
+    @Override
+    public Long findCurrentPgm() {
+        return liveStrtEndMapper.findCurrentPgm();
     }
 }
