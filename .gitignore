@@ -39,3 +39,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Node ###
+node_modules/
+src/main/resources/static/bo/css/output.css

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_Figma__whoami",
+      "mcp__claude_ai_Figma__get_metadata"
+    ],
+    "ask": [
+      "Bash"
+    ]
+  },
+  "plansDirectory": ".claude/plans"
+}
