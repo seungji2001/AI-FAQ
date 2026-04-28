@@ -10,13 +10,9 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-
-const NAV_ITEMS = [
-  { label: "피드", active: true },
-  { label: "탐색", active: false },
-  { label: "발행", active: false },
-  { label: "마이페이지", active: false },
-];
+import Link from "next/link";
+import { NAV_ITEMS } from "@/lib/constants/nav";
+import { fs, fw, dim } from "@/lib/styles/typography";
 
 interface MobileSidebarProps {
   open: boolean;
@@ -26,9 +22,9 @@ interface MobileSidebarProps {
 export default function MobileSidebar({ open, onClose }: MobileSidebarProps) {
   return (
     <Drawer anchor="right" open={open} onClose={onClose}>
-      <Box sx={{ width: 240, pt: 2 }}>
+      <Box sx={{ width: dim.drawerWidth, pt: 2 }}>
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", px: 2, pb: 1 }}>
-          <Typography sx={{ fontWeight: 700, fontSize: "18px" }}>THINGZ</Typography>
+          <Typography sx={{ fontWeight: fw.bold, fontSize: fs["2xl"] }}>THINGZ</Typography>
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
@@ -37,20 +33,18 @@ export default function MobileSidebar({ open, onClose }: MobileSidebarProps) {
         <List>
           {NAV_ITEMS.map((item) => (
             <ListItem key={item.label} disablePadding>
-              <ListItemButton onClick={onClose}>
-                <ListItemText
-                  primary={item.label}
-                  slotProps={{
-                    primary: {
-                      sx: {
-                        fontWeight: item.active ? 700 : 400,
-                        color: item.active ? "#FBA96E" : "text.primary",
-                        fontSize: "15px",
+              <Link href={item.href} style={{ textDecoration: "none", width: "100%" }}>
+                <ListItemButton onClick={onClose}>
+                  <ListItemText
+                    primary={item.label}
+                    slotProps={{
+                      primary: {
+                        sx: { fontSize: fs.lg, color: "text.primary" },
                       },
-                    },
-                  }}
-                />
-              </ListItemButton>
+                    }}
+                  />
+                </ListItemButton>
+              </Link>
             </ListItem>
           ))}
         </List>

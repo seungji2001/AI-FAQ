@@ -1,8 +1,8 @@
-"use client";
-
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import EditorItem from "../EditorItem";
+import EditorItem from "@/app/components/EditorItem";
+import { panelBase, cardImage } from "@/lib/styles/sx";
+import { captionText } from "@/lib/styles/typography";
 
 interface ArticleEditorProfileProps {
   username?: string;
@@ -24,21 +24,15 @@ export default function ArticleEditorProfile({
   following = false,
 }: ArticleEditorProfileProps) {
   return (
-    <Box sx={{ bgcolor: "white", borderRadius: 3, boxShadow: 1, overflow: "hidden" }}>
-      {/* 커버 이미지 */}
+    <Box sx={{ ...panelBase, overflow: "hidden" }}>
       <Box
         sx={{
-          width: "100%",
+          ...cardImage,
           aspectRatio: "16/5",
-          bgcolor: "grey.300",
           backgroundImage: coverSrc ? `url(${coverSrc})` : undefined,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
         }}
       />
-
       <Box sx={{ px: 3, pt: 2, pb: 3, display: "flex", flexDirection: "column", gap: 1.5 }}>
-        {/* EditorItem 재활용: 아바타 + 유저명 + 팔로워 + 팔로우 버튼 */}
         <EditorItem
           username={username}
           followers={followers}
@@ -46,9 +40,7 @@ export default function ArticleEditorProfile({
           avatarSrc={avatarSrc}
           following={following}
         />
-
-        {/* bio */}
-        <Typography sx={{ fontSize: "12px", color: "text.secondary", pl: 0.5 }}>
+        <Typography sx={{ ...captionText, pl: 0.5 }}>
           {bio}
         </Typography>
       </Box>

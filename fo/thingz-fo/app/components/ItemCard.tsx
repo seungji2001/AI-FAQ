@@ -3,6 +3,10 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
+import { cardBase } from "@/lib/styles/sx";
+import { BRAND_COLOR } from "@/lib/constants/theme";
+import { fs, fw, dim } from "@/lib/styles/typography";
+import CardImageBox from "@/app/components/ui/CardImageBox";
 
 interface ItemCardProps {
   id?: string;
@@ -19,40 +23,17 @@ export default function ItemCard({
 }: ItemCardProps) {
   return (
     <Link href={`/article/${id}`} style={{ textDecoration: "none" }}>
-    <Box
-      sx={{
-        width: "100%",
-        borderRadius: "10px",
-        overflow: "hidden",
-        bgcolor: "white",
-        boxShadow: 1,
-        cursor: "pointer",
-        transition: "box-shadow 0.2s",
-        "&:hover": { boxShadow: 4 },
-      }}
-    >
-      {/* 이미지 영역 */}
-      <Box
-        sx={{
-          width: "100%",
-          aspectRatio: "16 / 9",
-          bgcolor: "grey.200",
-          backgroundImage: imageSrc ? `url(${imageSrc})` : undefined,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-
-      {/* 텍스트 영역 */}
-      <Box sx={{ px: 1.5, pt: 1, pb: 1.5 }}>
-        <Typography sx={{ fontSize: "12px", color: "#FBA96E", mb: 0.5 }}>
-          {tag}
-        </Typography>
-        <Typography sx={{ fontSize: "12px", fontWeight: 700, color: "text.primary" }}>
-          {title}
-        </Typography>
+      <Box sx={{ ...cardBase, borderRadius: dim.radiusCard }}>
+        <CardImageBox imageSrc={imageSrc} aspectRatio="16 / 9" />
+        <Box sx={{ px: 1.5, pt: 1, pb: 1.5 }}>
+          <Typography sx={{ fontSize: fs.sm, color: BRAND_COLOR, mb: 0.5 }}>
+            {tag}
+          </Typography>
+          <Typography sx={{ fontSize: fs.sm, fontWeight: fw.bold, color: "text.primary" }}>
+            {title}
+          </Typography>
+        </Box>
       </Box>
-    </Box>
     </Link>
   );
 }

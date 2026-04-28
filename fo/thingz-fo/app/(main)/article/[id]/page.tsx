@@ -1,38 +1,56 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
-import ArticleContent from "../../../components/article/ArticleContent";
-import ArticleTrade from "../../../components/article/ArticleTrade";
-import ArticleEditorProfile from "../../../components/article/ArticleEditorProfile";
+import { notFound } from "next/navigation";
+import ArticleContent from "@/app/components/article/ArticleContent";
+import SidePanel from "./_components/SidePanel";
+import { fetchArticle } from "@/lib/api/articles";
+import { pageWithSidebar, sidebarWidth, mobileSidebar, mainContent } from "@/lib/styles/sx";
+import { captionText } from "@/lib/styles/typography";
 
-export default function ArticleDetailPage() {
+interface Props {
+  params: Promise<{ id: string }>;
+}
+
+export default async function ArticleDetailPage({ params }: Props) {
+  const { id } = await params;
+  const article = await fetchArticle(id).catch(() => null);
+
+  if (!article) notFound();
+
+  const contentProps = {
+    tag: article.tags[0],
+    author: `@${article.author}`,
+    date: article.publishedAt ?? "",
+    title: article.title,
+    body: article.content?.split("\n").filter(Boolean) ?? [],
+    imageSrc: article.imageUrls[0],
+    thumbnails: article.imageUrls.slice(1),
+  };
+
   return (
-    <Box sx={{ bgcolor: "grey.100", minHeight: "100vh", mx: -8, px: { xs: 2, sm: 4, md: 8 }, py: { xs: 2, md: 4 } }}>
-      {/* 뒤로가기 */}
+    <>
       <Link href="/" style={{ textDecoration: "none" }}>
-        <Typography
-          sx={{ fontSize: "12px", color: "text.secondary", mb: 2, cursor: "pointer", "&:hover": { color: "text.primary" } }}
-        >
+        <Typography sx={{ ...captionText, mb: 2, cursor: "pointer", "&:hover": { color: "text.primary" } }}>
           ← 피드로 돌아가기
         </Typography>
       </Link>
 
-      {/* PC: 좌우 2단 */}
-      <Box sx={{ display: "flex", gap: 3, alignItems: "flex-start" }}>
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <ArticleContent />
+      <Box sx={pageWithSidebar}>
+        <Box sx={mainContent}>
+          <ArticleContent {...contentProps} />
         </Box>
-        <Box sx={{ width: { md: 360, lg: 460 }, flexShrink: 0, display: { xs: "none", md: "flex" }, flexDirection: "column", gap: 3 }}>
-          <ArticleTrade />
-          <ArticleEditorProfile />
+
+        {/* PC */}
+        <Box sx={sidebarWidth}>
+          <SidePanel article={article} />
         </Box>
       </Box>
 
-      {/* 모바일: 하단 배치 */}
-      <Box sx={{ display: { xs: "flex", md: "none" }, flexDirection: "column", gap: 3, mt: 3 }}>
-        <ArticleTrade />
-        <ArticleEditorProfile />
+      {/* 모바일 */}
+      <Box sx={mobileSidebar}>
+        <SidePanel article={article} />
       </Box>
-    </Box>
+    </>
   );
 }

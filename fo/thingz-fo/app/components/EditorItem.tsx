@@ -4,6 +4,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
+import { BRAND_COLOR, BRAND_COLOR_HOVER } from "@/lib/constants/theme";
+import { fs, fw, dim, labelBold, captionText } from "@/lib/styles/typography";
 
 interface EditorItemProps {
   username?: string;
@@ -22,17 +24,10 @@ export default function EditorItem({
 }: EditorItemProps) {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-      <Avatar
-        src={avatarSrc}
-        sx={{ width: 48, height: 48, bgcolor: "grey.200", flexShrink: 0 }}
-      />
+      <Avatar src={avatarSrc} sx={{ width: dim.avatarSize, height: dim.avatarSize, bgcolor: "grey.200", flexShrink: 0 }} />
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography sx={{ fontSize: "14px", fontWeight: 700, color: "text.primary" }}>
-          {username}
-        </Typography>
-        <Typography sx={{ fontSize: "12px", color: "text.secondary" }}>
-          팔로워 {followers} · 아티클 {articles}
-        </Typography>
+        <Typography sx={labelBold}>{username}</Typography>
+        <Typography sx={captionText}>팔로워 {followers} · 아티클 {articles}</Typography>
       </Box>
       <Button
         size="small"
@@ -40,17 +35,15 @@ export default function EditorItem({
         disableElevation
         sx={{
           flexShrink: 0,
-          fontSize: "12px",
-          fontWeight: 700,
+          fontSize: fs.sm,
+          fontWeight: fw.bold,
           borderRadius: "20px",
-          minWidth: 56,
-          height: 28,
-          backgroundColor: following ? undefined : "#FBA96E",
-          borderColor: following ? "#FBA96E" : undefined,
-          color: following ? "#FBA96E" : "white",
-          "&:hover": {
-            backgroundColor: following ? undefined : "#f99a58",
-          },
+          minWidth: dim.followBtnMinW,
+          height: dim.followBtnHeight,
+          backgroundColor: following ? undefined : BRAND_COLOR,
+          borderColor: following ? BRAND_COLOR : undefined,
+          color: following ? BRAND_COLOR : "white",
+          "&:hover": { backgroundColor: following ? undefined : BRAND_COLOR_HOVER },
         }}
       >
         {following ? "팔로잉" : "팔로우"}
