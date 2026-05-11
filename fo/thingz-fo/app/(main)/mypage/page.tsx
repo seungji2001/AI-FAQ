@@ -12,7 +12,7 @@ import { ArticleListItem } from "@/lib/types/article";
 import ItemCard from "@/app/components/ItemCard";
 import { articleGrid, mainContent } from "@/lib/styles/sx";
 import { fs, fw, titleMd, textSecondary } from "@/lib/styles/typography";
-import { KAKAO_COLOR } from "@/lib/constants/theme";
+import { KAKAO_COLOR, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
 
 export default function MyPage() {
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function MyPage() {
   return (
     <Box sx={mainContent}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
-        <Avatar sx={{ width: 56, height: 56, bgcolor: KAKAO_COLOR, color: "#000", fontSize: fs["2xl"], fontWeight: fw.bold }}>
+        <Avatar sx={{ width: 56, height: 56, bgcolor: KAKAO_COLOR, color: KAKAO_TEXT_COLOR, fontSize: fs["2xl"], fontWeight: fw.bold }}>
           {username[0]?.toUpperCase()}
         </Avatar>
         <Box>

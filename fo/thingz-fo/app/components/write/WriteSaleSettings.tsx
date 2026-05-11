@@ -65,7 +65,7 @@ export default function WriteSaleSettings({ value, onChange }: WriteSaleSettings
         <>
           <Box>
             <SectionLabel>판매 가격</SectionLabel>
-            <Box sx={{ display: "flex", alignItems: "center", bgcolor: "grey.200", borderRadius: 2, px: 2, height: 40, mt: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", bgcolor: "grey.200", borderRadius: 2, px: 2, height: dim.inputRowHeight, mt: 1 }}>
               <InputBase value={value.price} onChange={(e) => set({ price: e.target.value })} fullWidth sx={{ fontSize: fs.md }} />
               <Typography sx={{ fontSize: fs.md, color: "text.secondary", flexShrink: 0 }}>원</Typography>
             </Box>

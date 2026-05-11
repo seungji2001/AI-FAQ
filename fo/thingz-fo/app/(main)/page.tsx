@@ -1,8 +1,8 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import FeaturedCard from "../components/FeaturedCard";
-import ItemCard from "../components/ItemCard";
-import TodayEditors from "../components/TodayEditors";
+import FeaturedCard from "@/app/components/FeaturedCard";
+import ItemCard from "@/app/components/ItemCard";
+import TodayEditors from "@/app/components/TodayEditors";
 import { fetchArticles } from "@/lib/api/articles";
 import { fetchUsers } from "@/lib/api/users";
 import { pageWithSidebar, sidebarWidth, mainContent } from "@/lib/styles/sx";

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/fo/upload")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
 public class S3Controller {
 
     private final S3Service s3Service;

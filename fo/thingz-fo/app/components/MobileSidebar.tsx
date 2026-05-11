@@ -15,7 +15,7 @@ import Avatar from "@mui/material/Avatar";
 import CloseIcon from "@mui/icons-material/Close";
 import Link from "next/link";
 import { NAV_ITEMS } from "@/lib/constants/nav";
-import { KAKAO_COLOR, KAKAO_COLOR_HOVER } from "@/lib/constants/theme";
+import { KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
 import { logout, getKakaoLoginUrl } from "@/lib/api/auth";
@@ -52,7 +52,7 @@ export default function MobileSidebar({ open, onClose }: MobileSidebarProps) {
 
         {username ? (
           <Box sx={{ px: 2, py: 2, display: "flex", alignItems: "center", gap: 1.5 }}>
-            <Avatar sx={{ width: 36, height: 36, bgcolor: KAKAO_COLOR, fontSize: fs.sm, color: "#000" }}>
+            <Avatar sx={{ width: 36, height: 36, bgcolor: KAKAO_COLOR, fontSize: fs.sm, color: KAKAO_TEXT_COLOR }}>
               {username[0].toUpperCase()}
             </Avatar>
             <Box sx={{ flex: 1 }}>
@@ -70,7 +70,7 @@ export default function MobileSidebar({ open, onClose }: MobileSidebarProps) {
             <Button
               fullWidth href={getKakaoLoginUrl()}
               variant="contained" disableElevation
-              sx={{ bgcolor: KAKAO_COLOR, color: "#000", "&:hover": { bgcolor: KAKAO_COLOR_HOVER }, fontWeight: fw.bold, fontSize: fs.sm, borderRadius: 2 }}
+              sx={{ bgcolor: KAKAO_COLOR, color: KAKAO_TEXT_COLOR, "&:hover": { bgcolor: KAKAO_COLOR_HOVER }, fontWeight: fw.bold, fontSize: fs.sm, borderRadius: 2 }}
             >
               카카오로 시작하기
             </Button>

@@ -35,10 +35,16 @@ export default function WritePage() {
   const [uploadingFiles, setUploadingFiles] = useState<{ id: string; name: string; progress: number }[]>([]);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
-  useEffect(() => {
+  const requireLogin = (): boolean => {
     if (!tokenStorage.getAccessToken()) {
       setLoginDialogOpen(true);
+      return true;
     }
+    return false;
+  };
+
+  useEffect(() => {
+    requireLogin();
   }, []);
 
   const handleTagAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -103,9 +109,7 @@ export default function WritePage() {
   });
 
   const handleSaveDraft = async () => {
-    if (!tokenStorage.getAccessToken()) {
-      return setLoginDialogOpen(true);
-    }
+    if (requireLogin()) return;
     if (!title.trim()) return alert("제목을 입력해주세요.");
     if (uploadingFiles.length > 0) return alert("이미지 업로드 중입니다. 잠시 후 다시 시도해주세요.");
     setLoading(true);
@@ -121,9 +125,7 @@ export default function WritePage() {
   };
 
   const handlePublish = async () => {
-    if (!tokenStorage.getAccessToken()) {
-      return setLoginDialogOpen(true);
-    }
+    if (requireLogin()) return;
     if (!title.trim()) return alert("제목을 입력해주세요.");
     if (!content.trim()) return alert("본문을 입력해주세요.");
     if (uploadingFiles.length > 0) return alert("이미지 업로드 중입니다. 잠시 후 다시 시도해주세요.");

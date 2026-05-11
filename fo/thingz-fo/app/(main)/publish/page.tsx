@@ -1,13 +1,13 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import FeaturedCard from "../../components/FeaturedCard";
-import ItemCard from "../../components/ItemCard";
-import EditorItem from "../../components/EditorItem";
-import TodayEditors from "../../components/TodayEditors";
-import ArticleContent from "../../components/article/ArticleContent";
-import ArticleTrade from "../../components/article/ArticleTrade";
-import ArticleEditorProfile from "../../components/article/ArticleEditorProfile";
+import FeaturedCard from "@/app/components/FeaturedCard";
+import ItemCard from "@/app/components/ItemCard";
+import EditorItem from "@/app/components/EditorItem";
+import TodayEditors from "@/app/components/TodayEditors";
+import ArticleContent from "@/app/components/article/ArticleContent";
+import ArticleTrade from "@/app/components/article/ArticleTrade";
+import ArticleEditorProfile from "@/app/components/article/ArticleEditorProfile";
 
 interface SectionProps {
   title: string;

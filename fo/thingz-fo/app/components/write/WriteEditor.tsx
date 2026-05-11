@@ -11,6 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { panelBase } from "@/lib/styles/sx";
 import { fs, fw, dim } from "@/lib/styles/typography";
+import { OVERLAY_DARK, OVERLAY_MED } from "@/lib/constants/theme";
 
 const ACCEPTED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
 
@@ -104,14 +105,14 @@ export default function WriteEditor({
                 sx={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
               {i === 0 && (
-                <Box sx={{ position: "absolute", bottom: 4, left: 4, bgcolor: "rgba(0,0,0,0.6)", color: "white", fontSize: fs.xs, px: 0.5, borderRadius: 0.5 }}>
+                <Box sx={{ position: "absolute", bottom: 4, left: 4, bgcolor: OVERLAY_DARK, color: "white", fontSize: fs.xs, px: 0.5, borderRadius: 0.5 }}>
                   커버
                 </Box>
               )}
               <IconButton
                 size="small"
                 onClick={() => onImageRemove(i)}
-                sx={{ position: "absolute", top: 2, right: 2, bgcolor: "rgba(0,0,0,0.5)", color: "white", p: 0.3, "&:hover": { bgcolor: "rgba(0,0,0,0.75)" } }}
+                sx={{ position: "absolute", top: 2, right: 2, bgcolor: OVERLAY_MED, color: "white", p: 0.3, "&:hover": { bgcolor: OVERLAY_DARK } }}
               >
                 <CloseIcon sx={{ fontSize: 14 }} />
               </IconButton>

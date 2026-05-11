@@ -18,7 +18,7 @@ import MobileSidebar from "./MobileSidebar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/constants/nav";
-import { BRAND_COLOR, KAKAO_COLOR, KAKAO_COLOR_HOVER } from "@/lib/constants/theme";
+import { BRAND_COLOR, KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { toolbarInner } from "@/lib/styles/sx";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
@@ -120,7 +120,7 @@ export default function Header() {
                   href={getKakaoLoginUrl()}
                   variant="contained"
                   size="small"
-                  sx={{ bgcolor: KAKAO_COLOR, color: "#000", "&:hover": { bgcolor: KAKAO_COLOR_HOVER }, fontSize: fs.sm, fontWeight: fw.bold, borderRadius: 2, px: 2 }}
+                  sx={{ bgcolor: KAKAO_COLOR, color: KAKAO_TEXT_COLOR, "&:hover": { bgcolor: KAKAO_COLOR_HOVER }, fontSize: fs.sm, fontWeight: fw.bold, borderRadius: 2, px: 2 }}
                 >
                   카카오 로그인
                 </Button>

@@ -48,7 +48,8 @@ export default function EditorItem({
         setFollowing(true);
       }
     } catch {
-      // 실패 시 상태 유지
+      setFollowing(following); // 상태 롤백
+      alert(following ? "언팔로우에 실패했습니다." : "팔로우에 실패했습니다.");
     } finally {
       setLoading(false);
     }

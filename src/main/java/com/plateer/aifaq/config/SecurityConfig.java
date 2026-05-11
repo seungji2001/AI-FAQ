@@ -42,6 +42,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/fo/articles", "/api/fo/articles/**").authenticated()
                         .requestMatchers("/api/fo/users/**").authenticated()
                         .requestMatchers("/api/fo/upload/**").authenticated()
+                        // BO 엔드포인트(/api/v1, /bo, /batch)와 기타 경로는 별도 인증 없이 허용
+                        // 프로덕션 전환 시 명시적 경로 허용 후 .denyAll() 검토 필요
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2

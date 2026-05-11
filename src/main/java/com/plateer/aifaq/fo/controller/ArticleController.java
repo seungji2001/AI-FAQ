@@ -26,7 +26,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/fo/articles")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
 public class ArticleController {
 
     private final ArticleService articleService;
