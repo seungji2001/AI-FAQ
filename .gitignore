@@ -43,3 +43,10 @@ out/
 ### Node ###
 node_modules/
 src/main/resources/static/bo/css/output.css
+
+### Playwright ###
+**/test-results/
+**/playwright-report/
+
+### Claude ###
+.claude/settings.local.json
