@@ -104,7 +104,7 @@ export default function WriteEditor({
                 sx={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
               {i === 0 && (
-                <Box sx={{ position: "absolute", bottom: 4, left: 4, bgcolor: "rgba(0,0,0,0.6)", color: "white", fontSize: "10px", px: 0.5, borderRadius: 0.5 }}>
+                <Box sx={{ position: "absolute", bottom: 4, left: 4, bgcolor: "rgba(0,0,0,0.6)", color: "white", fontSize: fs.xs, px: 0.5, borderRadius: 0.5 }}>
                   커버
                 </Box>
               )}

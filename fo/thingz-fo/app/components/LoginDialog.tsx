@@ -8,10 +8,8 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { fs, fw } from "@/lib/styles/typography";
+import { KAKAO_COLOR, KAKAO_COLOR_HOVER } from "@/lib/constants/theme";
 import { getKakaoLoginUrl } from "@/lib/api/auth";
-
-const KAKAO_YELLOW = "#FEE500";
-const KAKAO_YELLOW_HOVER = "#F0D800";
 
 interface LoginDialogProps {
   open: boolean;
@@ -53,9 +51,9 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
           fullWidth
           onClick={handleKakaoLogin}
           sx={{
-            bgcolor: KAKAO_YELLOW,
+            bgcolor: KAKAO_COLOR,
             color: "#000",
-            "&:hover": { bgcolor: KAKAO_YELLOW_HOVER },
+            "&:hover": { bgcolor: KAKAO_COLOR_HOVER },
             fontWeight: fw.bold,
             fontSize: fs.md,
             borderRadius: 2,
