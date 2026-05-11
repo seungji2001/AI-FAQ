@@ -11,8 +11,8 @@ import { uploadImage } from "@/lib/api/upload";
 import { ApiError } from "@/lib/api/client";
 import { ArticleCreateRequest } from "@/lib/types/article";
 import { pageWithSidebar, sidebarWidth, mobileSidebar, mainContent } from "@/lib/styles/sx";
-import { getKakaoLoginUrl } from "@/lib/api/auth";
 import { tokenStorage } from "@/lib/auth/token";
+import LoginDialog from "@/app/components/LoginDialog";
 
 const DEFAULT_SALE: SaleSettingsValue = {
   isSale: true,
@@ -33,6 +33,7 @@ export default function WritePage() {
   const [loading, setLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [uploadingCount, setUploadingCount] = useState(0);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   const handleTagAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && tagInput.trim()) {
@@ -90,7 +91,7 @@ export default function WritePage() {
 
   const handleSaveDraft = async () => {
     if (!tokenStorage.getAccessToken()) {
-      return (window.location.href = getKakaoLoginUrl());
+      return setLoginDialogOpen(true);
     }
     if (!title.trim()) return alert("제목을 입력해주세요.");
     if (uploadingCount > 0) return alert("이미지 업로드 중입니다. 잠시 후 다시 시도해주세요.");
@@ -108,7 +109,7 @@ export default function WritePage() {
 
   const handlePublish = async () => {
     if (!tokenStorage.getAccessToken()) {
-      return (window.location.href = getKakaoLoginUrl());
+      return setLoginDialogOpen(true);
     }
     if (!title.trim()) return alert("제목을 입력해주세요.");
     if (!content.trim()) return alert("본문을 입력해주세요.");
@@ -127,6 +128,7 @@ export default function WritePage() {
 
   return (
     <>
+      <LoginDialog open={loginDialogOpen} onClose={() => setLoginDialogOpen(false)} />
       <WriteHeader onSaveDraft={handleSaveDraft} onPublish={handlePublish} loading={loading} />
       <Box sx={pageWithSidebar}>
         <Box sx={mainContent}>
