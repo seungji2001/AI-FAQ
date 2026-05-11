@@ -3,7 +3,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Switch from "@mui/material/Switch";
-import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
 import { styled } from "@mui/material/styles";
 import InputRow from "@/app/components/ui/InputRow";
@@ -65,9 +64,13 @@ export default function WriteSaleSettings({ value, onChange }: WriteSaleSettings
         <>
           <Box>
             <SectionLabel>판매 가격</SectionLabel>
-            <Box sx={{ display: "flex", alignItems: "center", bgcolor: "grey.200", borderRadius: 2, px: 2, height: dim.inputRowHeight, mt: 1 }}>
-              <InputBase value={value.price} onChange={(e) => set({ price: e.target.value })} fullWidth sx={{ fontSize: fs.md }} />
-              <Typography sx={{ fontSize: fs.md, color: "text.secondary", flexShrink: 0 }}>원</Typography>
+            <Box sx={{ mt: 1 }}>
+              <InputRow
+                value={value.price}
+                onChange={(v) => set({ price: v })}
+                placeholder="가격 입력"
+                suffix="원"
+              />
             </Box>
           </Box>
 
