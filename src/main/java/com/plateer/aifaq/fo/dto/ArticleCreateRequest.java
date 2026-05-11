@@ -2,22 +2,16 @@ package com.plateer.aifaq.fo.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
 @Schema(description = "아티클 작성 요청")
 public class ArticleCreateRequest {
-
-    @NotNull(message = "작성자 ID는 필수입니다")
-    @Schema(description = "작성자 UUID", example = "00000000-0000-0000-0000-000000000001")
-    private UUID userId;
 
     @NotBlank(message = "제목은 필수입니다")
     @Size(max = 200, message = "제목은 200자 이내여야 합니다")

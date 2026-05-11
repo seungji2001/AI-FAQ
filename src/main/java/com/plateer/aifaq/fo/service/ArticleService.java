@@ -59,9 +59,9 @@ public class ArticleService {
 
     @CacheEvict(value = "articles", allEntries = true)
     @Transactional
-    public UUID createArticle(ArticleCreateRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found: " + request.getUserId()));
+    public UUID createArticle(ArticleCreateRequest request, UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
         Article article = Article.builder()
                 .user(user)

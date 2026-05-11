@@ -11,4 +11,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @EntityGraph(attributePaths = {"articles"})
     List<User> findByIsActiveTrueOrderByCreatedAtDesc();
+
+    Optional<User> findByKakaoId(Long kakaoId);
 }

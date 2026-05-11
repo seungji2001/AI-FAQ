@@ -1,13 +1,32 @@
 {
   "permissions": {
     "allow": [
-      "mcp__claude_ai_Figma__whoami",
-      "mcp__claude_ai_Figma__get_metadata",
-      "mcp__claude_ai_Notion__notion-fetch"
-    ],
-    "ask": [
-      "Bash"
+      "Bash(git add *)",
+      "Bash(git checkout *)",
+      "Bash(git commit *)",
+      "Bash(brew services *)",
+      "Bash(mysql -u root -e \"SHOW DATABASES;\")",
+      "Bash(./gradlew bootRun --args='--spring.profiles.active=secure')",
+      "Bash(echo \"Spring Boot PID: $!\")",
+      "Bash(npm install *)",
+      "Bash(npx playwright *)",
+      "Bash(curl -s http://localhost:8080/actuator/health)",
+      "Read(//private/tmp/**)",
+      "Bash(./gradlew bootRun)",
+      "Bash(echo \"PID: $!\")",
+      "Bash(curl -s http://localhost:8080/api/fo/articles)",
+      "Bash(mysql -u root --connect-expired-password -e \"SELECT 1;\")",
+      "Bash(curl -s http://localhost:8080/api/fo/users)",
+      "Bash(python3 -m json.tool)",
+      "Bash(mysql *)",
+      "Bash(curl -s -X POST http://localhost:8080/api/fo/articles -H 'Content-Type: application/json' -d '{\"userId\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"테스트\",\"content\":\"본문\",\"tags\":[],\"imageUrls\":[],\"item\":{\"forSale\":false}}')",
+      "Bash(redis-cli ping *)",
+      "Bash(redis-server --daemonize yes --port 6379)",
+      "Bash(brew install *)",
+      "Bash(pkill -f \"bootRun\")",
+      "Bash(echo \"재시작 PID: $!\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/fo/articles -H 'Content-Type: application/json' -d '{\"userId\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"테스트\",\"content\":\"본문\",\"tags\":[],\"imageUrls\":[],\"isPublished\":true,\"item\":{\"forSale\":false}}')",
+      "Bash(curl -s http://localhost:8080/api/fo/articles/2bd2929d-2f47-4bb2-8a0b-57d76ad332c3)"
     ]
-  },
-  "plansDirectory": ".claude/plans"
+  }
 }

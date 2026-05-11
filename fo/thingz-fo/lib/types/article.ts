@@ -30,7 +30,6 @@ export interface ArticleItem {
 }
 
 export interface ArticleCreateRequest {
-  userId: string;
   title: string;
   content: string;
   tags: string[];

@@ -1,21 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import { styled, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import MobileSidebar from "./MobileSidebar";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/constants/nav";
 import { BRAND_COLOR } from "@/lib/constants/theme";
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { toolbarInner } from "@/lib/styles/sx";
+import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
+import { logout, getKakaoLoginUrl } from "@/lib/api/auth";
 
 const SearchBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.grey[200],
@@ -40,8 +47,26 @@ const NavItem = styled(Typography, { shouldForwardProp: (prop) => prop !== "acti
 
 export default function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = tokenStorage.getAccessToken();
+    if (token) {
+      const user = getUserFromToken(token);
+      setUsername(user?.username ?? null);
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    setUsername(null);
+    setMenuAnchor(null);
+    router.push("/");
+  };
 
   return (
     <>
@@ -67,12 +92,39 @@ export default function Header() {
               <MenuIcon sx={{ color: "text.primary" }} />
             </IconButton>
           ) : (
-            <Box sx={{ display: "flex", gap: { sm: 2, md: 4 }, alignItems: "center" }}>
+            <Box sx={{ display: "flex", gap: { sm: 2, md: 3 }, alignItems: "center" }}>
               {NAV_ITEMS.map((item) => (
                 <Link key={item.label} href={item.href} style={{ textDecoration: "none" }}>
                   <NavItem>{item.label}</NavItem>
                 </Link>
               ))}
+
+              {username ? (
+                <>
+                  <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)} sx={{ p: 0 }}>
+                    <Avatar sx={{ width: 32, height: 32, bgcolor: BRAND_COLOR, fontSize: fs.sm }}>
+                      {username[0].toUpperCase()}
+                    </Avatar>
+                  </IconButton>
+                  <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                    <MenuItem disabled sx={{ fontSize: fs.sm, color: "text.secondary" }}>
+                      @{username}
+                    </MenuItem>
+                    <MenuItem onClick={handleLogout} sx={{ fontSize: fs.sm }}>
+                      로그아웃
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <Button
+                  href={getKakaoLoginUrl()}
+                  variant="contained"
+                  size="small"
+                  sx={{ bgcolor: "#FEE500", color: "#000", "&:hover": { bgcolor: "#F0D800" }, fontSize: fs.sm, fontWeight: fw.bold, borderRadius: 2, px: 2 }}
+                >
+                  카카오 로그인
+                </Button>
+              )}
             </Box>
           )}
         </Toolbar>

@@ -44,6 +44,9 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String kakaoUrl;
 
+    @Column(unique = true)
+    private Long kakaoId;
+
     @Column(nullable = false)
     @Builder.Default
     private Boolean isActive = false;
@@ -55,4 +58,9 @@ public class User {
     @BatchSize(size = 100)
     @Builder.Default
     private List<Article> articles = new ArrayList<>();
+
+    public void updateProfile(String displayName, String avatarUrl) {
+        this.displayName = displayName;
+        this.avatarUrl = avatarUrl;
+    }
 }

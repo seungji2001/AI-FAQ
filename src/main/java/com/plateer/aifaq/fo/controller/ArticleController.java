@@ -1,5 +1,6 @@
 package com.plateer.aifaq.fo.controller;
 
+import com.plateer.aifaq.config.auth.CustomOAuth2User;
 import com.plateer.aifaq.fo.dto.ArticleCreateRequest;
 import com.plateer.aifaq.fo.dto.ArticleDetailDto;
 import com.plateer.aifaq.fo.dto.ArticleListDto;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -61,8 +63,10 @@ public class ArticleController {
         }
     )
     @PostMapping
-    public ResponseEntity<Map<String, UUID>> createArticle(@Valid @RequestBody ArticleCreateRequest request) {
-        UUID id = articleService.createArticle(request);
+    public ResponseEntity<Map<String, UUID>> createArticle(
+            @Valid @RequestBody ArticleCreateRequest request,
+            @AuthenticationPrincipal CustomOAuth2User user) {
+        UUID id = articleService.createArticle(request, user.getUserId());
         return ResponseEntity.ok(Map.of("id", id));
     }
 
