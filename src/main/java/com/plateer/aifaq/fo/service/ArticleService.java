@@ -3,12 +3,14 @@ package com.plateer.aifaq.fo.service;
 import com.plateer.aifaq.fo.dto.ArticleCreateRequest;
 import com.plateer.aifaq.fo.dto.ArticleDetailDto;
 import com.plateer.aifaq.fo.dto.ArticleListDto;
+import com.plateer.aifaq.fo.dto.ArticleUpdateRequest;
 import com.plateer.aifaq.fo.entity.*;
 import com.plateer.aifaq.fo.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +43,21 @@ public class ArticleService {
         return new ArticleDetailDto(article, followerCount);
     }
 
-    @CacheEvict(value = "articles", key = "'all'")
+    @Cacheable(value = "articles", key = "'tag:' + #tagName")
+    public List<ArticleListDto> getArticlesByTag(String tagName) {
+        return articleRepository.findByTagName(tagName).stream()
+                .map(ArticleListDto::new)
+                .toList();
+    }
+
+    @Cacheable(value = "articles", key = "'user:' + #userId")
+    public List<ArticleListDto> getArticlesByUser(UUID userId) {
+        return articleRepository.findPublishedByUserId(userId).stream()
+                .map(ArticleListDto::new)
+                .toList();
+    }
+
+    @CacheEvict(value = "articles", allEntries = true)
     @Transactional
     public UUID createArticle(ArticleCreateRequest request) {
         User user = userRepository.findById(request.getUserId())
@@ -51,10 +67,12 @@ public class ArticleService {
                 .user(user)
                 .title(request.getTitle())
                 .content(request.getContent())
-                .isPublished(false)
                 .build();
 
-        // 이미지
+        if (request.isPublished()) {
+            article.publish();
+        }
+
         if (request.getImageUrls() != null) {
             for (int i = 0; i < request.getImageUrls().size(); i++) {
                 ArticleImage image = ArticleImage.builder()
@@ -66,7 +84,6 @@ public class ArticleService {
             }
         }
 
-        // 태그
         if (request.getTags() != null) {
             for (String tagName : request.getTags()) {
                 String name = tagName.startsWith("#") ? tagName.substring(1) : tagName;
@@ -79,7 +96,6 @@ public class ArticleService {
 
         articleRepository.save(article);
 
-        // 판매 물건
         if (request.getItem() != null && request.getItem().isForSale()) {
             Item item = Item.builder()
                     .article(article)
@@ -91,5 +107,46 @@ public class ArticleService {
         }
 
         return article.getId();
+    }
+
+    @CacheEvict(value = "articles", allEntries = true)
+    @Transactional
+    public void publishArticle(UUID id) {
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Article not found: " + id));
+        if (article.getIsPublished()) {
+            throw new IllegalArgumentException("이미 발행된 아티클입니다.");
+        }
+        article.publish();
+    }
+
+    @CacheEvict(value = "articles", allEntries = true)
+    @Transactional
+    public void updateArticle(UUID id, ArticleUpdateRequest request) {
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Article not found: " + id));
+        article.updateContent(request.getTitle(), request.getContent());
+    }
+
+    @CacheEvict(value = "articles", allEntries = true)
+    @Transactional
+    public void deleteArticle(UUID id) {
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Article not found: " + id));
+        articleRepository.delete(article);
+    }
+
+    @CacheEvict(value = "articles", allEntries = true)
+    @Transactional
+    public void markItemAsSold(UUID articleId) {
+        Article article = articleRepository.findPublishedById(articleId)
+                .orElseThrow(() -> new EntityNotFoundException("Article not found: " + articleId));
+        if (article.getItem() == null) {
+            throw new IllegalArgumentException("판매 상품이 등록되지 않은 아티클입니다.");
+        }
+        if (article.getItem().getIsSold()) {
+            throw new IllegalArgumentException("이미 판매 완료된 상품입니다.");
+        }
+        article.getItem().markAsSold();
     }
 }

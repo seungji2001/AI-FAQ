@@ -18,6 +18,10 @@ public class UserDto {
     private String avatarUrl;
     private int articleCount;
 
+    private String coverUrl;
+    private String instagramId;
+    private String kakaoUrl;
+
     public UserDto(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
@@ -25,5 +29,8 @@ public class UserDto {
         this.bio = user.getBio();
         this.avatarUrl = user.getAvatarUrl();
         this.articleCount = user.getArticles().size();
+        this.coverUrl = user.getCoverUrl();
+        this.instagramId = user.getInstagramId();
+        this.kakaoUrl = user.getKakaoUrl();
     }
 }

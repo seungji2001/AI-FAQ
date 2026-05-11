@@ -38,4 +38,8 @@ public class Item {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public void markAsSold() {
+        this.isSold = true;
+    }
 }

@@ -55,4 +55,14 @@ public class Article {
 
     @OneToOne(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private Item item;
+
+    public void publish() {
+        this.isPublished = true;
+        this.publishedAt = LocalDateTime.now();
+    }
+
+    public void updateContent(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
