@@ -7,6 +7,8 @@ import com.plateer.aifaq.bo.exception.InvalidRequestException;
 import com.plateer.aifaq.bo.exception.ResourceNotFoundException;
 import com.plateer.aifaq.bo.mapper.LiveStrtEndMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ public class LiveStrtEndServiceImpl implements LiveStrtEndService {
         return liveStrtEndMapper.maxSeqGroupByPgmId(pgmId);
     }
 
+    @CacheEvict(value = {"liveStrtEnd", "mstGoods"}, allEntries = true)
     @Transactional
     @Override
     public int insertBatch(List<LiveStrtEndDto> liveStrtEndDto) {
@@ -37,6 +40,7 @@ public class LiveStrtEndServiceImpl implements LiveStrtEndService {
         return result;
     }
 
+    @CacheEvict(value = "liveStrtEnd", key = "#pgmId")
     @Transactional
     @Override
     public void updateEndDateBypgmIdAndSeq(Long pgmId) {
@@ -53,6 +57,7 @@ public class LiveStrtEndServiceImpl implements LiveStrtEndService {
         }
     }
 
+    @Cacheable(value = "liveStrtEnd", key = "#pgmId")
     @Override
     public List<LiveStrtEndDto> findLiveStrtEndsByPgmId(Long pgmId) {
         if(pgmId == null){
@@ -74,6 +79,7 @@ public class LiveStrtEndServiceImpl implements LiveStrtEndService {
         return currentLiveStrtEnds;
     }
 
+    @Cacheable(value = "mstGoods", key = "#pgmId")
     @Override
     public List<LiveStrtEndDto> findMstGoodsByPgmId(Long pgmId) {
         if(pgmId == null){

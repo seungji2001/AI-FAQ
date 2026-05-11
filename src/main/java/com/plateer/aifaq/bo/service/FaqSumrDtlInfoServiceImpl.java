@@ -8,6 +8,8 @@ import com.plateer.aifaq.bo.exception.InvalidRequestException;
 import com.plateer.aifaq.bo.exception.ResourceNotFoundException;
 import com.plateer.aifaq.bo.mapper.FaqSumrDtlInfoMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -34,6 +36,7 @@ public class FaqSumrDtlInfoServiceImpl implements FaqSumrDtlInfoService {
         }
     }
 
+    @Cacheable(value = "faqDtl", key = "#faqId")
     @Override
     public List<FaqSumrDtlDto> findAllByFaqId(Long faqId) {
         List<FaqSumrDtlDto> faqSumrDtlDtos = faqSumrDtlInfoMapper.findAllByFaqId(faqId);
@@ -43,6 +46,7 @@ public class FaqSumrDtlInfoServiceImpl implements FaqSumrDtlInfoService {
         return faqSumrDtlDtos;
     }
 
+    @CacheEvict(value = "faqDtl", allEntries = true)
     @Transactional
     @Override
     public void updateDispYn(FaqSumrDtlRequestDto faqSumrDtlRequestDto) {

@@ -10,6 +10,7 @@ import com.plateer.aifaq.bo.exception.BusinessException;
 import com.plateer.aifaq.bo.exception.InvalidRequestException;
 import com.plateer.aifaq.bo.mapper.FaqSumrInfoMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +61,7 @@ public class FaqSumrInfoServiceImpl implements FaqSumrInfoService {
         return faqSumrDtos;
     }
 
+    @Cacheable(value = "faqGoods", key = "#faqPgmId")
     @Override
     public List<GoodsDto> findGoodsByFaqPgmId(Long faqPgmId) {
         List<GoodsDto> goodsDtos = faqSumrInfoMapper.findGoodsByFaqPgmId(faqPgmId);
