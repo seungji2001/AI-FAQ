@@ -7,6 +7,8 @@ import com.plateer.aifaq.fo.entity.*;
 import com.plateer.aifaq.fo.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +26,14 @@ public class ArticleService {
     private final FollowRepository followRepository;
     private final ItemRepository itemRepository;
 
+    @Cacheable(value = "articles", key = "'all'")
     public List<ArticleListDto> getArticles() {
         return articleRepository.findPublishedArticles().stream()
                 .map(ArticleListDto::new)
                 .toList();
     }
 
+    @Cacheable(value = "articles", key = "#id")
     public ArticleDetailDto getArticle(UUID id) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Article not found: " + id));
@@ -37,6 +41,7 @@ public class ArticleService {
         return new ArticleDetailDto(article, followerCount);
     }
 
+    @CacheEvict(value = "articles", key = "'all'")
     @Transactional
     public UUID createArticle(ArticleCreateRequest request) {
         User user = userRepository.findById(request.getUserId())
