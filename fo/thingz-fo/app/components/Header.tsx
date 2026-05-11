@@ -49,6 +49,7 @@ export default function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
@@ -82,6 +83,14 @@ export default function Header() {
             <InputBase
               placeholder="물건 이야기 검색"
               fullWidth
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && searchQuery.trim()) {
+                  router.push(`/explore?tag=${encodeURIComponent(searchQuery.trim())}`);
+                  setSearchQuery("");
+                }
+              }}
               inputProps={{ "aria-label": "search" }}
               sx={{ fontSize: fs.sm, color: "text.secondary" }}
             />

@@ -22,4 +22,10 @@ public interface ArticleRepository extends JpaRepository<Article, UUID> {
 
     @Query("SELECT DISTINCT a FROM Article a JOIN FETCH a.user u LEFT JOIN FETCH a.item WHERE u.id = :userId AND a.isPublished = true ORDER BY a.publishedAt DESC")
     List<Article> findPublishedByUserId(@Param("userId") UUID userId);
+
+    @Query("SELECT DISTINCT a FROM Article a JOIN FETCH a.user u LEFT JOIN FETCH a.item WHERE u.id = :userId AND a.isPublished = false ORDER BY a.createdAt DESC")
+    List<Article> findDraftsByUserId(@Param("userId") UUID userId);
+
+    @Query("SELECT a FROM Article a JOIN FETCH a.user u LEFT JOIN FETCH a.item WHERE a.id = :id AND u.id = :userId")
+    java.util.Optional<Article> findByIdAndUserId(@Param("id") UUID id, @Param("userId") UUID userId);
 }

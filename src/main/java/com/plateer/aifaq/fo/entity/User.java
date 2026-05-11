@@ -63,4 +63,11 @@ public class User {
         this.displayName = displayName;
         this.avatarUrl = avatarUrl;
     }
+
+    public void editProfile(String displayName, String bio, String instagramId, String kakaoUrl) {
+        if (displayName != null) this.displayName = displayName;
+        if (bio != null) this.bio = bio;
+        if (instagramId != null) this.instagramId = instagramId;
+        if (kakaoUrl != null) this.kakaoUrl = kakaoUrl;
+    }
 }

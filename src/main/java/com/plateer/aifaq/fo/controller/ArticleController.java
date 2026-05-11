@@ -41,6 +41,13 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.getArticles());
     }
 
+    @Operation(summary = "내 임시저장 목록", description = "로그인한 유저의 임시저장 아티클 목록을 반환합니다.")
+    @GetMapping("/me/drafts")
+    public ResponseEntity<List<ArticleListDto>> getMyDrafts(
+            @AuthenticationPrincipal CustomOAuth2User user) {
+        return ResponseEntity.ok(articleService.getMyDrafts(user.getUserId()));
+    }
+
     @Operation(summary = "아티클 상세 조회", description = "아티클 ID로 상세 정보를 반환합니다.",
         responses = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
@@ -52,6 +59,14 @@ public class ArticleController {
     public ResponseEntity<ArticleDetailDto> getArticle(
             @Parameter(description = "아티클 UUID", required = true) @PathVariable UUID id) {
         return ResponseEntity.ok(articleService.getArticle(id));
+    }
+
+    @Operation(summary = "수정용 아티클 조회", description = "본인 소유 아티클(발행/임시저장 모두)을 수정 목적으로 조회합니다.")
+    @GetMapping("/{id}/edit")
+    public ResponseEntity<ArticleDetailDto> getArticleForEdit(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal CustomOAuth2User user) {
+        return ResponseEntity.ok(articleService.getArticleForEdit(id, user.getUserId()));
     }
 
     @Operation(summary = "아티클 작성", description = "새 아티클을 작성합니다. isPublished=false이면 임시저장, true이면 즉시발행입니다.",
@@ -69,29 +84,32 @@ public class ArticleController {
         return ResponseEntity.ok(Map.of("id", id));
     }
 
-    @Operation(summary = "아티클 수정", description = "아티클 제목과 본문을 수정합니다.",
+    @Operation(summary = "아티클 수정", description = "아티클 내용을 수정합니다.",
         responses = {
             @ApiResponse(responseCode = "204", description = "수정 성공"),
-            @ApiResponse(responseCode = "404", description = "아티클 없음")
+            @ApiResponse(responseCode = "404", description = "아티클 없음 또는 권한 없음")
         }
     )
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateArticle(
             @PathVariable UUID id,
-            @Valid @RequestBody ArticleUpdateRequest request) {
-        articleService.updateArticle(id, request);
+            @Valid @RequestBody ArticleUpdateRequest request,
+            @AuthenticationPrincipal CustomOAuth2User user) {
+        articleService.updateArticle(id, request, user.getUserId());
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "아티클 삭제",
         responses = {
             @ApiResponse(responseCode = "204", description = "삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "아티클 없음")
+            @ApiResponse(responseCode = "404", description = "아티클 없음 또는 권한 없음")
         }
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable UUID id) {
-        articleService.deleteArticle(id);
+    public ResponseEntity<Void> deleteArticle(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal CustomOAuth2User user) {
+        articleService.deleteArticle(id, user.getUserId());
         return ResponseEntity.noContent().build();
     }
 
@@ -99,12 +117,14 @@ public class ArticleController {
         responses = {
             @ApiResponse(responseCode = "204", description = "발행 성공"),
             @ApiResponse(responseCode = "400", description = "이미 발행된 아티클"),
-            @ApiResponse(responseCode = "404", description = "아티클 없음")
+            @ApiResponse(responseCode = "404", description = "아티클 없음 또는 권한 없음")
         }
     )
     @PatchMapping("/{id}/publish")
-    public ResponseEntity<Void> publishArticle(@PathVariable UUID id) {
-        articleService.publishArticle(id);
+    public ResponseEntity<Void> publishArticle(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal CustomOAuth2User user) {
+        articleService.publishArticle(id, user.getUserId());
         return ResponseEntity.noContent().build();
     }
 

@@ -22,13 +22,15 @@ export default function CardImageBox({
 }: CardImageBoxProps) {
   return (
     <Box
-      sx={{
-        ...cardImage,
-        position: "relative",
-        aspectRatio,
-        backgroundImage: imageSrc ? `url(${imageSrc})` : undefined,
-        ...sx,
-      }}
+      sx={[
+        cardImage,
+        {
+          position: "relative" as const,
+          aspectRatio,
+          ...(imageSrc ? { backgroundImage: `url(${imageSrc})` } : {}),
+        },
+        ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
+      ]}
     >
       {badge && (
         <Chip

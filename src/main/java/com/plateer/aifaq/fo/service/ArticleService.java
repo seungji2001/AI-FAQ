@@ -10,7 +10,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +54,19 @@ public class ArticleService {
         return articleRepository.findPublishedByUserId(userId).stream()
                 .map(ArticleListDto::new)
                 .toList();
+    }
+
+    public List<ArticleListDto> getMyDrafts(UUID userId) {
+        return articleRepository.findDraftsByUserId(userId).stream()
+                .map(ArticleListDto::new)
+                .toList();
+    }
+
+    public ArticleDetailDto getArticleForEdit(UUID id, UUID userId) {
+        Article article = articleRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Article not found or access denied"));
+        long followerCount = followRepository.countByFollowing(article.getUser());
+        return new ArticleDetailDto(article, followerCount);
     }
 
     @CacheEvict(value = "articles", allEntries = true)
@@ -111,9 +123,9 @@ public class ArticleService {
 
     @CacheEvict(value = "articles", allEntries = true)
     @Transactional
-    public void publishArticle(UUID id) {
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Article not found: " + id));
+    public void publishArticle(UUID id, UUID userId) {
+        Article article = articleRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Article not found or access denied"));
         if (article.getIsPublished()) {
             throw new IllegalArgumentException("이미 발행된 아티클입니다.");
         }
@@ -122,17 +134,59 @@ public class ArticleService {
 
     @CacheEvict(value = "articles", allEntries = true)
     @Transactional
-    public void updateArticle(UUID id, ArticleUpdateRequest request) {
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Article not found: " + id));
+    public void updateArticle(UUID id, ArticleUpdateRequest request, UUID userId) {
+        Article article = articleRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Article not found or access denied"));
+
         article.updateContent(request.getTitle(), request.getContent());
+
+        article.getImages().clear();
+        if (request.getImageUrls() != null) {
+            for (int i = 0; i < request.getImageUrls().size(); i++) {
+                ArticleImage image = ArticleImage.builder()
+                        .article(article)
+                        .url(request.getImageUrls().get(i))
+                        .orderIndex(i)
+                        .build();
+                article.getImages().add(image);
+            }
+        }
+
+        article.getArticleTags().clear();
+        if (request.getTags() != null) {
+            for (String tagName : request.getTags()) {
+                String name = tagName.startsWith("#") ? tagName.substring(1) : tagName;
+                Tag tag = tagRepository.findByName(name)
+                        .orElseGet(() -> tagRepository.save(Tag.builder().name(name).build()));
+                ArticleTag articleTag = ArticleTag.builder().article(article).tag(tag).build();
+                article.getArticleTags().add(articleTag);
+            }
+        }
+
+        if (request.getItem() != null) {
+            if (request.getItem().isForSale()) {
+                if (article.getItem() != null) {
+                    article.getItem().update(request.getItem().getPrice(), request.getItem().getCondition(), request.getItem().getTradeType());
+                } else {
+                    Item item = Item.builder()
+                            .article(article)
+                            .price(request.getItem().getPrice())
+                            .condition(request.getItem().getCondition())
+                            .tradeType(request.getItem().getTradeType())
+                            .build();
+                    itemRepository.save(item);
+                }
+            } else if (article.getItem() != null) {
+                itemRepository.delete(article.getItem());
+            }
+        }
     }
 
     @CacheEvict(value = "articles", allEntries = true)
     @Transactional
-    public void deleteArticle(UUID id) {
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Article not found: " + id));
+    public void deleteArticle(UUID id, UUID userId) {
+        Article article = articleRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Article not found or access denied"));
         articleRepository.delete(article);
     }
 

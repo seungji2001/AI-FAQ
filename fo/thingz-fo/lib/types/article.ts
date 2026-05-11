@@ -45,3 +45,16 @@ export interface ArticleCreateRequest {
     tradeType?: string;
   };
 }
+
+export interface ArticleUpdateRequest {
+  title: string;
+  content: string;
+  tags: string[];
+  imageUrls: string[];
+  item: {
+    forSale: boolean;
+    price?: number;
+    condition?: string;
+    tradeType?: string;
+  };
+}

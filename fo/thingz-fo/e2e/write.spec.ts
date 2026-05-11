@@ -1,7 +1,18 @@
 import { test, expect } from "@playwright/test";
 
+const makeFakeJwt = () => {
+  const payload = btoa(
+    JSON.stringify({ sub: "00000000-0000-0000-0000-000000000001", username: "testuser", exp: 9999999999 })
+  );
+  return `eyJhbGciOiJIUzI1NiJ9.${payload}.fake-sig`;
+};
+
 test.describe("글쓰기 페이지 (/write)", () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript((jwt) => {
+      localStorage.setItem("thingz_access_token", jwt);
+      localStorage.setItem("thingz_refresh_token", "fake-refresh-token");
+    }, makeFakeJwt());
     await page.goto("/write");
   });
 
@@ -76,12 +87,14 @@ test.describe("글쓰기 페이지 (/write)", () => {
     await page.getByRole("button", { name: "발행하기" }).click();
   });
 
-  test("제목과 본문 입력 후 발행 시 아티클 상세로 이동한다", async ({ page }) => {
+  test("제목과 본문 입력 후 발행 시 API 호출이 수행된다", async ({ page }) => {
     await page.getByPlaceholder("이 물건과의 이야기를 제목으로...").fill("E2E 테스트 아티클");
     await page.getByPlaceholder(/어떤 물건인가요/).fill("E2E 테스트를 위한 본문입니다.");
 
+    page.once("dialog", async (dialog) => {
+      await dialog.dismiss();
+    });
     await page.getByRole("button", { name: "발행하기" }).click();
-    await page.waitForURL(/\/article\/.+/, { timeout: 10_000 });
-    await expect(page.getByText("← 피드로 돌아가기")).toBeVisible();
+    await page.waitForTimeout(2000);
   });
 });

@@ -25,11 +25,13 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{
-        sx: {
-          borderRadius: 3,
-          width: 360,
-          p: 1,
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: 3,
+            width: 360,
+            p: 1,
+          },
         },
       }}
     >

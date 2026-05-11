@@ -42,4 +42,10 @@ public class Item {
     public void markAsSold() {
         this.isSold = true;
     }
+
+    public void update(Integer price, String condition, String tradeType) {
+        this.price = price;
+        this.condition = condition;
+        this.tradeType = tradeType;
+    }
 }
