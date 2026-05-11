@@ -35,6 +35,7 @@ export interface ArticleCreateRequest {
   content: string;
   tags: string[];
   imageUrls: string[];
+  isPublished?: boolean;
   item: {
     forSale: boolean;
     price?: number;

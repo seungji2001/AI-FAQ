@@ -7,6 +7,7 @@ import WriteHeader from "@/app/components/write/WriteHeader";
 import WriteEditor from "@/app/components/write/WriteEditor";
 import WriteSaleSettings, { SaleSettingsValue } from "@/app/components/write/WriteSaleSettings";
 import { createArticle } from "@/lib/api/articles";
+import { uploadImage } from "@/lib/api/upload";
 import { ApiError } from "@/lib/api/client";
 import { ArticleCreateRequest } from "@/lib/types/article";
 import { pageWithSidebar, sidebarWidth, mobileSidebar, mainContent } from "@/lib/styles/sx";
@@ -30,6 +31,8 @@ export default function WritePage() {
   const [tagInput, setTagInput] = useState("");
   const [sale, setSale] = useState<SaleSettingsValue>(DEFAULT_SALE);
   const [loading, setLoading] = useState(false);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [uploadingCount, setUploadingCount] = useState(0);
 
   const handleTagAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && tagInput.trim()) {
@@ -41,12 +44,41 @@ export default function WritePage() {
 
   const handleTagDelete = (tag: string) => setTags(tags.filter((t) => t !== tag));
 
-  const buildPayload = (): ArticleCreateRequest => ({
+  const handleFilesSelected = async (files: File[]) => {
+    const remaining = 10 - imageUrls.length - uploadingCount;
+    const toUpload = files.slice(0, remaining);
+    if (toUpload.length === 0) return;
+
+    setUploadingCount((prev) => prev + toUpload.length);
+
+    const results = await Promise.allSettled(toUpload.map(uploadImage));
+
+    const uploaded: string[] = [];
+    const failed: number[] = [];
+    results.forEach((result, i) => {
+      if (result.status === "fulfilled") uploaded.push(result.value);
+      else failed.push(i);
+    });
+
+    setImageUrls((prev) => [...prev, ...uploaded]);
+    setUploadingCount((prev) => prev - toUpload.length);
+
+    if (failed.length > 0) {
+      alert(`${failed.length}개 이미지 업로드에 실패했습니다.`);
+    }
+  };
+
+  const handleImageRemove = (index: number) => {
+    setImageUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const buildPayload = (isPublished: boolean): ArticleCreateRequest => ({
     userId: TEMP_USER_ID,
     title,
     content,
     tags,
-    imageUrls: [],
+    imageUrls,
+    isPublished,
     item: sale.isSale
       ? {
           forSale: true,
@@ -59,9 +91,10 @@ export default function WritePage() {
 
   const handleSaveDraft = async () => {
     if (!title.trim()) return alert("제목을 입력해주세요.");
+    if (uploadingCount > 0) return alert("이미지 업로드 중입니다. 잠시 후 다시 시도해주세요.");
     setLoading(true);
     try {
-      await createArticle(buildPayload());
+      await createArticle(buildPayload(false));
       alert("임시저장 완료!");
     } catch (e) {
       const msg = e instanceof ApiError ? `저장 실패 (${e.status})` : "저장 중 오류가 발생했습니다.";
@@ -74,9 +107,10 @@ export default function WritePage() {
   const handlePublish = async () => {
     if (!title.trim()) return alert("제목을 입력해주세요.");
     if (!content.trim()) return alert("본문을 입력해주세요.");
+    if (uploadingCount > 0) return alert("이미지 업로드 중입니다. 잠시 후 다시 시도해주세요.");
     setLoading(true);
     try {
-      const { id } = await createArticle(buildPayload());
+      const { id } = await createArticle(buildPayload(true));
       router.push(`/article/${id}`);
     } catch (e) {
       const msg = e instanceof ApiError ? `발행 실패 (${e.status})` : "발행 중 오류가 발생했습니다.";
@@ -93,11 +127,14 @@ export default function WritePage() {
         <Box sx={mainContent}>
           <WriteEditor
             title={title} content={content} tags={tags} tagInput={tagInput}
+            imageUrls={imageUrls} uploadingCount={uploadingCount}
             onTitleChange={setTitle}
             onContentChange={setContent}
             onTagInputChange={setTagInput}
             onTagAdd={handleTagAdd}
             onTagDelete={handleTagDelete}
+            onFilesSelected={handleFilesSelected}
+            onImageRemove={handleImageRemove}
           />
         </Box>
         <Box sx={sidebarWidth}>

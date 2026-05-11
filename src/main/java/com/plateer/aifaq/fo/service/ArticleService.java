@@ -69,7 +69,7 @@ public class ArticleService {
                 .content(request.getContent())
                 .build();
 
-        if (request.isPublished()) {
+        if (Boolean.TRUE.equals(request.getIsPublished())) {
             article.publish();
         }
 

@@ -29,7 +29,7 @@ public class ArticleCreateRequest {
     private String content;
 
     @Schema(description = "발행 여부 (false=임시저장, true=즉시발행)", example = "false")
-    private boolean isPublished = false;
+    private Boolean isPublished = false;
 
     @Schema(description = "태그 목록 (#포함 또는 미포함 모두 허용)", example = "[\"#빈티지\", \"카메라\"]")
     private List<String> tags;
