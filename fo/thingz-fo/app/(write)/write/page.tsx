@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import WriteHeader from "@/app/components/write/WriteHeader";
@@ -34,6 +34,12 @@ export default function WritePage() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [uploadingCount, setUploadingCount] = useState(0);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (!tokenStorage.getAccessToken()) {
+      setLoginDialogOpen(true);
+    }
+  }, []);
 
   const handleTagAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && tagInput.trim()) {

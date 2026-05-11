@@ -46,7 +46,7 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
           THINGZ
         </Typography>
         <Typography sx={{ fontSize: fs.md, color: "text.secondary", mb: 3 }}>
-          물건과 이야기를 나누려면 로그인이 필요해요
+          글을 저장하려면 로그인이 필요해요
         </Typography>
 
         <Button
