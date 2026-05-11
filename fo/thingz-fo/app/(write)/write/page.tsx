@@ -32,7 +32,7 @@ export default function WritePage() {
   const [sale, setSale] = useState<SaleSettingsValue>(DEFAULT_SALE);
   const [loading, setLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [uploadingCount, setUploadingCount] = useState(0);
+  const [uploadingFiles, setUploadingFiles] = useState<{ id: string; name: string; progress: number }[]>([]);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -52,27 +52,34 @@ export default function WritePage() {
   const handleTagDelete = (tag: string) => setTags(tags.filter((t) => t !== tag));
 
   const handleFilesSelected = async (files: File[]) => {
-    const remaining = 10 - imageUrls.length - uploadingCount;
+    const remaining = 10 - imageUrls.length - uploadingFiles.length;
     const toUpload = files.slice(0, remaining);
     if (toUpload.length === 0) return;
 
-    setUploadingCount((prev) => prev + toUpload.length);
+    const newUploading = toUpload.map((f) => ({ id: crypto.randomUUID(), name: f.name, progress: 0 }));
+    setUploadingFiles((prev) => [...prev, ...newUploading]);
 
-    const results = await Promise.allSettled(toUpload.map(uploadImage));
+    const results = await Promise.allSettled(
+      toUpload.map((file, i) =>
+        uploadImage(file, (pct) =>
+          setUploadingFiles((prev) =>
+            prev.map((u) => (u.id === newUploading[i].id ? { ...u, progress: pct } : u))
+          )
+        )
+      )
+    );
 
     const uploaded: string[] = [];
-    const failed: number[] = [];
-    results.forEach((result, i) => {
+    let failCount = 0;
+    results.forEach((result) => {
       if (result.status === "fulfilled") uploaded.push(result.value);
-      else failed.push(i);
+      else failCount++;
     });
 
     setImageUrls((prev) => [...prev, ...uploaded]);
-    setUploadingCount((prev) => prev - toUpload.length);
+    setUploadingFiles((prev) => prev.filter((u) => !newUploading.some((n) => n.id === u.id)));
 
-    if (failed.length > 0) {
-      alert(`${failed.length}개 이미지 업로드에 실패했습니다.`);
-    }
+    if (failCount > 0) alert(`${failCount}개 이미지 업로드에 실패했습니다.`);
   };
 
   const handleImageRemove = (index: number) => {
@@ -100,7 +107,7 @@ export default function WritePage() {
       return setLoginDialogOpen(true);
     }
     if (!title.trim()) return alert("제목을 입력해주세요.");
-    if (uploadingCount > 0) return alert("이미지 업로드 중입니다. 잠시 후 다시 시도해주세요.");
+    if (uploadingFiles.length > 0) return alert("이미지 업로드 중입니다. 잠시 후 다시 시도해주세요.");
     setLoading(true);
     try {
       await createArticle(buildPayload(false));
@@ -119,7 +126,7 @@ export default function WritePage() {
     }
     if (!title.trim()) return alert("제목을 입력해주세요.");
     if (!content.trim()) return alert("본문을 입력해주세요.");
-    if (uploadingCount > 0) return alert("이미지 업로드 중입니다. 잠시 후 다시 시도해주세요.");
+    if (uploadingFiles.length > 0) return alert("이미지 업로드 중입니다. 잠시 후 다시 시도해주세요.");
     setLoading(true);
     try {
       const { id } = await createArticle(buildPayload(true));
@@ -140,7 +147,7 @@ export default function WritePage() {
         <Box sx={mainContent}>
           <WriteEditor
             title={title} content={content} tags={tags} tagInput={tagInput}
-            imageUrls={imageUrls} uploadingCount={uploadingCount}
+            imageUrls={imageUrls} uploadingFiles={uploadingFiles}
             onTitleChange={setTitle}
             onContentChange={setContent}
             onTagInputChange={setTagInput}

@@ -9,6 +9,7 @@ export interface ArticleListItem {
 
 export interface ArticleDetail {
   id: string;
+  authorId: string;
   title: string;
   content: string;
   author: string;
@@ -16,6 +17,8 @@ export interface ArticleDetail {
   authorBio: string | null;
   authorFollowers: number;
   authorArticles: number;
+  authorInstagramId: string | null;
+  authorKakaoUrl: string | null;
   publishedAt: string | null;
   imageUrls: string[];
   tags: string[];

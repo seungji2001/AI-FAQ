@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
-import CircularProgress from "@mui/material/CircularProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { panelBase } from "@/lib/styles/sx";
@@ -20,7 +20,7 @@ interface WriteEditorProps {
   tags: string[];
   tagInput: string;
   imageUrls: string[];
-  uploadingCount: number;
+  uploadingFiles: { id: string; name: string; progress: number }[];
   onTitleChange: (v: string) => void;
   onContentChange: (v: string) => void;
   onTagInputChange: (v: string) => void;
@@ -31,7 +31,7 @@ interface WriteEditorProps {
 }
 
 export default function WriteEditor({
-  title, content, tags, tagInput, imageUrls, uploadingCount,
+  title, content, tags, tagInput, imageUrls, uploadingFiles,
   onTitleChange, onContentChange, onTagInputChange, onTagAdd, onTagDelete,
   onFilesSelected, onImageRemove,
 }: WriteEditorProps) {
@@ -49,7 +49,7 @@ export default function WriteEditor({
     if (files.length > 0) onFilesSelected(files);
   };
 
-  const hasImages = imageUrls.length > 0 || uploadingCount > 0;
+  const hasImages = imageUrls.length > 0 || uploadingFiles.length > 0;
 
   return (
     <Box sx={{ ...panelBase, overflow: "hidden" }}>
@@ -117,9 +117,12 @@ export default function WriteEditor({
               </IconButton>
             </Box>
           ))}
-          {Array.from({ length: uploadingCount }).map((_, i) => (
-            <Box key={`uploading-${i}`} sx={{ width: 100, height: 100, borderRadius: 1, bgcolor: "grey.200", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <CircularProgress size={24} />
+          {uploadingFiles.map((f) => (
+            <Box key={f.id} sx={{ width: 100, height: 100, borderRadius: 1, bgcolor: "grey.200", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 1, flexShrink: 0, px: 1 }}>
+              <Typography sx={{ fontSize: fs.xs, color: "text.secondary", textAlign: "center", wordBreak: "break-all", lineHeight: 1.2 }}>
+                {f.progress}%
+              </Typography>
+              <LinearProgress variant="determinate" value={f.progress} sx={{ width: "80%", borderRadius: 1 }} />
             </Box>
           ))}
           {imageUrls.length < 10 && (

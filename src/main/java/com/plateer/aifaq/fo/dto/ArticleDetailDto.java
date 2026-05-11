@@ -14,6 +14,7 @@ import java.util.UUID;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ArticleDetailDto {
     private UUID id;
+    private UUID authorId;
     private String title;
     private String content;
     private String author;
@@ -21,6 +22,8 @@ public class ArticleDetailDto {
     private String authorBio;
     private Long authorFollowers;
     private Integer authorArticles;
+    private String authorInstagramId;
+    private String authorKakaoUrl;
     private String publishedAt;
     private List<String> imageUrls;
     private List<String> tags;
@@ -28,6 +31,7 @@ public class ArticleDetailDto {
 
     public ArticleDetailDto(Article article, Long followerCount) {
         this.id = article.getId();
+        this.authorId = article.getUser().getId();
         this.title = article.getTitle();
         this.content = article.getContent();
         this.author = article.getUser().getUsername();
@@ -35,6 +39,8 @@ public class ArticleDetailDto {
         this.authorBio = article.getUser().getBio();
         this.authorFollowers = followerCount;
         this.authorArticles = article.getUser().getArticles().size();
+        this.authorInstagramId = article.getUser().getInstagramId();
+        this.authorKakaoUrl = article.getUser().getKakaoUrl();
         this.publishedAt = article.getPublishedAt() != null
                 ? article.getPublishedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
                 : null;

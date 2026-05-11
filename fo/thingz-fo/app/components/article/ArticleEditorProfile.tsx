@@ -5,6 +5,7 @@ import { panelBase, cardImage } from "@/lib/styles/sx";
 import { captionText } from "@/lib/styles/typography";
 
 interface ArticleEditorProfileProps {
+  userId?: string;
   username?: string;
   bio?: string;
   articles?: number;
@@ -12,9 +13,11 @@ interface ArticleEditorProfileProps {
   avatarSrc?: string;
   coverSrc?: string;
   following?: boolean;
+  onLoginRequired?: () => void;
 }
 
 export default function ArticleEditorProfile({
+  userId,
   username = "@film_essay_kim",
   bio = "필름 카메라와 아날로그 라이프스타일을 사랑합니다 📷",
   articles = 34,
@@ -22,6 +25,7 @@ export default function ArticleEditorProfile({
   avatarSrc,
   coverSrc,
   following = false,
+  onLoginRequired,
 }: ArticleEditorProfileProps) {
   return (
     <Box sx={{ ...panelBase, overflow: "hidden" }}>
@@ -34,11 +38,13 @@ export default function ArticleEditorProfile({
       />
       <Box sx={{ px: 3, pt: 2, pb: 3, display: "flex", flexDirection: "column", gap: 1.5 }}>
         <EditorItem
+          userId={userId}
           username={username}
           followers={followers}
           articles={articles}
           avatarSrc={avatarSrc}
           following={following}
+          onLoginRequired={onLoginRequired}
         />
         <Typography sx={{ ...captionText, pl: 0.5 }}>
           {bio}
