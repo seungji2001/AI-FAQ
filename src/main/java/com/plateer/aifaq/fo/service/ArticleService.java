@@ -35,7 +35,7 @@ public class ArticleService {
 
     @Cacheable(value = "articles", key = "#id")
     public ArticleDetailDto getArticle(UUID id) {
-        Article article = articleRepository.findById(id)
+        Article article = articleRepository.findPublishedById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Article not found: " + id));
         long followerCount = followRepository.countByFollowing(article.getUser());
         return new ArticleDetailDto(article, followerCount);

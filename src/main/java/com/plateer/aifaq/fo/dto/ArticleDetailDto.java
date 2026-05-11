@@ -1,26 +1,30 @@
 package com.plateer.aifaq.fo.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.plateer.aifaq.fo.entity.Article;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
 @Getter
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ArticleDetailDto {
-    private final UUID id;
-    private final String title;
-    private final String content;
-    private final String author;
-    private final String authorAvatarUrl;
-    private final String authorBio;
-    private final Long authorFollowers;
-    private final Integer authorArticles;
-    private final String publishedAt;
-    private final List<String> imageUrls;
-    private final List<String> tags;
-    private final ItemDto item;
+    private UUID id;
+    private String title;
+    private String content;
+    private String author;
+    private String authorAvatarUrl;
+    private String authorBio;
+    private Long authorFollowers;
+    private Integer authorArticles;
+    private String publishedAt;
+    private List<String> imageUrls;
+    private List<String> tags;
+    private ItemDto item;
 
     public ArticleDetailDto(Article article, Long followerCount) {
         this.id = article.getId();
@@ -44,11 +48,13 @@ public class ArticleDetailDto {
     }
 
     @Getter
+    @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
     public static class ItemDto {
-        private final Integer price;
-        private final String condition;
-        private final String tradeType;
-        private final Boolean isSold;
+        private Integer price;
+        private String condition;
+        private String tradeType;
+        private Boolean isSold;
 
         public ItemDto(com.plateer.aifaq.fo.entity.Item item) {
             this.price = item.getPrice();

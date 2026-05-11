@@ -1,33 +1,37 @@
 package com.plateer.aifaq.fo.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.plateer.aifaq.fo.entity.Article;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
 
 @Getter
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Schema(description = "아티클 목록 아이템")
 public class ArticleListDto {
 
     @Schema(description = "아티클 UUID")
-    private final UUID id;
+    private UUID id;
 
     @Schema(description = "제목")
-    private final String title;
+    private String title;
 
     @Schema(description = "작성자 username")
-    private final String author;
+    private String author;
 
     @Schema(description = "커버 이미지 URL (첫번째 이미지)")
-    private final String coverUrl;
+    private String coverUrl;
 
     @Schema(description = "태그 목록")
-    private final List<String> tags;
+    private List<String> tags;
 
     @Schema(description = "판매 가격 (판매 글이 아니면 null)")
-    private final Integer price;
+    private Integer price;
 
     public ArticleListDto(Article article) {
         this.id = article.getId();

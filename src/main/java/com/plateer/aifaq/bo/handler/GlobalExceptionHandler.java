@@ -3,6 +3,7 @@ package com.plateer.aifaq.bo.handler;
 import com.plateer.aifaq.bo.dto.ErrorResponse;
 import com.plateer.aifaq.bo.enums.ErrorCode;
 import com.plateer.aifaq.bo.exception.BusinessException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,22 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(
+            EntityNotFoundException e, HttpServletRequest request) {
+        log.error("EntityNotFoundException: {}", e.getMessage());
+
+        ErrorResponse response = ErrorResponse.of(
+                ErrorCode.RESOURCE_NOT_FOUND,
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
 
     // 비즈니스 예외 처리
     @ExceptionHandler(BusinessException.class)

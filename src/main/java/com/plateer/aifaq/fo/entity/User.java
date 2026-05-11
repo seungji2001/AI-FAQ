@@ -2,6 +2,7 @@ package com.plateer.aifaq.fo.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -51,6 +52,7 @@ public class User {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @BatchSize(size = 100)
     @Builder.Default
     private List<Article> articles = new ArrayList<>();
 }
