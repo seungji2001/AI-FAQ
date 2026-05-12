@@ -26,7 +26,30 @@
       "Bash(pkill -f \"bootRun\")",
       "Bash(echo \"재시작 PID: $!\")",
       "Bash(curl -s -X POST http://localhost:8080/api/fo/articles -H 'Content-Type: application/json' -d '{\"userId\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"테스트\",\"content\":\"본문\",\"tags\":[],\"imageUrls\":[],\"isPublished\":true,\"item\":{\"forSale\":false}}')",
-      "Bash(curl -s http://localhost:8080/api/fo/articles/2bd2929d-2f47-4bb2-8a0b-57d76ad332c3)"
+      "Bash(curl -s http://localhost:8080/api/fo/articles/2bd2929d-2f47-4bb2-8a0b-57d76ad332c3)",
+      "mcp__claude_ai_Notion__notion-search",
+      "mcp__claude_ai_Notion__notion-create-pages",
+      "Bash(grep -r \"use client\" /Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app -type f -name \"*.tsx\")",
+      "Bash(sed -i '' 's|from \"../../components/FeaturedCard\"|from \"@/app/components/FeaturedCard\"|g' '/Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/\\(main\\)/publish/page.tsx')",
+      "Bash(sed -i '' 's|from \"../../components/ItemCard\"|from \"@/app/components/ItemCard\"|g' '/Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/\\(main\\)/publish/page.tsx')",
+      "Bash(sed -i '' 's|from \"../../components/EditorItem\"|from \"@/app/components/EditorItem\"|g' '/Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/\\(main\\)/publish/page.tsx')",
+      "Bash(sed -i '' 's|from \"../../components/TodayEditors\"|from \"@/app/components/TodayEditors\"|g' '/Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/\\(main\\)/publish/page.tsx')",
+      "Bash(sed -i '' 's|from \"../../components/article/ArticleContent\"|from \"@/app/components/article/ArticleContent\"|g' '/Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/\\(main\\)/publish/page.tsx')",
+      "Bash(sed -i '' '1d' /Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/components/FeaturedCard.tsx)",
+      "Bash(sed -i '' '1d' /Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/components/ItemCard.tsx)",
+      "Bash(sed -i '' '1d' /Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/components/TodayEditors.tsx)",
+      "Bash(mkdir -p /Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/\\\\\\(main\\\\\\)/users/\\\\[id\\\\])",
+      "Bash(mkdir -p /Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/\\\\\\(write\\\\\\)/edit/\\\\[id\\\\])",
+      "Bash(./gradlew compileJava)",
+      "Bash(npx tsc *)",
+      "Bash(pkill -f \"gradlew bootRun\")",
+      "Bash(pkill -f \"aifaq\")",
+      "Bash(npm run *)",
+      "Bash(git reset *)",
+      "Bash(grep -rn '\"#[0-9a-fA-F]\\\\{6\\\\}\"\\\\|rgba\\(0,0,0\\\\|fontSize: [0-9]\\\\+[^p]' /Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/\\\\\\(main\\\\\\)/explore/ /Users/seungjibaek/Documents/AI-FAQ/fo/thingz-fo/app/\\\\\\(main\\\\\\)/article/)",
+      "Bash(echo \"Backend PID: $!\")",
+      "Bash(echo \"Frontend PID: $!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)"
     ]
   }
 }

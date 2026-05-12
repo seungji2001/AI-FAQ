@@ -9,12 +9,14 @@ import { getUserFromToken, tokenStorage } from "@/lib/auth/token";
 import { markArticleSold } from "@/lib/api/articles";
 import { checkIsFollowing } from "@/lib/api/follow";
 import { useT } from "@/lib/i18n/context";
+import { useToast } from "@/app/components/ui/Toast";
 import { conditionLabel, deliveryLabel } from "@/lib/i18n/translations";
 
 interface Props { article: ArticleDetail }
 
 export default function SidePanel({ article }: Props) {
   const t = useT();
+  const toast = useToast();
   const [loginOpen, setLoginOpen] = useState(false);
   const [isSold, setIsSold] = useState(article.item?.isSold ?? false);
   const [following, setFollowing] = useState(false);
@@ -29,8 +31,13 @@ export default function SidePanel({ article }: Props) {
 
   const handleSold = async () => {
     if (!window.confirm(t.article.markAsSoldConfirm)) return;
-    await markArticleSold(article.id);
-    setIsSold(true);
+    try {
+      await markArticleSold(article.id);
+      setIsSold(true);
+      toast.success(t.article.sold);
+    } catch {
+      toast.error("처리에 실패했습니다.");
+    }
   };
 
   const editorProps = {

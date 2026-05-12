@@ -15,6 +15,7 @@ import { pageWithSidebar, sidebarWidth, mobileSidebar, mainContent } from "@/lib
 import { tokenStorage } from "@/lib/auth/token";
 import { textSecondary } from "@/lib/styles/typography";
 import { useT } from "@/lib/i18n/context";
+import { useToast } from "@/app/components/ui/Toast";
 
 function toSaleSettings(article: ArticleDetail): SaleSettingsValue {
   if (!article.item) {
@@ -22,8 +23,7 @@ function toSaleSettings(article: ArticleDetail): SaleSettingsValue {
   }
   return {
     isSale: true, price: String(article.item.price),
-    condition: article.item.condition,
-    delivery: article.item.tradeType,
+    condition: article.item.condition, delivery: article.item.tradeType,
     instagramId: article.authorInstagramId ?? "", kakaoUrl: article.authorKakaoUrl ?? "",
   };
 }
@@ -33,6 +33,7 @@ interface Props { params: Promise<{ id: string }> }
 export default function EditPage({ params }: Props) {
   const { id } = use(params);
   const t = useT();
+  const toast = useToast();
   const router = useRouter();
   const [article, setArticle] = useState<ArticleDetail | null>(null);
   const [fetchError, setFetchError] = useState(false);
@@ -76,7 +77,7 @@ export default function EditPage({ params }: Props) {
     results.forEach((r) => { if (r.status === "fulfilled") uploaded.push(r.value); else failCount++; });
     setImageUrls((prev) => [...prev, ...uploaded]);
     setUploadingFiles((prev) => prev.filter((u) => !newUploading.some((n) => n.id === u.id)));
-    if (failCount > 0) alert(`${failCount}${t.write.uploadFailed}`);
+    if (failCount > 0) toast.error(`${failCount}${t.write.uploadFailed}`);
   };
 
   const buildPayload = (): ArticleUpdateRequest => ({
@@ -87,25 +88,25 @@ export default function EditPage({ params }: Props) {
   });
 
   const handleSave = async () => {
-    if (!title.trim()) return alert(t.write.titleRequired);
-    if (uploadingFiles.length > 0) return alert(t.write.uploading);
+    if (!title.trim()) return void toast.warn(t.write.titleRequired);
+    if (uploadingFiles.length > 0) return void toast.warn(t.write.uploading);
     setLoading(true);
-    try { await updateArticle(id, buildPayload()); alert(t.write.draftSaved); }
-    catch (e) { alert(e instanceof ApiError ? `${t.write.saveFailed} (${(e as ApiError).status})` : t.write.saveError); }
+    try { await updateArticle(id, buildPayload()); toast.success(t.write.draftSaved); }
+    catch (e) { toast.error(e instanceof ApiError ? `${t.write.saveFailed} (${(e as ApiError).status})` : t.write.saveError); }
     finally { setLoading(false); }
   };
 
   const handlePublish = async () => {
-    if (!title.trim()) return alert(t.write.titleRequired);
-    if (!content.trim()) return alert(t.write.contentRequired);
-    if (uploadingFiles.length > 0) return alert(t.write.uploading);
+    if (!title.trim()) return void toast.warn(t.write.titleRequired);
+    if (!content.trim()) return void toast.warn(t.write.contentRequired);
+    if (uploadingFiles.length > 0) return void toast.warn(t.write.uploading);
     setLoading(true);
     try {
       await updateArticle(id, buildPayload());
       if (article && !article.publishedAt) await publishDraft(id);
       router.push(`/article/${id}`);
     } catch (e) {
-      alert(e instanceof ApiError ? `${t.write.publishFailed} (${(e as ApiError).status})` : t.write.publishError);
+      toast.error(e instanceof ApiError ? `${t.write.publishFailed} (${(e as ApiError).status})` : t.write.publishError);
     } finally { setLoading(false); }
   };
 

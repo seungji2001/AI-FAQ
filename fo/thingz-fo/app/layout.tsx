@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ThemeRegistry from "./ThemeRegistry";
 import { LanguageProvider } from "@/lib/i18n/context";
+import { ToastProvider } from "@/app/components/ui/Toast";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +15,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <ThemeRegistry>
           <LanguageProvider>
-            {children}
+            <ToastProvider>
+              {children}
+            </ToastProvider>
           </LanguageProvider>
         </ThemeRegistry>
       </body>

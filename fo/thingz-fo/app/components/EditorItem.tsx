@@ -10,6 +10,7 @@ import { fs, fw, dim, labelBold, captionText } from "@/lib/styles/typography";
 import { followUser, unfollowUser } from "@/lib/api/follow";
 import { tokenStorage } from "@/lib/auth/token";
 import { useT } from "@/lib/i18n/context";
+import { useToast } from "@/app/components/ui/Toast";
 
 interface EditorItemProps {
   userId?: string;
@@ -26,6 +27,7 @@ export default function EditorItem({
   avatarSrc, following: initialFollowing = false, onLoginRequired,
 }: EditorItemProps) {
   const t = useT();
+  const toast = useToast();
   const [following, setFollowing] = useState(initialFollowing);
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +40,7 @@ export default function EditorItem({
       else { await followUser(userId); setFollowing(true); }
     } catch {
       setFollowing(following);
-      alert(following ? t.article.unfollowFailed : t.article.followFailed);
+      toast.error(following ? t.article.unfollowFailed : t.article.followFailed);
     } finally {
       setLoading(false);
     }

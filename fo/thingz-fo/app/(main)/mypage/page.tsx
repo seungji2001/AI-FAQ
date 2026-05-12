@@ -26,6 +26,7 @@ import { articleGrid, mainContent, panelBase } from "@/lib/styles/sx";
 import { fs, fw, titleMd, textSecondary, labelBold } from "@/lib/styles/typography";
 import { BRAND_COLOR, BRAND_COLOR_HOVER, KAKAO_COLOR, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
 import { useT } from "@/lib/i18n/context";
+import { useToast } from "@/app/components/ui/Toast";
 
 function ProfileField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -38,6 +39,7 @@ function ProfileField({ label, children }: { label: string; children: React.Reac
 
 export default function MyPage() {
   const t = useT();
+  const toast = useToast();
   const router = useRouter();
   const [tab, setTab] = useState(0);
   const [published, setPublished] = useState<ArticleListItem[]>([]);
@@ -76,8 +78,9 @@ export default function MyPage() {
       await updateMyProfile(editForm);
       setProfile((prev) => prev ? { ...prev, ...editForm } : prev);
       setEditOpen(false);
+      toast.success(t.mypage.save + " 완료");
     } catch (e) {
-      alert(e instanceof ApiError ? `${t.mypage.saveFailed} (${(e as ApiError).status})` : t.mypage.saveError);
+      toast.error(e instanceof ApiError ? `${t.mypage.saveFailed} (${(e as ApiError).status})` : t.mypage.saveError);
     } finally {
       setSaving(false);
     }
@@ -89,8 +92,9 @@ export default function MyPage() {
       await deleteArticle(id);
       setPublished((prev) => prev.filter((a) => a.id !== id));
       setDrafts((prev) => prev.filter((a) => a.id !== id));
+      toast.success("삭제되었습니다.");
     } catch (e) {
-      alert(e instanceof ApiError ? `${t.mypage.deleteFailed} (${(e as ApiError).status})` : t.mypage.deleteError);
+      toast.error(e instanceof ApiError ? `${t.mypage.deleteFailed} (${(e as ApiError).status})` : t.mypage.deleteError);
     }
   };
 
@@ -102,8 +106,9 @@ export default function MyPage() {
         setDrafts((prev) => prev.filter((a) => a.id !== id));
         setPublished((prev) => [article, ...prev]);
       }
+      toast.success("발행되었습니다.");
     } catch (e) {
-      alert(e instanceof ApiError ? `${t.mypage.publishFailed} (${(e as ApiError).status})` : t.mypage.publishError);
+      toast.error(e instanceof ApiError ? `${t.mypage.publishFailed} (${(e as ApiError).status})` : t.mypage.publishError);
     }
   };
 

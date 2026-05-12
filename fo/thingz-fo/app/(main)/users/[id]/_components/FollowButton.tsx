@@ -8,11 +8,13 @@ import { tokenStorage } from "@/lib/auth/token";
 import { followUser, unfollowUser, checkIsFollowing } from "@/lib/api/follow";
 import LoginDialog from "@/app/components/LoginDialog";
 import { useT } from "@/lib/i18n/context";
+import { useToast } from "@/app/components/ui/Toast";
 
 interface Props { userId: string }
 
 export default function FollowButton({ userId }: Props) {
   const t = useT();
+  const toast = useToast();
   const [following, setFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
@@ -38,7 +40,7 @@ export default function FollowButton({ userId }: Props) {
       if (following) { await unfollowUser(userId); setFollowing(false); }
       else { await followUser(userId); setFollowing(true); }
     } catch {
-      alert(following ? t.article.unfollowFailed : t.article.followFailed);
+      toast.error(following ? t.article.unfollowFailed : t.article.followFailed);
     } finally {
       setLoading(false);
     }
