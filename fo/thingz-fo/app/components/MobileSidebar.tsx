@@ -19,6 +19,8 @@ import { BRAND_COLOR, BRAND_COLOR_HOVER, KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_T
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
 import { logout } from "@/lib/api/auth";
+import { useT } from "@/lib/i18n/context";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const WRITE_HREF = "/write";
 
@@ -29,6 +31,7 @@ interface MobileSidebarProps {
 }
 
 export default function MobileSidebar({ open, onClose, onLoginRequest }: MobileSidebarProps) {
+  const t = useT();
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
@@ -52,14 +55,16 @@ export default function MobileSidebar({ open, onClose, onLoginRequest }: MobileS
     }
   };
 
+  const navLabels: Record<string, string> = {
+    "피드": t.nav.feed, "탐색": t.nav.explore, "마이페이지": t.nav.mypage,
+  };
+
   return (
     <Drawer anchor="right" open={open} onClose={onClose}>
       <Box sx={{ width: dim.drawerWidth, pt: 2, display: "flex", flexDirection: "column", height: "100%" }}>
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", px: 2, pb: 1 }}>
           <Typography sx={{ fontWeight: fw.bold, fontSize: fs["2xl"] }}>THINGZ</Typography>
-          <IconButton onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
+          <IconButton onClick={onClose}><CloseIcon /></IconButton>
         </Box>
         <Divider />
 
@@ -72,19 +77,16 @@ export default function MobileSidebar({ open, onClose, onLoginRequest }: MobileS
               <Typography sx={{ fontSize: fs.md, fontWeight: fw.bold }}>@{username}</Typography>
             </Box>
             <Typography onClick={handleLogout} sx={{ fontSize: fs.sm, color: "text.secondary", cursor: "pointer" }}>
-              로그아웃
+              {t.nav.logout}
             </Typography>
           </Box>
         ) : (
           <Box sx={{ px: 2, py: 2 }}>
-            <Button
-              fullWidth
-              onClick={() => { onClose(); onLoginRequest(); }}
-              variant="contained"
-              disableElevation
+            <Button fullWidth onClick={() => { onClose(); onLoginRequest(); }}
+              variant="contained" disableElevation
               sx={{ bgcolor: KAKAO_COLOR, color: KAKAO_TEXT_COLOR, "&:hover": { bgcolor: KAKAO_COLOR_HOVER }, fontWeight: fw.bold, fontSize: fs.sm, borderRadius: 2 }}
             >
-              카카오로 시작하기
+              {t.login.startWithKakao}
             </Button>
           </Box>
         )}
@@ -96,21 +98,17 @@ export default function MobileSidebar({ open, onClose, onLoginRequest }: MobileS
             <ListItem key={item.label} disablePadding>
               <Link href={item.href} style={{ textDecoration: "none", width: "100%" }}>
                 <ListItemButton onClick={onClose}>
-                  <ListItemText
-                    primary={item.label}
+                  <ListItemText primary={navLabels[item.label] ?? item.label}
                     slotProps={{ primary: { sx: { fontSize: fs.lg, color: "text.primary" } } }}
                   />
                 </ListItemButton>
               </Link>
             </ListItem>
           ))}
-
-          {/* 등록하기 — 비로그인 시 카카오 팝업 */}
           <ListItem disablePadding>
             <Link href={WRITE_HREF} style={{ textDecoration: "none", width: "100%" }} onClick={handleWriteClick}>
               <ListItemButton>
-                <ListItemText
-                  primary="등록하기"
+                <ListItemText primary={t.nav.write}
                   slotProps={{ primary: { sx: { fontSize: fs.lg, color: BRAND_COLOR, fontWeight: fw.bold } } }}
                 />
               </ListItemButton>
@@ -118,15 +116,16 @@ export default function MobileSidebar({ open, onClose, onLoginRequest }: MobileS
           </ListItem>
         </List>
 
+        <Box sx={{ px: 2, pb: 2 }}>
+          <LanguageSwitcher />
+        </Box>
+
         <Box sx={{ mt: "auto", px: 2, pb: 3 }}>
           <Link href={WRITE_HREF} style={{ textDecoration: "none" }} onClick={handleWriteClick}>
-            <Button
-              fullWidth
-              variant="contained"
-              disableElevation
+            <Button fullWidth variant="contained" disableElevation
               sx={{ bgcolor: BRAND_COLOR, color: "white", "&:hover": { bgcolor: BRAND_COLOR_HOVER }, fontWeight: fw.bold, fontSize: fs.md, borderRadius: dim.radiusPill, py: 1.5 }}
             >
-              등록하기
+              {t.nav.write}
             </Button>
           </Link>
         </Box>

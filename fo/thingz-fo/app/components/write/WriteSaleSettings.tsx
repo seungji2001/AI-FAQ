@@ -11,22 +11,16 @@ import SectionLabel from "@/app/components/ui/SectionLabel";
 import { panelBase } from "@/lib/styles/sx";
 import { BRAND_COLOR } from "@/lib/constants/theme";
 import { fs, titleMd } from "@/lib/styles/typography";
-
-const CONDITIONS = ["S급", "A급", "B급", "C급"];
-const DELIVERY_METHODS = ["택배", "직거래", "협의"];
+import { useT } from "@/lib/i18n/context";
 
 const OrangeSwitch = styled(Switch)(() => ({
   "& .MuiSwitch-switchBase.Mui-checked": { color: "white" },
   "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": { backgroundColor: BRAND_COLOR },
 }));
 
+// condition: "S"|"A"|"B"|"C"  delivery: "택배"|"직거래"|"협의"
 export interface SaleSettingsValue {
-  isSale: boolean;
-  price: string;
-  condition: string;
-  delivery: string;
-  instagramId: string;
-  kakaoUrl: string;
+  isSale: boolean; price: string; condition: string; delivery: string; instagramId: string; kakaoUrl: string;
 }
 
 interface WriteSaleSettingsProps {
@@ -35,46 +29,54 @@ interface WriteSaleSettingsProps {
 }
 
 export default function WriteSaleSettings({ value, onChange }: WriteSaleSettingsProps) {
+  const t = useT();
   const set = (patch: Partial<SaleSettingsValue>) => onChange({ ...value, ...patch });
+
+  const CONDITIONS = [
+    { key: "S", label: t.write.conditionS },
+    { key: "A", label: t.write.conditionA },
+    { key: "B", label: t.write.conditionB },
+    { key: "C", label: t.write.conditionC },
+  ];
+  const DELIVERY_METHODS = [
+    { key: "택배", label: t.write.deliveryParcel },
+    { key: "직거래", label: t.write.deliveryDirect },
+    { key: "협의", label: t.write.deliveryNegotiable },
+  ];
 
   return (
     <Box sx={{ ...panelBase, p: 3, display: "flex", flexDirection: "column", gap: 2.5 }}>
-      <Typography sx={titleMd}>판매 설정</Typography>
+      <Typography sx={titleMd}>{t.write.saleSettings}</Typography>
       <Divider />
 
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <Typography sx={{ fontSize: fs.md }}>이 물건 판매하기</Typography>
+        <Typography sx={{ fontSize: fs.md }}>{t.write.sellItem}</Typography>
         <OrangeSwitch checked={value.isSale} onChange={(e) => set({ isSale: e.target.checked })} />
       </Box>
 
       {value.isSale && (
         <>
           <Box>
-            <SectionLabel>판매 가격</SectionLabel>
+            <SectionLabel>{t.write.price}</SectionLabel>
             <Box sx={{ mt: 1 }}>
-              <InputRow
-                value={value.price}
-                onChange={(v) => set({ price: v })}
-                placeholder="가격 입력"
-                suffix="원"
-              />
+              <InputRow value={value.price} onChange={(v) => set({ price: v })} placeholder={t.write.priceHint} suffix={t.write.priceUnit} />
             </Box>
           </Box>
 
           <Box>
-            <SectionLabel>물건 상태</SectionLabel>
+            <SectionLabel>{t.write.itemCondition}</SectionLabel>
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 1 }}>
-              {CONDITIONS.map((c) => (
-                <SelectChip key={c} label={c} selected={value.condition === c} onClick={() => set({ condition: c })} />
+              {CONDITIONS.map(({ key, label }) => (
+                <SelectChip key={key} label={label} selected={value.condition === key} onClick={() => set({ condition: key })} />
               ))}
             </Box>
           </Box>
 
           <Box>
-            <SectionLabel>거래 방식</SectionLabel>
+            <SectionLabel>{t.write.tradeMethod}</SectionLabel>
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 1 }}>
-              {DELIVERY_METHODS.map((d) => (
-                <SelectChip key={d} label={d} selected={value.delivery === d} onClick={() => set({ delivery: d })} />
+              {DELIVERY_METHODS.map(({ key, label }) => (
+                <SelectChip key={key} label={label} selected={value.delivery === key} onClick={() => set({ delivery: key })} />
               ))}
             </Box>
           </Box>
@@ -82,17 +84,9 @@ export default function WriteSaleSettings({ value, onChange }: WriteSaleSettings
           <Divider />
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-            <SectionLabel>거래 연락처</SectionLabel>
-            <InputRow
-              value={value.instagramId}
-              onChange={(v) => set({ instagramId: v })}
-              placeholder="인스타그램 ID (예: @thingz_official)"
-            />
-            <InputRow
-              value={value.kakaoUrl}
-              onChange={(v) => set({ kakaoUrl: v })}
-              placeholder="카카오 오픈채팅 링크"
-            />
+            <SectionLabel>{t.write.contactInfo}</SectionLabel>
+            <InputRow value={value.instagramId} onChange={(v) => set({ instagramId: v })} placeholder={t.write.instagramPlaceholder} />
+            <InputRow value={value.kakaoUrl} onChange={(v) => set({ kakaoUrl: v })} placeholder={t.write.kakaoPlaceholder} />
           </Box>
         </>
       )}

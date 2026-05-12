@@ -20,12 +20,12 @@ import { fetchUser, updateMyProfile } from "@/lib/api/users";
 import { ApiError } from "@/lib/api/client";
 import { ArticleListItem } from "@/lib/types/article";
 import { UserProfile, UserUpdateRequest } from "@/lib/types/user";
-import ArticleGrid from "@/app/components/ArticleGrid";
 import ItemCard from "@/app/components/ItemCard";
 import InputRow from "@/app/components/ui/InputRow";
 import { articleGrid, mainContent, panelBase } from "@/lib/styles/sx";
 import { fs, fw, titleMd, textSecondary, labelBold } from "@/lib/styles/typography";
 import { BRAND_COLOR, BRAND_COLOR_HOVER, KAKAO_COLOR, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
+import { useT } from "@/lib/i18n/context";
 
 function ProfileField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -37,6 +37,7 @@ function ProfileField({ label, children }: { label: string; children: React.Reac
 }
 
 export default function MyPage() {
+  const t = useT();
   const router = useRouter();
   const [tab, setTab] = useState(0);
   const [published, setPublished] = useState<ArticleListItem[]>([]);
@@ -65,12 +66,7 @@ export default function MyPage() {
   }, [router]);
 
   const openEdit = () => {
-    setEditForm({
-      displayName: profile?.displayName ?? "",
-      bio: profile?.bio ?? "",
-      instagramId: profile?.instagramId ?? "",
-      kakaoUrl: profile?.kakaoUrl ?? "",
-    });
+    setEditForm({ displayName: profile?.displayName ?? "", bio: profile?.bio ?? "", instagramId: profile?.instagramId ?? "", kakaoUrl: profile?.kakaoUrl ?? "" });
     setEditOpen(true);
   };
 
@@ -81,20 +77,20 @@ export default function MyPage() {
       setProfile((prev) => prev ? { ...prev, ...editForm } : prev);
       setEditOpen(false);
     } catch (e) {
-      alert(e instanceof ApiError ? `저장 실패 (${e.status})` : "저장 중 오류가 발생했습니다.");
+      alert(e instanceof ApiError ? `${t.mypage.saveFailed} (${(e as ApiError).status})` : t.mypage.saveError);
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("정말 삭제하시겠어요?")) return;
+    if (!confirm(t.mypage.deleteConfirm)) return;
     try {
       await deleteArticle(id);
       setPublished((prev) => prev.filter((a) => a.id !== id));
       setDrafts((prev) => prev.filter((a) => a.id !== id));
     } catch (e) {
-      alert(e instanceof ApiError ? `삭제 실패 (${e.status})` : "삭제 중 오류가 발생했습니다.");
+      alert(e instanceof ApiError ? `${t.mypage.deleteFailed} (${(e as ApiError).status})` : t.mypage.deleteError);
     }
   };
 
@@ -107,7 +103,7 @@ export default function MyPage() {
         setPublished((prev) => [article, ...prev]);
       }
     } catch (e) {
-      alert(e instanceof ApiError ? `발행 실패 (${e.status})` : "발행 중 오류가 발생했습니다.");
+      alert(e instanceof ApiError ? `${t.mypage.publishFailed} (${(e as ApiError).status})` : t.mypage.publishError);
     }
   };
 
@@ -122,26 +118,26 @@ export default function MyPage() {
         </Avatar>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography sx={{ fontSize: fs["2xl"], fontWeight: fw.bold }}>{displayName || `@${username}`}</Typography>
-          <Typography sx={textSecondary}>@{username} · 발행 {published.length}개 · 임시저장 {drafts.length}개</Typography>
+          <Typography sx={textSecondary}>@{username} · {t.mypage.publishedTab} {published.length} · {t.mypage.draftsTab} {drafts.length}</Typography>
           {profile?.bio && <Typography sx={{ fontSize: fs.sm, mt: 0.5 }}>{profile.bio}</Typography>}
         </Box>
         <Button size="small" variant="outlined" onClick={openEdit} sx={{ fontSize: fs.sm, borderRadius: 2, flexShrink: 0 }}>
-          프로필 수정
+          {t.mypage.editProfile}
         </Button>
       </Box>
 
       <Divider sx={{ mb: 3 }} />
 
       <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3 }}>
-        <Tab label={`발행된 글 (${published.length})`} sx={{ fontSize: fs.md }} />
-        <Tab label={`임시저장 (${drafts.length})`} sx={{ fontSize: fs.md }} />
+        <Tab label={`${t.mypage.publishedTab} (${published.length})`} sx={{ fontSize: fs.md }} />
+        <Tab label={`${t.mypage.draftsTab} (${drafts.length})`} sx={{ fontSize: fs.md }} />
       </Tabs>
 
       {loading ? (
-        <Typography sx={textSecondary}>불러오는 중...</Typography>
+        <Typography sx={textSecondary}>{t.mypage.loading}</Typography>
       ) : tab === 0 ? (
         published.length === 0 ? (
-          <Typography sx={textSecondary}>아직 발행한 아티클이 없어요.</Typography>
+          <Typography sx={textSecondary}>{t.mypage.noPublished}</Typography>
         ) : (
           <Box sx={articleGrid}>
             {published.map((a) => (
@@ -149,9 +145,9 @@ export default function MyPage() {
                 <ItemCard id={a.id} title={a.title} tag={a.tags[0] ?? ""} imageSrc={a.coverUrl ?? undefined} />
                 <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
                   <Link href={`/edit/${a.id}`} style={{ flex: 1 }}>
-                    <Button fullWidth size="small" variant="outlined" sx={{ fontSize: fs.sm, borderRadius: 2 }}>수정</Button>
+                    <Button fullWidth size="small" variant="outlined" sx={{ fontSize: fs.sm, borderRadius: 2 }}>{t.mypage.edit}</Button>
                   </Link>
-                  <Button size="small" variant="outlined" color="error" onClick={() => handleDelete(a.id)} sx={{ flex: 1, fontSize: fs.sm, borderRadius: 2 }}>삭제</Button>
+                  <Button size="small" variant="outlined" color="error" onClick={() => handleDelete(a.id)} sx={{ flex: 1, fontSize: fs.sm, borderRadius: 2 }}>{t.mypage.delete}</Button>
                 </Box>
               </Box>
             ))}
@@ -159,7 +155,7 @@ export default function MyPage() {
         )
       ) : (
         drafts.length === 0 ? (
-          <Typography sx={textSecondary}>임시저장된 아티클이 없어요.</Typography>
+          <Typography sx={textSecondary}>{t.mypage.noDrafts}</Typography>
         ) : (
           <Box sx={articleGrid}>
             {drafts.map((a) => (
@@ -170,10 +166,10 @@ export default function MyPage() {
                 </Box>
                 <Box sx={{ display: "flex", gap: 1 }}>
                   <Link href={`/edit/${a.id}`} style={{ flex: 1 }}>
-                    <Button fullWidth size="small" variant="outlined" sx={{ fontSize: fs.sm, borderRadius: 2 }}>수정</Button>
+                    <Button fullWidth size="small" variant="outlined" sx={{ fontSize: fs.sm, borderRadius: 2 }}>{t.mypage.edit}</Button>
                   </Link>
-                  <Button size="small" variant="contained" onClick={() => handlePublishDraft(a.id)} sx={{ flex: 1, fontSize: fs.sm, borderRadius: 2, bgcolor: BRAND_COLOR, "&:hover": { bgcolor: BRAND_COLOR_HOVER } }}>발행</Button>
-                  <Button size="small" variant="outlined" color="error" onClick={() => handleDelete(a.id)} sx={{ flex: 1, fontSize: fs.sm, borderRadius: 2 }}>삭제</Button>
+                  <Button size="small" variant="contained" onClick={() => handlePublishDraft(a.id)} sx={{ flex: 1, fontSize: fs.sm, borderRadius: 2, bgcolor: BRAND_COLOR, "&:hover": { bgcolor: BRAND_COLOR_HOVER } }}>{t.mypage.publishBtn}</Button>
+                  <Button size="small" variant="outlined" color="error" onClick={() => handleDelete(a.id)} sx={{ flex: 1, fontSize: fs.sm, borderRadius: 2 }}>{t.mypage.delete}</Button>
                 </Box>
               </Box>
             ))}
@@ -182,27 +178,27 @@ export default function MyPage() {
       )}
 
       <Dialog open={editOpen} onClose={() => setEditOpen(false)} maxWidth="xs" fullWidth>
-        <DialogTitle sx={titleMd}>프로필 수정</DialogTitle>
+        <DialogTitle sx={titleMd}>{t.mypage.editProfile}</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 1 }}>
-            <ProfileField label="표시 이름">
+            <ProfileField label={t.mypage.displayName}>
               <InputRow value={editForm.displayName ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, displayName: v }))} />
             </ProfileField>
-            <ProfileField label="소개글">
+            <ProfileField label={t.mypage.bio}>
               <InputRow value={editForm.bio ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, bio: v }))} multiline rows={3} />
             </ProfileField>
-            <ProfileField label="인스타그램 ID">
+            <ProfileField label={t.mypage.instagramId}>
               <InputRow value={editForm.instagramId ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, instagramId: v }))} />
             </ProfileField>
-            <ProfileField label="카카오 오픈채팅 링크">
+            <ProfileField label={t.mypage.kakaoUrl}>
               <InputRow value={editForm.kakaoUrl ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, kakaoUrl: v }))} />
             </ProfileField>
           </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setEditOpen(false)} sx={{ fontSize: fs.sm }}>취소</Button>
+          <Button onClick={() => setEditOpen(false)} sx={{ fontSize: fs.sm }}>{t.mypage.cancel}</Button>
           <Button variant="contained" disabled={saving} onClick={handleSaveProfile} sx={{ fontSize: fs.sm, bgcolor: BRAND_COLOR, "&:hover": { bgcolor: BRAND_COLOR_HOVER } }}>
-            {saving ? "저장 중..." : "저장"}
+            {saving ? t.mypage.saving : t.mypage.save}
           </Button>
         </DialogActions>
       </Dialog>

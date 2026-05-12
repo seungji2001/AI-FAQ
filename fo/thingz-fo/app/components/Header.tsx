@@ -16,6 +16,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import MobileSidebar from "./MobileSidebar";
 import LoginDialog from "./LoginDialog";
+import LanguageSwitcher from "./LanguageSwitcher";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/constants/nav";
@@ -24,6 +25,7 @@ import { fs, fw, dim } from "@/lib/styles/typography";
 import { toolbarInner } from "@/lib/styles/sx";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
 import { logout } from "@/lib/api/auth";
+import { useT } from "@/lib/i18n/context";
 
 const SearchBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.grey[200],
@@ -49,6 +51,7 @@ const NavItem = styled(Typography, { shouldForwardProp: (prop) => prop !== "acti
 const WRITE_HREF = "/write";
 
 export default function Header() {
+  const t = useT();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
@@ -80,6 +83,11 @@ export default function Header() {
     }
   };
 
+  const navItems = NAV_ITEMS.filter((item) => item.href !== WRITE_HREF);
+  const navLabels: Record<string, string> = {
+    "피드": t.nav.feed, "탐색": t.nav.explore, "마이페이지": t.nav.mypage,
+  };
+
   return (
     <>
       <LoginDialog open={loginOpen} onClose={() => setLoginOpen(false)} />
@@ -94,7 +102,7 @@ export default function Header() {
 
           <SearchBox sx={{ mx: "auto" }}>
             <InputBase
-              placeholder="물건 이야기 검색"
+              placeholder={t.header.search}
               fullWidth
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -115,31 +123,21 @@ export default function Header() {
             </IconButton>
           ) : (
             <Box sx={{ display: "flex", gap: { sm: 2, md: 3 }, alignItems: "center" }}>
-              {NAV_ITEMS.filter((item) => item.href !== WRITE_HREF).map((item) => (
+              {navItems.map((item) => (
                 <Link key={item.label} href={item.href} style={{ textDecoration: "none" }}>
-                  <NavItem>{item.label}</NavItem>
+                  <NavItem>{navLabels[item.label] ?? item.label}</NavItem>
                 </Link>
               ))}
 
-              {/* 등록하기 — 비로그인 시 카카오 팝업, 로그인 시 /write 이동 */}
               <Link href={WRITE_HREF} style={{ textDecoration: "none" }} onClick={handleWriteClick}>
-                <Button
-                  disableElevation
-                  variant="contained"
-                  size="small"
-                  sx={{
-                    bgcolor: BRAND_COLOR,
-                    color: "white",
-                    "&:hover": { bgcolor: BRAND_COLOR_HOVER },
-                    fontSize: fs.sm,
-                    fontWeight: fw.bold,
-                    borderRadius: dim.radiusPill,
-                    px: 2.5,
-                  }}
+                <Button disableElevation variant="contained" size="small"
+                  sx={{ bgcolor: BRAND_COLOR, color: "white", "&:hover": { bgcolor: BRAND_COLOR_HOVER }, fontSize: fs.sm, fontWeight: fw.bold, borderRadius: dim.radiusPill, px: 2.5 }}
                 >
-                  등록하기
+                  {t.nav.write}
                 </Button>
               </Link>
+
+              <LanguageSwitcher />
 
               {username ? (
                 <>
@@ -149,31 +147,15 @@ export default function Header() {
                     </Avatar>
                   </IconButton>
                   <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                    <MenuItem disabled sx={{ fontSize: fs.sm, color: "text.secondary" }}>
-                      @{username}
-                    </MenuItem>
-                    <MenuItem onClick={handleLogout} sx={{ fontSize: fs.sm }}>
-                      로그아웃
-                    </MenuItem>
+                    <MenuItem disabled sx={{ fontSize: fs.sm, color: "text.secondary" }}>@{username}</MenuItem>
+                    <MenuItem onClick={handleLogout} sx={{ fontSize: fs.sm }}>{t.nav.logout}</MenuItem>
                   </Menu>
                 </>
               ) : (
-                <Button
-                  onClick={() => setLoginOpen(true)}
-                  variant="outlined"
-                  size="small"
-                  sx={{
-                    borderColor: KAKAO_COLOR,
-                    bgcolor: KAKAO_COLOR,
-                    color: KAKAO_TEXT_COLOR,
-                    "&:hover": { bgcolor: KAKAO_COLOR_HOVER, borderColor: KAKAO_COLOR_HOVER },
-                    fontSize: fs.sm,
-                    fontWeight: fw.bold,
-                    borderRadius: 2,
-                    px: 2,
-                  }}
+                <Button onClick={() => setLoginOpen(true)} variant="outlined" size="small"
+                  sx={{ borderColor: KAKAO_COLOR, bgcolor: KAKAO_COLOR, color: KAKAO_TEXT_COLOR, "&:hover": { bgcolor: KAKAO_COLOR_HOVER, borderColor: KAKAO_COLOR_HOVER }, fontSize: fs.sm, fontWeight: fw.bold, borderRadius: 2, px: 2 }}
                 >
-                  로그인
+                  {t.nav.login}
                 </Button>
               )}
             </Box>

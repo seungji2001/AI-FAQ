@@ -10,6 +10,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { fs, fw } from "@/lib/styles/typography";
 import { KAKAO_COLOR, KAKAO_COLOR_HOVER } from "@/lib/constants/theme";
 import { getKakaoLoginUrl } from "@/lib/api/auth";
+import { useT } from "@/lib/i18n/context";
 
 interface LoginDialogProps {
   open: boolean;
@@ -17,63 +18,29 @@ interface LoginDialogProps {
 }
 
 export default function LoginDialog({ open, onClose }: LoginDialogProps) {
-  const handleKakaoLogin = () => {
-    window.location.href = getKakaoLoginUrl();
-  };
+  const t = useT();
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      slotProps={{
-        paper: {
-          sx: {
-            borderRadius: 3,
-            width: 360,
-            p: 1,
-          },
-        },
-      }}
+    <Dialog open={open} onClose={onClose}
+      slotProps={{ paper: { sx: { borderRadius: 3, width: 360, p: 1 } } }}
     >
       <Box sx={{ display: "flex", justifyContent: "flex-end", pt: 1, px: 1 }}>
         <IconButton size="small" onClick={onClose}>
           <CloseIcon fontSize="small" />
         </IconButton>
       </Box>
-
       <DialogContent sx={{ px: 4, pb: 4, pt: 1, textAlign: "center" }}>
-        <Typography sx={{ fontSize: fs["3xl"], fontWeight: fw.bold, mb: 1 }}>
-          THINGZ
-        </Typography>
-        <Typography sx={{ fontSize: fs.md, color: "text.secondary", mb: 3 }}>
-          카카오로 로그인하고 나만의 물건 이야기를 등록해보세요
-        </Typography>
-
-        <Button
-          fullWidth
-          onClick={handleKakaoLogin}
-          sx={{
-            bgcolor: KAKAO_COLOR,
-            color: "#000",
-            "&:hover": { bgcolor: KAKAO_COLOR_HOVER },
-            fontWeight: fw.bold,
-            fontSize: fs.md,
-            borderRadius: 2,
-            py: 1.5,
-            gap: 1,
-            boxShadow: "none",
-            "&:active": { boxShadow: "none" },
-          }}
-          variant="contained"
-          disableElevation
+        <Typography sx={{ fontSize: fs["3xl"], fontWeight: fw.bold, mb: 1 }}>THINGZ</Typography>
+        <Typography sx={{ fontSize: fs.md, color: "text.secondary", mb: 3 }}>{t.login.description}</Typography>
+        <Button fullWidth onClick={() => { window.location.href = getKakaoLoginUrl(); }}
+          sx={{ bgcolor: KAKAO_COLOR, color: "#000", "&:hover": { bgcolor: KAKAO_COLOR_HOVER }, fontWeight: fw.bold, fontSize: fs.md, borderRadius: 2, py: 1.5, gap: 1, boxShadow: "none", "&:active": { boxShadow: "none" } }}
+          variant="contained" disableElevation
         >
-          <Box
-            component="img"
+          <Box component="img"
             src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
-            alt="kakao"
-            sx={{ width: 20, height: 20 }}
+            alt="kakao" sx={{ width: 20, height: 20 }}
           />
-          카카오로 시작하기
+          {t.login.startWithKakao}
         </Button>
       </DialogContent>
     </Dialog>

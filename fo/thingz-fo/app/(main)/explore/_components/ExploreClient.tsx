@@ -13,10 +13,12 @@ import ArticleGrid from "@/app/components/ArticleGrid";
 import { mainContent } from "@/lib/styles/sx";
 import { fs, fw, titleMd, textSecondary } from "@/lib/styles/typography";
 import { BRAND_COLOR } from "@/lib/constants/theme";
+import { useT } from "@/lib/i18n/context";
 
 const POPULAR_TAGS = ["필름카메라", "빈티지", "오디오", "자전거", "카메라렌즈", "시계", "책", "의류"];
 
 export default function ExploreClient() {
+  const t = useT();
   const router = useRouter();
   const params = useSearchParams();
   const initialTag = params.get("tag") ?? "";
@@ -29,10 +31,7 @@ export default function ExploreClient() {
   useEffect(() => {
     setLoading(true);
     const fetcher = activeTag ? fetchArticlesByTag(activeTag) : fetchArticles();
-    fetcher
-      .then(setArticles)
-      .catch(() => setArticles([]))
-      .finally(() => setLoading(false));
+    fetcher.then(setArticles).catch(() => setArticles([])).finally(() => setLoading(false));
   }, [activeTag]);
 
   const handleSearch = (tag: string) => {
@@ -44,14 +43,11 @@ export default function ExploreClient() {
 
   return (
     <Box sx={mainContent}>
-      <Typography sx={{ ...titleMd, mb: 3 }}>탐색</Typography>
+      <Typography sx={{ ...titleMd, mb: 3 }}>{t.explore.title}</Typography>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, bgcolor: "grey.100", borderRadius: 3, px: 2, py: 1, mb: 2 }}>
         <SearchIcon sx={{ color: "text.secondary", fontSize: fs.xl }} />
-        <InputBase
-          fullWidth
-          placeholder="태그로 검색 (예: 필름카메라)"
-          value={input}
+        <InputBase fullWidth placeholder={t.explore.searchPlaceholder} value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch(input)}
           sx={{ fontSize: fs.md }}
@@ -60,29 +56,19 @@ export default function ExploreClient() {
 
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 4 }}>
         {POPULAR_TAGS.map((tag) => (
-          <Chip
-            key={tag}
-            label={`#${tag}`}
-            clickable
-            onClick={() => handleSearch(tag)}
-            sx={{
-              fontSize: fs.sm,
-              fontWeight: activeTag === tag ? fw.bold : fw.normal,
-              bgcolor: activeTag === tag ? BRAND_COLOR : "grey.100",
-              color: activeTag === tag ? "white" : "text.primary",
-              "&:hover": { bgcolor: activeTag === tag ? BRAND_COLOR : "grey.200" },
-            }}
+          <Chip key={tag} label={`#${tag}`} clickable onClick={() => handleSearch(tag)}
+            sx={{ fontSize: fs.sm, fontWeight: activeTag === tag ? fw.bold : fw.normal, bgcolor: activeTag === tag ? BRAND_COLOR : "grey.100", color: activeTag === tag ? "white" : "text.primary", "&:hover": { bgcolor: activeTag === tag ? BRAND_COLOR : "grey.200" } }}
           />
         ))}
       </Box>
 
       {activeTag && (
         <Typography sx={{ ...textSecondary, mb: 2 }}>
-          #{activeTag} 검색 결과 {articles.length}개
+          {t.explore.results.replace("{tag}", activeTag).replace("{count}", String(articles.length))}
         </Typography>
       )}
 
-      <ArticleGrid articles={articles} loading={loading} emptyMessage="아티클이 없어요." />
+      <ArticleGrid articles={articles} loading={loading} emptyMessage={t.explore.noArticles} />
     </Box>
   );
 }

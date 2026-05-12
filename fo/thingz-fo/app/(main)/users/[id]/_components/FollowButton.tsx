@@ -7,12 +7,12 @@ import { fs, fw, dim } from "@/lib/styles/typography";
 import { tokenStorage } from "@/lib/auth/token";
 import { followUser, unfollowUser, checkIsFollowing } from "@/lib/api/follow";
 import LoginDialog from "@/app/components/LoginDialog";
+import { useT } from "@/lib/i18n/context";
 
-interface Props {
-  userId: string;
-}
+interface Props { userId: string }
 
 export default function FollowButton({ userId }: Props) {
+  const t = useT();
   const [following, setFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
@@ -21,7 +21,6 @@ export default function FollowButton({ userId }: Props) {
   useEffect(() => {
     const token = tokenStorage.getAccessToken();
     if (!token) return;
-
     import("@/lib/auth/token").then(({ getUserFromToken }) => {
       const me = getUserFromToken(token);
       if (me?.userId === userId) { setIsOwner(true); return; }
@@ -36,15 +35,10 @@ export default function FollowButton({ userId }: Props) {
     if (loading) return;
     setLoading(true);
     try {
-      if (following) {
-        await unfollowUser(userId);
-        setFollowing(false);
-      } else {
-        await followUser(userId);
-        setFollowing(true);
-      }
+      if (following) { await unfollowUser(userId); setFollowing(false); }
+      else { await followUser(userId); setFollowing(true); }
     } catch {
-      alert(following ? "언팔로우에 실패했습니다." : "팔로우에 실패했습니다.");
+      alert(following ? t.article.unfollowFailed : t.article.followFailed);
     } finally {
       setLoading(false);
     }
@@ -53,26 +47,10 @@ export default function FollowButton({ userId }: Props) {
   return (
     <>
       <LoginDialog open={loginOpen} onClose={() => setLoginOpen(false)} />
-      <Button
-        size="small"
-        variant={following ? "outlined" : "contained"}
-        disableElevation
-        disabled={loading}
-        onClick={handleClick}
-        sx={{
-          flexShrink: 0,
-          fontSize: fs.sm,
-          fontWeight: fw.bold,
-          borderRadius: dim.radiusPill,
-          minWidth: dim.followBtnMinW,
-          height: dim.followBtnHeight,
-          backgroundColor: following ? undefined : BRAND_COLOR,
-          borderColor: following ? BRAND_COLOR : undefined,
-          color: following ? BRAND_COLOR : "white",
-          "&:hover": { backgroundColor: following ? undefined : BRAND_COLOR_HOVER },
-        }}
+      <Button size="small" variant={following ? "outlined" : "contained"} disableElevation disabled={loading} onClick={handleClick}
+        sx={{ flexShrink: 0, fontSize: fs.sm, fontWeight: fw.bold, borderRadius: dim.radiusPill, minWidth: dim.followBtnMinW, height: dim.followBtnHeight, backgroundColor: following ? undefined : BRAND_COLOR, borderColor: following ? BRAND_COLOR : undefined, color: following ? BRAND_COLOR : "white", "&:hover": { backgroundColor: following ? undefined : BRAND_COLOR_HOVER } }}
       >
-        {following ? "팔로잉" : "팔로우"}
+        {following ? t.article.following : t.article.follow}
       </Button>
     </>
   );

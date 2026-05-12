@@ -1,21 +1,22 @@
+import { cookies } from "next/headers";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { fs, titleLg, textSecondary } from "@/lib/styles/typography";
+import { getT } from "@/lib/i18n/translations";
+import { fs, titleLg } from "@/lib/styles/typography";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const locale = (await cookies()).get("locale")?.value ?? "ko";
+  const t = getT(locale);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: 2, textAlign: "center", px: 2 }}>
       <Typography sx={{ fontSize: fs.display, fontWeight: 700, color: "grey.200", lineHeight: 1 }}>
-        404
+        {t.notFound.heading}
       </Typography>
-      <Typography sx={titleLg}>페이지를 찾을 수 없어요</Typography>
-      <Typography sx={textSecondary}>
-        요청하신 페이지가 존재하지 않거나 이동되었습니다.
-      </Typography>
-      <Button href="/" variant="outlined" sx={{ mt: 1, borderRadius: 2 }}>
-        홈으로 돌아가기
-      </Button>
+      <Typography sx={titleLg}>{t.notFound.title}</Typography>
+      <Typography sx={{ fontSize: fs.md, color: "text.secondary" }}>{t.notFound.description}</Typography>
+      <Button href="/" variant="outlined" sx={{ mt: 1, borderRadius: 2 }}>{t.notFound.backToHome}</Button>
     </Box>
   );
 }

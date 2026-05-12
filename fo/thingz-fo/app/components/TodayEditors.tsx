@@ -1,4 +1,3 @@
-
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
@@ -15,9 +14,10 @@ const FALLBACK_EDITORS = [
 
 interface TodayEditorsProps {
   users?: UserItem[];
+  title?: string;
 }
 
-export default function TodayEditors({ users }: TodayEditorsProps) {
+export default function TodayEditors({ users, title = "오늘의 에디터" }: TodayEditorsProps) {
   const editors = users && users.length > 0
     ? users.slice(0, 5).map((u) => ({
         username: `@${u.username}`,
@@ -29,7 +29,7 @@ export default function TodayEditors({ users }: TodayEditorsProps) {
 
   return (
     <Box sx={{ ...panelBase, p: 2.5 }}>
-      <Typography sx={{ ...titleSm, mb: 1.5 }}>오늘의 에디터</Typography>
+      <Typography sx={{ ...titleSm, mb: 1.5 }}>{title}</Typography>
       <Divider sx={{ mb: 2 }} />
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
         {editors.map((editor) => (
