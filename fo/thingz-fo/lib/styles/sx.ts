@@ -1,33 +1,31 @@
 import { SxProps, Theme } from "@mui/material/styles";
 import { dim } from "./typography";
 
-// 카드 (FeaturedCard, ItemCard)
+// ─── 카드 (FeaturedCard — hover만 사용, ItemCard는 자체 스타일) ──
 export const cardBase: SxProps<Theme> = {
   width: "100%",
-  borderRadius: 3,
-  overflow: "hidden",
   bgcolor: "white",
-  boxShadow: 1,
   cursor: "pointer",
-  transition: "box-shadow 0.2s",
-  "&:hover": { boxShadow: 4 },
+  transition: "opacity 0.15s",
+  "&:hover": { opacity: 0.85 },
 };
 
 export const cardImage: SxProps<Theme> = {
   width: "100%",
-  bgcolor: "grey.300",
+  bgcolor: "grey.200",
   backgroundSize: "cover",
   backgroundPosition: "center",
 };
 
-// 패널 (ArticleTrade, ArticleEditorProfile, TodayEditors, WriteSaleSettings)
+// ─── 패널 (ArticleTrade, WriteSaleSettings 등 사이드 패널) ───
 export const panelBase: SxProps<Theme> = {
   bgcolor: "white",
-  borderRadius: 3,
-  boxShadow: 1,
+  borderRadius: 2,
+  border: "1px solid",
+  borderColor: "grey.200",
 };
 
-// 페이지 레이아웃
+// ─── 페이지 레이아웃 ─────────────────────────────────────────
 export const pagePadding: SxProps<Theme> = {
   px: { xs: 2, sm: 4, md: 8 },
   py: { xs: 3, md: 5 },
@@ -35,23 +33,26 @@ export const pagePadding: SxProps<Theme> = {
 
 export const pageWithSidebar: SxProps<Theme> = {
   display: "flex",
-  gap: 4,
+  gap: { md: 6, lg: 8 },
   alignItems: "flex-start",
 };
 
 export const sidebarWidth: SxProps<Theme> = {
-  width: { md: 360, lg: 460 },
+  width: { md: 300, lg: 340 },
   flexShrink: 0,
   display: { xs: "none", md: "flex" },
   flexDirection: "column",
-  gap: 3,
+  gap: 4,
 };
 
 export const mobileSidebar: SxProps<Theme> = {
   display: { xs: "flex", md: "none" },
   flexDirection: "column",
   gap: 3,
-  mt: 3,
+  mt: 4,
+  pt: 4,
+  borderTop: "1px solid",
+  borderColor: "grey.200",
 };
 
 export const mainContent: SxProps<Theme> = {
@@ -59,7 +60,7 @@ export const mainContent: SxProps<Theme> = {
   minWidth: 0,
 };
 
-// ─── 헤더 Toolbar (maxWidth 중앙 정렬) ───────────────────────
+// ─── 헤더 Toolbar ─────────────────────────────────────────────
 export const toolbarInner: SxProps<Theme> = {
   maxWidth: dim.contentMaxWidth,
   width: "100%",
@@ -69,9 +70,14 @@ export const toolbarInner: SxProps<Theme> = {
   minHeight: dim.appBarHeight,
 };
 
-// ─── 아티클 그리드 (반응형 1→2→3열) ─────────────────────────
+// ─── 아티클 피드 (Medium 스타일 세로 리스트) ──────────────────
 export const articleGrid: SxProps<Theme> = {
-  display: "grid",
-  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
-  gap: 3,
+  display: "flex",
+  flexDirection: "column",
+};
+
+// ─── 아티클 카드 구분선 ───────────────────────────────────────
+export const articleDivider: SxProps<Theme> = {
+  borderBottom: "1px solid",
+  borderColor: "grey.200",
 };

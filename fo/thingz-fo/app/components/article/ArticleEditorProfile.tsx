@@ -1,8 +1,8 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 import EditorItem from "@/app/components/EditorItem";
-import { panelBase, cardImage } from "@/lib/styles/sx";
-import { captionText } from "@/lib/styles/typography";
+import { fs, fw } from "@/lib/styles/typography";
 
 interface ArticleEditorProfileProps {
   userId?: string;
@@ -11,45 +11,30 @@ interface ArticleEditorProfileProps {
   articles?: number;
   followers?: string;
   avatarSrc?: string;
-  coverSrc?: string;
   following?: boolean;
   onLoginRequired?: () => void;
 }
 
 export default function ArticleEditorProfile({
-  userId,
-  username = "@film_essay_kim",
+  userId, username = "@film_essay_kim",
   bio = "필름 카메라와 아날로그 라이프스타일을 사랑합니다 📷",
-  articles = 34,
-  followers = "1.2k",
-  avatarSrc,
-  coverSrc,
-  following = false,
-  onLoginRequired,
+  articles = 34, followers = "1.2k", avatarSrc, following = false, onLoginRequired,
 }: ArticleEditorProfileProps) {
   return (
-    <Box sx={{ ...panelBase, overflow: "hidden" }}>
-      <Box
-        sx={{
-          ...cardImage,
-          aspectRatio: "16/5",
-          backgroundImage: coverSrc ? `url(${coverSrc})` : undefined,
-        }}
+    <Box sx={{ borderTop: "1px solid", borderColor: "grey.200", pt: 3 }}>
+      <Typography sx={{ fontSize: fs.sm, fontWeight: fw.semibold, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.08em", mb: 2 }}>
+        Written by
+      </Typography>
+      <EditorItem
+        userId={userId} username={username} followers={followers}
+        articles={articles} avatarSrc={avatarSrc} following={following}
+        onLoginRequired={onLoginRequired}
       />
-      <Box sx={{ px: 3, pt: 2, pb: 3, display: "flex", flexDirection: "column", gap: 1.5 }}>
-        <EditorItem
-          userId={userId}
-          username={username}
-          followers={followers}
-          articles={articles}
-          avatarSrc={avatarSrc}
-          following={following}
-          onLoginRequired={onLoginRequired}
-        />
-        <Typography sx={{ ...captionText, pl: 0.5 }}>
+      {bio && (
+        <Typography sx={{ fontSize: fs.md, color: "text.secondary", mt: 1.5, lineHeight: 1.6, pl: 0.5 }}>
           {bio}
         </Typography>
-      </Box>
+      )}
     </Box>
   );
 }

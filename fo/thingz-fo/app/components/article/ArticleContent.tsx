@@ -1,9 +1,11 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { cardBase, cardImage } from "@/lib/styles/sx";
+import Avatar from "@mui/material/Avatar";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
 import { BRAND_COLOR } from "@/lib/constants/theme";
-import { fs, fw, lh, titleLg, captionText } from "@/lib/styles/typography";
-import CardImageBox from "@/app/components/ui/CardImageBox";
+import { fs, fw, lh, titleLg, captionText, dim } from "@/lib/styles/typography";
+import { cardImage } from "@/lib/styles/sx";
 
 interface ArticleContentProps {
   tag?: string;
@@ -25,48 +27,68 @@ export default function ArticleContent({
   thumbnails = [],
 }: ArticleContentProps) {
   return (
-    <Box sx={{ ...cardBase, cursor: "default", "&:hover": undefined }}>
-      <CardImageBox
-        imageSrc={imageSrc}
-        aspectRatio={{ xs: "4/3", md: "16/7" }}
-        badge={tag}
-        badgePosition={{ top: 24, left: 24 }}
-        sx={{ "& .MuiChip-root": { fontSize: fs.sm, height: 28 } }}
-      />
-
-      <Box sx={{ px: { xs: 2, md: 4 }, py: 3, display: "flex", flexDirection: "column", gap: 2 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-          <Typography sx={{ fontSize: fs.md, fontWeight: fw.bold, color: BRAND_COLOR }}>
-            {author}
-          </Typography>
-          <Typography sx={captionText}>
-            · {date}
-          </Typography>
-        </Box>
-
-        <Typography sx={titleLg}>
-          {title}
+    <Box>
+      {/* 태그 */}
+      {tag && (
+        <Typography sx={{ fontSize: fs.sm, color: BRAND_COLOR, fontWeight: fw.semibold, textTransform: "uppercase", letterSpacing: "0.08em", mb: 2 }}>
+          {tag}
         </Typography>
+      )}
 
+      {/* 제목 */}
+      <Typography sx={{ ...titleLg, mb: 2.5 }}>{title}</Typography>
+
+      {/* 작성자 + 날짜 */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
+        <Avatar sx={{ width: 36, height: 36, bgcolor: "grey.300", fontSize: fs.md, fontWeight: fw.semibold }}>
+          {author[1]?.toUpperCase()}
+        </Avatar>
+        <Box>
+          <Typography sx={{ fontSize: fs.md, fontWeight: fw.medium, color: "text.primary" }}>{author}</Typography>
+          <Typography sx={captionText}>{date}</Typography>
+        </Box>
+      </Box>
+
+      <Divider sx={{ mb: 3 }} />
+
+      {/* 히어로 이미지 */}
+      {imageSrc && (
+        <Box
+          sx={{
+            ...cardImage,
+            aspectRatio: { xs: "4/3", md: "16/7" },
+            borderRadius: dim.radiusCard,
+            backgroundImage: `url(${imageSrc})`,
+            mb: 3,
+          }}
+        />
+      )}
+
+      {/* 본문 */}
+      {body.length > 0 && (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {body.map((paragraph, i) => (
-            <Typography key={i} sx={{ fontSize: fs.md, color: "text.primary", lineHeight: lh.relaxed }}>
+            <Typography
+              key={i}
+              sx={{ fontSize: fs["2xl"], color: "text.primary", lineHeight: lh.relaxed, fontWeight: fw.normal }}
+            >
               {paragraph}
             </Typography>
           ))}
         </Box>
+      )}
 
-        {thumbnails.length > 0 && (
-          <Box sx={{ display: "flex", gap: 1.5, mt: 1, flexWrap: "wrap" }}>
-            {thumbnails.map((src, i) => (
-              <Box
-                key={i}
-                sx={{ width: { xs: 96, md: 120 }, aspectRatio: "4/3", borderRadius: 2, flexShrink: 0, ...cardImage, backgroundImage: `url(${src})` }}
-              />
-            ))}
-          </Box>
-        )}
-      </Box>
+      {/* 추가 이미지 */}
+      {thumbnails.length > 0 && (
+        <Box sx={{ display: "flex", gap: 1.5, mt: 3, flexWrap: "wrap" }}>
+          {thumbnails.map((src, i) => (
+            <Box
+              key={i}
+              sx={{ width: dim.thumbnailWidth, aspectRatio: "4/3", borderRadius: dim.radiusCard, flexShrink: 0, ...cardImage, backgroundImage: `url(${src})` }}
+            />
+          ))}
+        </Box>
+      )}
     </Box>
   );
 }

@@ -3,8 +3,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import EditorItem from "./EditorItem";
 import { UserItem } from "@/lib/types/user";
-import { panelBase } from "@/lib/styles/sx";
-import { titleSm } from "@/lib/styles/typography";
+import { fs, fw, textSecondary } from "@/lib/styles/typography";
 
 const FALLBACK_EDITORS = [
   { username: "@minimal_jungsoo", followers: "1.2k", articles: 34 },
@@ -28,12 +27,16 @@ export default function TodayEditors({ users, title = "오늘의 에디터" }: T
     : FALLBACK_EDITORS;
 
   return (
-    <Box sx={{ ...panelBase, p: 2.5 }}>
-      <Typography sx={{ ...titleSm, mb: 1.5 }}>{title}</Typography>
-      <Divider sx={{ mb: 2 }} />
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-        {editors.map((editor) => (
-          <EditorItem key={editor.username} {...editor} />
+    <Box>
+      <Typography sx={{ fontSize: fs.sm, fontWeight: fw.semibold, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.08em", mb: 2 }}>
+        {title}
+      </Typography>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        {editors.map((editor, i) => (
+          <Box key={editor.username}>
+            {i > 0 && <Divider sx={{ my: 2 }} />}
+            <EditorItem {...editor} />
+          </Box>
         ))}
       </Box>
     </Box>
