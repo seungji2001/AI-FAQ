@@ -5,6 +5,7 @@ import Divider from "@mui/material/Divider";
 import { fetchUser } from "@/lib/api/users";
 import { fetchArticlesByUser } from "@/lib/api/articles";
 import ItemCard from "@/app/components/ItemCard";
+import FollowButton from "./_components/FollowButton";
 import { articleGrid, mainContent } from "@/lib/styles/sx";
 import { fs, fw, textSecondary } from "@/lib/styles/typography";
 
@@ -41,6 +42,7 @@ export default async function UserProfilePage({ params }: Props) {
           <Typography sx={textSecondary}>@{user.username} · 아티클 {articles.length}개</Typography>
           {user.bio && <Typography sx={{ fontSize: fs.sm, mt: 0.5 }}>{user.bio}</Typography>}
         </Box>
+        <FollowButton userId={id} />
       </Box>
 
       <Divider sx={{ mb: 3 }} />

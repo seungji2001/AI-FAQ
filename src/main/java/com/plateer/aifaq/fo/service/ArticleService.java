@@ -192,9 +192,9 @@ public class ArticleService {
 
     @CacheEvict(value = "articles", allEntries = true)
     @Transactional
-    public void markItemAsSold(UUID articleId) {
-        Article article = articleRepository.findPublishedById(articleId)
-                .orElseThrow(() -> new EntityNotFoundException("Article not found: " + articleId));
+    public void markItemAsSold(UUID articleId, UUID userId) {
+        Article article = articleRepository.findByIdAndUserId(articleId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Article not found or access denied"));
         if (article.getItem() == null) {
             throw new IllegalArgumentException("판매 상품이 등록되지 않은 아티클입니다.");
         }

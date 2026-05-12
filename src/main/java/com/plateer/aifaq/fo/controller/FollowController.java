@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Tag(name = "Follow", description = "팔로우 API")
@@ -20,6 +21,17 @@ import java.util.UUID;
 public class FollowController {
 
     private final FollowService followService;
+
+    @Operation(summary = "팔로우 여부 확인", description = "로그인한 유저가 특정 유저를 팔로우하고 있는지 확인합니다.")
+    @GetMapping("/{id}/is-following")
+    public ResponseEntity<Map<String, Boolean>> isFollowing(
+            @Parameter(description = "확인 대상 유저 UUID", required = true) @PathVariable UUID id,
+            @AuthenticationPrincipal CustomOAuth2User user) {
+        if (user == null) {
+            return ResponseEntity.ok(Map.of("following", false));
+        }
+        return ResponseEntity.ok(Map.of("following", followService.isFollowing(id, user.getUserId())));
+    }
 
     @Operation(summary = "팔로우", description = "로그인한 유저가 특정 유저를 팔로우합니다.",
         responses = {

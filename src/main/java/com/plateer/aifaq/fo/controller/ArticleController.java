@@ -136,8 +136,10 @@ public class ArticleController {
         }
     )
     @PatchMapping("/{id}/item/sold")
-    public ResponseEntity<Void> markItemAsSold(@PathVariable UUID id) {
-        articleService.markItemAsSold(id);
+    public ResponseEntity<Void> markItemAsSold(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal CustomOAuth2User user) {
+        articleService.markItemAsSold(id, user.getUserId());
         return ResponseEntity.noContent().build();
     }
 }
