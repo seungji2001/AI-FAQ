@@ -24,7 +24,7 @@ import { UserProfile, UserUpdateRequest } from "@/lib/types/user";
 import ItemCard from "@/app/components/ItemCard";
 import { articleGrid, mainContent, panelBase } from "@/lib/styles/sx";
 import { fs, fw, dim, titleMd, textSecondary, labelBold } from "@/lib/styles/typography";
-import { BRAND_COLOR, KAKAO_COLOR, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
+import { BRAND_COLOR, BRAND_COLOR_HOVER, KAKAO_COLOR, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
 
 function InputField({ label, value, onChange, multiline }: { label: string; value: string; onChange: (v: string) => void; multiline?: boolean }) {
   return (
@@ -182,7 +182,7 @@ export default function MyPage() {
                   <Link href={`/edit/${a.id}`} style={{ flex: 1 }}>
                     <Button fullWidth size="small" variant="outlined" sx={{ fontSize: fs.sm, borderRadius: 2 }}>수정</Button>
                   </Link>
-                  <Button size="small" variant="contained" onClick={() => handlePublishDraft(a.id)} sx={{ flex: 1, fontSize: fs.sm, borderRadius: 2, bgcolor: BRAND_COLOR, "&:hover": { bgcolor: "#f99a58" } }}>발행</Button>
+                  <Button size="small" variant="contained" onClick={() => handlePublishDraft(a.id)} sx={{ flex: 1, fontSize: fs.sm, borderRadius: 2, bgcolor: BRAND_COLOR, "&:hover": { bgcolor: BRAND_COLOR_HOVER } }}>발행</Button>
                   <Button size="small" variant="outlined" color="error" onClick={() => handleDelete(a.id)} sx={{ flex: 1, fontSize: fs.sm, borderRadius: 2 }}>삭제</Button>
                 </Box>
               </Box>
@@ -203,7 +203,7 @@ export default function MyPage() {
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={() => setEditOpen(false)} sx={{ fontSize: fs.sm }}>취소</Button>
-          <Button variant="contained" disabled={saving} onClick={handleSaveProfile} sx={{ fontSize: fs.sm, bgcolor: BRAND_COLOR, "&:hover": { bgcolor: "#f99a58" } }}>
+          <Button variant="contained" disabled={saving} onClick={handleSaveProfile} sx={{ fontSize: fs.sm, bgcolor: BRAND_COLOR, "&:hover": { bgcolor: BRAND_COLOR_HOVER } }}>
             {saving ? "저장 중..." : "저장"}
           </Button>
         </DialogActions>

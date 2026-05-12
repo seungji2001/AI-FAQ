@@ -72,7 +72,7 @@ export default function EditorItem({
           flexShrink: 0,
           fontSize: fs.sm,
           fontWeight: fw.bold,
-          borderRadius: "20px",
+          borderRadius: dim.radiusPill,
           minWidth: dim.followBtnMinW,
           height: dim.followBtnHeight,
           backgroundColor: following ? undefined : BRAND_COLOR,

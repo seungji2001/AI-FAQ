@@ -114,7 +114,7 @@ export default function WriteEditor({
                 onClick={() => onImageRemove(i)}
                 sx={{ position: "absolute", top: 2, right: 2, bgcolor: OVERLAY_MED, color: "white", p: 0.3, "&:hover": { bgcolor: OVERLAY_DARK } }}
               >
-                <CloseIcon sx={{ fontSize: 14 }} />
+                <CloseIcon sx={{ fontSize: fs.md }} />
               </IconButton>
             </Box>
           ))}
