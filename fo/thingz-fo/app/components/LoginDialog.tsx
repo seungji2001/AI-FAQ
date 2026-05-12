@@ -46,7 +46,7 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
           THINGZ
         </Typography>
         <Typography sx={{ fontSize: fs.md, color: "text.secondary", mb: 3 }}>
-          글을 저장하려면 로그인이 필요해요
+          카카오로 로그인하고 나만의 물건 이야기를 등록해보세요
         </Typography>
 
         <Button

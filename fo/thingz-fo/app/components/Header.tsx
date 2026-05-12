@@ -15,14 +15,15 @@ import MenuItem from "@mui/material/MenuItem";
 import { styled, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import MobileSidebar from "./MobileSidebar";
+import LoginDialog from "./LoginDialog";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/constants/nav";
-import { BRAND_COLOR, KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
+import { BRAND_COLOR, BRAND_COLOR_HOVER, KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { toolbarInner } from "@/lib/styles/sx";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
-import { logout, getKakaoLoginUrl } from "@/lib/api/auth";
+import { logout } from "@/lib/api/auth";
 
 const SearchBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.grey[200],
@@ -45,8 +46,11 @@ const NavItem = styled(Typography, { shouldForwardProp: (prop) => prop !== "acti
   })
 );
 
+const WRITE_HREF = "/write";
+
 export default function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -69,8 +73,17 @@ export default function Header() {
     router.push("/");
   };
 
+  const handleWriteClick = (e: React.MouseEvent) => {
+    if (!tokenStorage.getAccessToken()) {
+      e.preventDefault();
+      setLoginOpen(true);
+    }
+  };
+
   return (
     <>
+      <LoginDialog open={loginOpen} onClose={() => setLoginOpen(false)} />
+
       <AppBar position="sticky" elevation={0}
         sx={{ backgroundColor: "white", borderBottom: "1px solid", borderColor: "grey.300" }}
       >
@@ -102,11 +115,31 @@ export default function Header() {
             </IconButton>
           ) : (
             <Box sx={{ display: "flex", gap: { sm: 2, md: 3 }, alignItems: "center" }}>
-              {NAV_ITEMS.map((item) => (
+              {NAV_ITEMS.filter((item) => item.href !== WRITE_HREF).map((item) => (
                 <Link key={item.label} href={item.href} style={{ textDecoration: "none" }}>
                   <NavItem>{item.label}</NavItem>
                 </Link>
               ))}
+
+              {/* 등록하기 — 비로그인 시 카카오 팝업, 로그인 시 /write 이동 */}
+              <Link href={WRITE_HREF} style={{ textDecoration: "none" }} onClick={handleWriteClick}>
+                <Button
+                  disableElevation
+                  variant="contained"
+                  size="small"
+                  sx={{
+                    bgcolor: BRAND_COLOR,
+                    color: "white",
+                    "&:hover": { bgcolor: BRAND_COLOR_HOVER },
+                    fontSize: fs.sm,
+                    fontWeight: fw.bold,
+                    borderRadius: dim.radiusPill,
+                    px: 2.5,
+                  }}
+                >
+                  등록하기
+                </Button>
+              </Link>
 
               {username ? (
                 <>
@@ -126,12 +159,21 @@ export default function Header() {
                 </>
               ) : (
                 <Button
-                  href={getKakaoLoginUrl()}
-                  variant="contained"
+                  onClick={() => setLoginOpen(true)}
+                  variant="outlined"
                   size="small"
-                  sx={{ bgcolor: KAKAO_COLOR, color: KAKAO_TEXT_COLOR, "&:hover": { bgcolor: KAKAO_COLOR_HOVER }, fontSize: fs.sm, fontWeight: fw.bold, borderRadius: 2, px: 2 }}
+                  sx={{
+                    borderColor: KAKAO_COLOR,
+                    bgcolor: KAKAO_COLOR,
+                    color: KAKAO_TEXT_COLOR,
+                    "&:hover": { bgcolor: KAKAO_COLOR_HOVER, borderColor: KAKAO_COLOR_HOVER },
+                    fontSize: fs.sm,
+                    fontWeight: fw.bold,
+                    borderRadius: 2,
+                    px: 2,
+                  }}
                 >
-                  카카오 로그인
+                  로그인
                 </Button>
               )}
             </Box>
@@ -139,7 +181,7 @@ export default function Header() {
         </Toolbar>
       </AppBar>
 
-      <MobileSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <MobileSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} onLoginRequest={() => setLoginOpen(true)} />
     </>
   );
 }

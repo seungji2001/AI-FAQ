@@ -15,17 +15,20 @@ import Avatar from "@mui/material/Avatar";
 import CloseIcon from "@mui/icons-material/Close";
 import Link from "next/link";
 import { NAV_ITEMS } from "@/lib/constants/nav";
-import { KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
+import { BRAND_COLOR, BRAND_COLOR_HOVER, KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
-import { logout, getKakaoLoginUrl } from "@/lib/api/auth";
+import { logout } from "@/lib/api/auth";
+
+const WRITE_HREF = "/write";
 
 interface MobileSidebarProps {
   open: boolean;
   onClose: () => void;
+  onLoginRequest: () => void;
 }
 
-export default function MobileSidebar({ open, onClose }: MobileSidebarProps) {
+export default function MobileSidebar({ open, onClose, onLoginRequest }: MobileSidebarProps) {
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,6 +40,16 @@ export default function MobileSidebar({ open, onClose }: MobileSidebarProps) {
     await logout();
     setUsername(null);
     onClose();
+  };
+
+  const handleWriteClick = (e: React.MouseEvent) => {
+    if (!tokenStorage.getAccessToken()) {
+      e.preventDefault();
+      onClose();
+      onLoginRequest();
+    } else {
+      onClose();
+    }
   };
 
   return (
@@ -58,18 +71,17 @@ export default function MobileSidebar({ open, onClose }: MobileSidebarProps) {
             <Box sx={{ flex: 1 }}>
               <Typography sx={{ fontSize: fs.md, fontWeight: fw.bold }}>@{username}</Typography>
             </Box>
-            <Typography
-              onClick={handleLogout}
-              sx={{ fontSize: fs.sm, color: "text.secondary", cursor: "pointer" }}
-            >
+            <Typography onClick={handleLogout} sx={{ fontSize: fs.sm, color: "text.secondary", cursor: "pointer" }}>
               로그아웃
             </Typography>
           </Box>
         ) : (
           <Box sx={{ px: 2, py: 2 }}>
             <Button
-              fullWidth href={getKakaoLoginUrl()}
-              variant="contained" disableElevation
+              fullWidth
+              onClick={() => { onClose(); onLoginRequest(); }}
+              variant="contained"
+              disableElevation
               sx={{ bgcolor: KAKAO_COLOR, color: KAKAO_TEXT_COLOR, "&:hover": { bgcolor: KAKAO_COLOR_HOVER }, fontWeight: fw.bold, fontSize: fs.sm, borderRadius: 2 }}
             >
               카카오로 시작하기
@@ -78,8 +90,9 @@ export default function MobileSidebar({ open, onClose }: MobileSidebarProps) {
         )}
 
         <Divider />
+
         <List>
-          {NAV_ITEMS.map((item) => (
+          {NAV_ITEMS.filter((item) => item.href !== WRITE_HREF).map((item) => (
             <ListItem key={item.label} disablePadding>
               <Link href={item.href} style={{ textDecoration: "none", width: "100%" }}>
                 <ListItemButton onClick={onClose}>
@@ -91,7 +104,32 @@ export default function MobileSidebar({ open, onClose }: MobileSidebarProps) {
               </Link>
             </ListItem>
           ))}
+
+          {/* 등록하기 — 비로그인 시 카카오 팝업 */}
+          <ListItem disablePadding>
+            <Link href={WRITE_HREF} style={{ textDecoration: "none", width: "100%" }} onClick={handleWriteClick}>
+              <ListItemButton>
+                <ListItemText
+                  primary="등록하기"
+                  slotProps={{ primary: { sx: { fontSize: fs.lg, color: BRAND_COLOR, fontWeight: fw.bold } } }}
+                />
+              </ListItemButton>
+            </Link>
+          </ListItem>
         </List>
+
+        <Box sx={{ mt: "auto", px: 2, pb: 3 }}>
+          <Link href={WRITE_HREF} style={{ textDecoration: "none" }} onClick={handleWriteClick}>
+            <Button
+              fullWidth
+              variant="contained"
+              disableElevation
+              sx={{ bgcolor: BRAND_COLOR, color: "white", "&:hover": { bgcolor: BRAND_COLOR_HOVER }, fontWeight: fw.bold, fontSize: fs.md, borderRadius: dim.radiusPill, py: 1.5 }}
+            >
+              등록하기
+            </Button>
+          </Link>
+        </Box>
       </Box>
     </Drawer>
   );
