@@ -12,6 +12,7 @@ export const fs = {
   "4xl": "24px",
   "5xl": "28px",
   "6xl": "32px",
+  display: "72px",
 } as const;
 
 // ─── Font Weight ─────────────────────────────────────────────
@@ -33,7 +34,6 @@ export const titleLg:       SxProps<Theme> = { fontSize: { xs: fs["2xl"], md: fs
 export const titleMd:       SxProps<Theme> = { fontSize: fs.xl,  fontWeight: fw.bold };
 export const titleSm:       SxProps<Theme> = { fontSize: fs.lg,  fontWeight: fw.bold, color: "text.primary" };
 export const captionText:   SxProps<Theme> = { fontSize: fs.sm, color: "text.secondary" };
-export const brandText:     SxProps<Theme> = { fontSize: fs.sm };
 
 // ─── Dimension tokens ────────────────────────────────────────
 export const dim = {

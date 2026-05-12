@@ -69,12 +69,6 @@ export const toolbarInner: SxProps<Theme> = {
   minHeight: dim.appBarHeight,
 };
 
-// ─── 페이지 배경 (grey.100 + full height) ────────────────────
-export const pageGrey: SxProps<Theme> = {
-  bgcolor: "grey.100",
-  minHeight: "100vh",
-};
-
 // ─── 아티클 그리드 (반응형 1→2→3열) ─────────────────────────
 export const articleGrid: SxProps<Theme> = {
   display: "grid",

@@ -50,7 +50,7 @@ export default function ArticleContent({
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {body.map((paragraph, i) => (
-            <Typography key={i} sx={{ fontSize: fs.md, color: "text.secondary", lineHeight: lh.relaxed }}>
+            <Typography key={i} sx={{ fontSize: fs.md, color: "text.primary", lineHeight: lh.relaxed }}>
               {paragraph}
             </Typography>
           ))}

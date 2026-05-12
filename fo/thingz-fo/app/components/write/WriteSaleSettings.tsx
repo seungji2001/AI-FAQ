@@ -6,10 +6,11 @@ import Switch from "@mui/material/Switch";
 import Divider from "@mui/material/Divider";
 import { styled } from "@mui/material/styles";
 import InputRow from "@/app/components/ui/InputRow";
+import SelectChip from "@/app/components/ui/SelectChip";
 import SectionLabel from "@/app/components/ui/SectionLabel";
 import { panelBase } from "@/lib/styles/sx";
 import { BRAND_COLOR } from "@/lib/constants/theme";
-import { fs, fw, dim, titleMd } from "@/lib/styles/typography";
+import { fs, titleMd } from "@/lib/styles/typography";
 
 const CONDITIONS = ["S급", "A급", "B급", "C급"];
 const DELIVERY_METHODS = ["택배", "직거래", "협의"];
@@ -18,20 +19,6 @@ const OrangeSwitch = styled(Switch)(() => ({
   "& .MuiSwitch-switchBase.Mui-checked": { color: "white" },
   "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": { backgroundColor: BRAND_COLOR },
 }));
-
-function SelectChip({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
-  return (
-    <Box onClick={onClick} sx={{
-      px: 2.5, py: 1, borderRadius: dim.radiusPill,
-      bgcolor: selected ? BRAND_COLOR : "grey.200",
-      color: selected ? "white" : "text.primary",
-      fontWeight: selected ? fw.bold : fw.normal,
-      fontSize: fs.sm, cursor: "pointer", userSelect: "none", transition: "all 0.15s",
-    }}>
-      {label}
-    </Box>
-  );
-}
 
 export interface SaleSettingsValue {
   isSale: boolean;

@@ -1,12 +1,12 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { titleLg, textSecondary } from "@/lib/styles/typography";
+import { fs, titleLg, textSecondary } from "@/lib/styles/typography";
 
 export default function NotFound() {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: 2, textAlign: "center", px: 2 }}>
-      <Typography sx={{ fontSize: "64px", fontWeight: 700, color: "grey.200", lineHeight: 1 }}>
+      <Typography sx={{ fontSize: fs.display, fontWeight: 700, color: "grey.200", lineHeight: 1 }}>
         404
       </Typography>
       <Typography sx={titleLg}>페이지를 찾을 수 없어요</Typography>

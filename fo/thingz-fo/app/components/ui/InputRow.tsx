@@ -10,16 +10,28 @@ interface InputRowProps {
   onChange: (v: string) => void;
   placeholder?: string;
   suffix?: string;
+  multiline?: boolean;
+  rows?: number;
 }
 
-export default function InputRow({ value, onChange, placeholder, suffix }: InputRowProps) {
+export default function InputRow({ value, onChange, placeholder, suffix, multiline, rows }: InputRowProps) {
   return (
-    <Box sx={{ bgcolor: "grey.200", borderRadius: 2, px: 2, height: dim.inputRowHeight, display: "flex", alignItems: "center" }}>
+    <Box sx={{
+      bgcolor: "grey.100",
+      borderRadius: 2,
+      px: 2,
+      py: multiline ? 1.5 : 0,
+      minHeight: multiline ? undefined : dim.inputRowHeight,
+      display: "flex",
+      alignItems: multiline ? "flex-start" : "center",
+    }}>
       <InputBase
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         fullWidth
+        multiline={multiline}
+        rows={multiline ? (rows ?? 3) : undefined}
         sx={{ fontSize: fs.sm }}
       />
       {suffix && (

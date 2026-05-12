@@ -1,12 +1,12 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import FeaturedCard from "@/app/components/FeaturedCard";
-import ItemCard from "@/app/components/ItemCard";
+import ArticleGrid from "@/app/components/ArticleGrid";
 import TodayEditors from "@/app/components/TodayEditors";
 import { fetchArticles } from "@/lib/api/articles";
 import { fetchUsers } from "@/lib/api/users";
 import { pageWithSidebar, sidebarWidth, mainContent } from "@/lib/styles/sx";
-import { titleMd, textSecondary } from "@/lib/styles/typography";
+import { titleMd } from "@/lib/styles/typography";
 
 export default async function Home() {
   const [articles, users] = await Promise.all([
@@ -32,26 +32,8 @@ export default async function Home() {
         )}
 
         <Box>
-          <Typography sx={{ ...titleMd, mb: 2 }}>
-            최근 아티클
-          </Typography>
-          {rest.length > 0 ? (
-            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" }, gap: 3 }}>
-              {rest.map((article) => (
-                <ItemCard
-                  key={article.id}
-                  id={article.id}
-                  title={article.title}
-                  tag={article.tags[0] ?? ""}
-                  imageSrc={article.coverUrl ?? undefined}
-                />
-              ))}
-            </Box>
-          ) : (
-            <Typography sx={textSecondary}>
-              아직 아티클이 없습니다.
-            </Typography>
-          )}
+          <Typography sx={{ ...titleMd, mb: 2 }}>최근 아티클</Typography>
+          <ArticleGrid articles={rest} emptyMessage="아직 아티클이 없습니다." />
         </Box>
       </Box>
 

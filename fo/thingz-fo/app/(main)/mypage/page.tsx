@@ -13,7 +13,6 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import InputBase from "@mui/material/InputBase";
 import Link from "next/link";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
 import { fetchArticlesByUser, fetchMyDrafts, deleteArticle, publishDraft } from "@/lib/api/articles";
@@ -21,25 +20,18 @@ import { fetchUser, updateMyProfile } from "@/lib/api/users";
 import { ApiError } from "@/lib/api/client";
 import { ArticleListItem } from "@/lib/types/article";
 import { UserProfile, UserUpdateRequest } from "@/lib/types/user";
+import ArticleGrid from "@/app/components/ArticleGrid";
 import ItemCard from "@/app/components/ItemCard";
+import InputRow from "@/app/components/ui/InputRow";
 import { articleGrid, mainContent, panelBase } from "@/lib/styles/sx";
-import { fs, fw, dim, titleMd, textSecondary, labelBold } from "@/lib/styles/typography";
+import { fs, fw, titleMd, textSecondary, labelBold } from "@/lib/styles/typography";
 import { BRAND_COLOR, BRAND_COLOR_HOVER, KAKAO_COLOR, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
 
-function InputField({ label, value, onChange, multiline }: { label: string; value: string; onChange: (v: string) => void; multiline?: boolean }) {
+function ProfileField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <Box sx={{ mb: 2 }}>
       <Typography sx={{ ...labelBold, mb: 0.5 }}>{label}</Typography>
-      <Box sx={{ bgcolor: "grey.100", borderRadius: 2, px: 2, py: multiline ? 1.5 : 0, minHeight: multiline ? 80 : dim.inputRowHeight, display: "flex", alignItems: multiline ? "flex-start" : "center" }}>
-        <InputBase
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          fullWidth
-          multiline={multiline}
-          rows={multiline ? 3 : undefined}
-          sx={{ fontSize: fs.sm }}
-        />
-      </Box>
+      {children}
     </Box>
   );
 }
@@ -50,7 +42,6 @@ export default function MyPage() {
   const [published, setPublished] = useState<ArticleListItem[]>([]);
   const [drafts, setDrafts] = useState<ArticleListItem[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [userId, setUserId] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState<UserUpdateRequest>({});
@@ -61,7 +52,6 @@ export default function MyPage() {
     if (!token) { router.replace("/"); return; }
     const user = getUserFromToken(token);
     if (!user) { router.replace("/"); return; }
-    setUserId(user.userId);
 
     Promise.all([
       fetchUser(user.userId).catch(() => null),
@@ -155,7 +145,7 @@ export default function MyPage() {
         ) : (
           <Box sx={articleGrid}>
             {published.map((a) => (
-              <Box key={a.id} sx={{ position: "relative" }}>
+              <Box key={a.id}>
                 <ItemCard id={a.id} title={a.title} tag={a.tags[0] ?? ""} imageSrc={a.coverUrl ?? undefined} />
                 <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
                   <Link href={`/edit/${a.id}`} style={{ flex: 1 }}>
@@ -195,10 +185,18 @@ export default function MyPage() {
         <DialogTitle sx={titleMd}>프로필 수정</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 1 }}>
-            <InputField label="표시 이름" value={editForm.displayName ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, displayName: v }))} />
-            <InputField label="소개글" value={editForm.bio ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, bio: v }))} multiline />
-            <InputField label="인스타그램 ID" value={editForm.instagramId ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, instagramId: v }))} />
-            <InputField label="카카오 오픈채팅 링크" value={editForm.kakaoUrl ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, kakaoUrl: v }))} />
+            <ProfileField label="표시 이름">
+              <InputRow value={editForm.displayName ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, displayName: v }))} />
+            </ProfileField>
+            <ProfileField label="소개글">
+              <InputRow value={editForm.bio ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, bio: v }))} multiline rows={3} />
+            </ProfileField>
+            <ProfileField label="인스타그램 ID">
+              <InputRow value={editForm.instagramId ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, instagramId: v }))} />
+            </ProfileField>
+            <ProfileField label="카카오 오픈채팅 링크">
+              <InputRow value={editForm.kakaoUrl ?? ""} onChange={(v) => setEditForm((f) => ({ ...f, kakaoUrl: v }))} />
+            </ProfileField>
           </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>

@@ -4,9 +4,9 @@ import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import { fetchUser } from "@/lib/api/users";
 import { fetchArticlesByUser } from "@/lib/api/articles";
-import ItemCard from "@/app/components/ItemCard";
+import ArticleGrid from "@/app/components/ArticleGrid";
 import FollowButton from "./_components/FollowButton";
-import { articleGrid, mainContent } from "@/lib/styles/sx";
+import { mainContent } from "@/lib/styles/sx";
 import { fs, fw, textSecondary } from "@/lib/styles/typography";
 
 interface Props {
@@ -47,15 +47,7 @@ export default async function UserProfilePage({ params }: Props) {
 
       <Divider sx={{ mb: 3 }} />
 
-      {articles.length === 0 ? (
-        <Typography sx={textSecondary}>아직 발행한 아티클이 없어요.</Typography>
-      ) : (
-        <Box sx={articleGrid}>
-          {articles.map((a) => (
-            <ItemCard key={a.id} id={a.id} title={a.title} tag={a.tags[0] ?? ""} imageSrc={a.coverUrl ?? undefined} />
-          ))}
-        </Box>
-      )}
+      <ArticleGrid articles={articles} emptyMessage="아직 발행한 아티클이 없어요." />
     </Box>
   );
 }

@@ -9,8 +9,8 @@ import Chip from "@mui/material/Chip";
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchArticles, fetchArticlesByTag } from "@/lib/api/articles";
 import { ArticleListItem } from "@/lib/types/article";
-import ItemCard from "@/app/components/ItemCard";
-import { articleGrid, mainContent } from "@/lib/styles/sx";
+import ArticleGrid from "@/app/components/ArticleGrid";
+import { mainContent } from "@/lib/styles/sx";
 import { fs, fw, titleMd, textSecondary } from "@/lib/styles/typography";
 import { BRAND_COLOR } from "@/lib/constants/theme";
 
@@ -82,17 +82,7 @@ export default function ExploreClient() {
         </Typography>
       )}
 
-      {loading ? (
-        <Typography sx={textSecondary}>불러오는 중...</Typography>
-      ) : articles.length === 0 ? (
-        <Typography sx={textSecondary}>아티클이 없어요.</Typography>
-      ) : (
-        <Box sx={articleGrid}>
-          {articles.map((a) => (
-            <ItemCard key={a.id} id={a.id} title={a.title} tag={a.tags[0] ?? ""} imageSrc={a.coverUrl ?? undefined} />
-          ))}
-        </Box>
-      )}
+      <ArticleGrid articles={articles} loading={loading} emptyMessage="아티클이 없어요." />
     </Box>
   );
 }
