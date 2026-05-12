@@ -4,6 +4,7 @@ import com.plateer.aifaq.config.auth.JwtAuthenticationFilter;
 import com.plateer.aifaq.config.auth.KakaoOAuth2UserService;
 import com.plateer.aifaq.config.auth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,6 +29,9 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Value("${frontend.url:http://localhost:3000}")
+    private String frontendUrl;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -35,6 +39,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/fo/articles/me/drafts").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/fo/articles/*/edit").authenticated()
                         .requestMatchers(HttpMethod.GET).permitAll()
@@ -59,7 +64,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOrigins(List.of(frontendUrl));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

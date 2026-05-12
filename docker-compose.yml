@@ -1,0 +1,85 @@
+services:
+  # ─── MySQL ────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: thingz-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: plateer_portfolio
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis ────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: thingz-redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ─── Spring Boot Backend ──────────────────────────────────
+  backend:
+    image: thingz-backend:${IMAGE_TAG:-latest}
+    container_name: thingz-backend
+    restart: unless-stopped
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: ${DB_USERNAME:-root}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET}
+      KAKAO_CLIENT_ID: ${KAKAO_CLIENT_ID}
+      KAKAO_CLIENT_SECRET: ${KAKAO_CLIENT_SECRET}
+      KAKAO_REDIRECT_URI: ${KAKAO_REDIRECT_URI}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      AWS_REGION: ${AWS_REGION:-ap-northeast-2}
+      S3_BUCKET: ${S3_BUCKET}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ─── Next.js Frontend ─────────────────────────────────────
+  frontend:
+    image: thingz-frontend:${IMAGE_TAG:-latest}
+    container_name: thingz-frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE:-http://backend:8080/api/fo}
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+volumes:
+  mysql_data:
+  redis_data:
