@@ -1,7 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
-import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import { BRAND_COLOR } from "@/lib/constants/theme";
 import { fs, fw, lh, titleLg, captionText, dim } from "@/lib/styles/typography";

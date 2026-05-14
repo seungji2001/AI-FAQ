@@ -39,7 +39,7 @@ export default function ItemCard({
         <Box sx={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 0.75 }}>
           {author && (
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
-              <Avatar sx={{ width: 20, height: 20, bgcolor: "grey.400", fontSize: "10px" }}>
+              <Avatar sx={{ width: 20, height: 20, bgcolor: "grey.400", fontSize: fs.xs }}>
                 {author[0]?.toUpperCase()}
               </Avatar>
               <Typography sx={{ fontSize: fs.sm, color: "text.secondary", fontWeight: fw.medium }}>
@@ -67,7 +67,7 @@ export default function ItemCard({
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5, flexWrap: "wrap" }}>
             {tag && (
-              <Typography sx={{ fontSize: fs.sm, color: "text.secondary", bgcolor: "grey.100", px: 1, py: 0.25, borderRadius: "4px" }}>
+              <Typography sx={{ fontSize: fs.sm, color: "text.secondary", bgcolor: "grey.100", px: 1, py: 0.25, borderRadius: dim.radiusTag }}>
                 {tag}
               </Typography>
             )}

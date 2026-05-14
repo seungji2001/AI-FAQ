@@ -30,6 +30,12 @@ export const lh = {
   relaxed: 1.8,
 } as const;
 
+// ─── Letter Spacing ──────────────────────────────────────────
+export const ls = {
+  wide:  "0.05em",
+  wider: "0.08em",
+} as const;
+
 // ─── Text sx presets ─────────────────────────────────────────
 export const textPrimary:   SxProps<Theme> = { fontSize: fs.md, color: "text.primary" };
 export const textSecondary: SxProps<Theme> = { fontSize: fs.sm, color: "text.secondary" };

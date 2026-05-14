@@ -31,7 +31,7 @@ test.describe("아티클 상세 페이지 (/article/[id])", () => {
   });
 
   test("존재하지 않는 아티클은 404 처리된다", async ({ page }) => {
-    await page.goto("/article/00000000-0000-0000-0000-000000000000", { waitUntil: "domcontentloaded" });
-    await expect(page.getByText("This page could not be found.")).toBeVisible({ timeout: 15_000 });
+    await page.goto("/article/00000000-0000-0000-0000-000000000000");
+    await expect(page.getByText("페이지를 찾을 수 없어요")).toBeVisible({ timeout: 15_000 });
   });
 });

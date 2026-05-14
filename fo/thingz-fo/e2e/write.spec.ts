@@ -61,40 +61,38 @@ test.describe("글쓰기 페이지 (/write)", () => {
     await expect(page.getByText("#삭제테스트")).not.toBeVisible();
   });
 
-  test("제목 없이 임시저장 시 알림이 표시된다", async ({ page }) => {
-    page.once("dialog", async (dialog) => {
-      expect(dialog.message()).toContain("제목");
-      await dialog.dismiss();
-    });
+  test("제목 없이 임시저장 시 토스트 알림이 표시된다", async ({ page }) => {
     await page.getByText("임시저장").click();
+    await expect(page.locator("[role=alert]").filter({ hasText: /제목/ })).toBeVisible({ timeout: 5_000 });
   });
 
-  test("제목 없이 발행하기 시 알림이 표시된다", async ({ page }) => {
-    page.once("dialog", async (dialog) => {
-      expect(dialog.message()).toContain("제목");
-      await dialog.dismiss();
-    });
+  test("제목 없이 발행하기 시 토스트 알림이 표시된다", async ({ page }) => {
     await page.getByRole("button", { name: "발행하기" }).click();
+    await expect(page.locator("[role=alert]").filter({ hasText: /제목/ })).toBeVisible({ timeout: 5_000 });
   });
 
-  test("제목만 있고 본문 없이 발행하기 시 알림이 표시된다", async ({ page }) => {
+  test("제목만 있고 본문 없이 발행하기 시 토스트 알림이 표시된다", async ({ page }) => {
     await page.getByPlaceholder("이 물건과의 이야기를 제목으로...").fill("테스트 제목");
-
-    page.once("dialog", async (dialog) => {
-      expect(dialog.message()).toContain("본문");
-      await dialog.dismiss();
-    });
     await page.getByRole("button", { name: "발행하기" }).click();
+    await expect(page.locator("[role=alert]").filter({ hasText: /본문/ })).toBeVisible({ timeout: 5_000 });
   });
 
-  test("제목과 본문 입력 후 발행 시 API 호출이 수행된다", async ({ page }) => {
+  test("제목과 본문 입력 후 발행 시 API 요청이 전송된다", async ({ page }) => {
+    let apiCalled = false;
+    await page.route("**/articles", async (route) => {
+      if (route.request().method() === "POST") {
+        apiCalled = true;
+        await route.fulfill({ status: 201, body: JSON.stringify({ id: "fake-id" }), contentType: "application/json" });
+      } else {
+        await route.continue();
+      }
+    });
+
     await page.getByPlaceholder("이 물건과의 이야기를 제목으로...").fill("E2E 테스트 아티클");
     await page.getByPlaceholder(/어떤 물건인가요/).fill("E2E 테스트를 위한 본문입니다.");
-
-    page.once("dialog", async (dialog) => {
-      await dialog.dismiss();
-    });
     await page.getByRole("button", { name: "발행하기" }).click();
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(2_000);
+
+    expect(apiCalled).toBe(true);
   });
 });
