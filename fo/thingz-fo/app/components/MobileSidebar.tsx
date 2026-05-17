@@ -15,8 +15,9 @@ import Avatar from "@mui/material/Avatar";
 import CloseIcon from "@mui/icons-material/Close";
 import Link from "next/link";
 import { NAV_ITEMS } from "@/lib/constants/nav";
-import { BRAND_COLOR, BRAND_COLOR_HOVER, KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
+import { KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_TEXT_COLOR, IVORY, INK } from "@/lib/constants/theme";
 import { fs, fw, dim } from "@/lib/styles/typography";
+import { squareBtn } from "@/lib/styles/sx";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
 import { logout } from "@/lib/api/auth";
 import { useT } from "@/lib/i18n/context";
@@ -56,74 +57,103 @@ export default function MobileSidebar({ open, onClose, onLoginRequest }: MobileS
   };
 
   const navLabels: Record<string, string> = {
-    "피드": t.nav.feed, "탐색": t.nav.explore, "마이페이지": t.nav.mypage,
+    "피드": t.nav.feed,
+    "탐색": t.nav.explore,
+    "마이페이지": t.nav.mypage,
   };
 
   return (
-    <Drawer anchor="right" open={open} onClose={onClose}>
+    <Drawer
+      anchor="right"
+      open={open}
+      onClose={onClose}
+      slotProps={{ paper: { sx: { bgcolor: IVORY } } }}
+    >
       <Box sx={{ width: dim.drawerWidth, pt: 2, display: "flex", flexDirection: "column", height: "100%" }}>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", px: 2, pb: 1 }}>
-          <Typography sx={{ fontWeight: fw.bold, fontSize: fs["2xl"] }}>THINGZ</Typography>
-          <IconButton onClick={onClose}><CloseIcon /></IconButton>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", px: 2.5, pb: 1.5 }}>
+          <Typography sx={{ fontSize: fs["2xl"], fontFamily: "var(--font-pacifico)", color: INK, letterSpacing: "0.02em" }}>
+            Thingz
+          </Typography>
+          <IconButton onClick={onClose} sx={{ color: INK }}>
+            <CloseIcon />
+          </IconButton>
         </Box>
-        <Divider />
+
+        <Divider sx={{ borderColor: "rgba(0,0,0,0.08)" }} />
 
         {username ? (
-          <Box sx={{ px: 2, py: 2, display: "flex", alignItems: "center", gap: 1.5 }}>
-            <Avatar sx={{ width: 36, height: 36, bgcolor: KAKAO_COLOR, fontSize: fs.sm, color: KAKAO_TEXT_COLOR }}>
+          <Box sx={{ px: 2.5, py: 2.5, display: "flex", alignItems: "center", gap: 1.5 }}>
+            <Avatar sx={{ width: 36, height: 36, bgcolor: "primary.main", color: "primary.contrastText", fontSize: fs.sm, fontWeight: fw.bold }}>
               {username[0].toUpperCase()}
             </Avatar>
             <Box sx={{ flex: 1 }}>
-              <Typography sx={{ fontSize: fs.md, fontWeight: fw.bold }}>@{username}</Typography>
+              <Typography sx={{ fontSize: fs.md, fontWeight: fw.semibold, color: INK }}>@{username}</Typography>
             </Box>
-            <Typography onClick={handleLogout} sx={{ fontSize: fs.sm, color: "text.secondary", cursor: "pointer" }}>
+            <Typography
+              onClick={handleLogout}
+              sx={{ fontSize: fs.sm, color: "text.secondary", cursor: "pointer", "&:hover": { color: INK } }}
+            >
               {t.nav.logout}
             </Typography>
           </Box>
         ) : (
-          <Box sx={{ px: 2, py: 2 }}>
-            <Button fullWidth onClick={() => { onClose(); onLoginRequest(); }}
-              variant="contained" disableElevation
-              sx={{ bgcolor: KAKAO_COLOR, color: KAKAO_TEXT_COLOR, "&:hover": { bgcolor: KAKAO_COLOR_HOVER }, fontWeight: fw.bold, fontSize: fs.sm, borderRadius: 2 }}
+          <Box sx={{ px: 2.5, py: 2.5 }}>
+            <Button
+              fullWidth
+              onClick={() => { onClose(); onLoginRequest(); }}
+              variant="contained"
+              disableElevation
+              sx={{
+                bgcolor: KAKAO_COLOR,
+                color: KAKAO_TEXT_COLOR,
+                "&:hover": { bgcolor: KAKAO_COLOR_HOVER },
+                fontWeight: fw.bold,
+                fontSize: fs.sm,
+                ...squareBtn,
+                py: 1.25,
+                gap: 1,
+              }}
             >
+              <Box
+                component="img"
+                src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
+                alt="kakao"
+                sx={{ width: 18, height: 18 }}
+              />
               {t.login.startWithKakao}
             </Button>
           </Box>
         )}
 
-        <Divider />
+        <Divider sx={{ borderColor: "rgba(0,0,0,0.08)" }} />
 
-        <List>
+        <List sx={{ pt: 1 }}>
           {NAV_ITEMS.filter((item) => item.href !== WRITE_HREF).map((item) => (
             <ListItem key={item.label} disablePadding>
               <Link href={item.href} style={{ textDecoration: "none", width: "100%" }}>
-                <ListItemButton onClick={onClose}>
-                  <ListItemText primary={navLabels[item.label] ?? item.label}
-                    slotProps={{ primary: { sx: { fontSize: fs.lg, color: "text.primary" } } }}
+                <ListItemButton onClick={onClose} sx={{ px: 2.5, py: 1.25 }}>
+                  <ListItemText
+                    primary={navLabels[item.label] ?? item.label}
+                    slotProps={{ primary: { sx: { fontSize: fs.lg, color: INK, fontWeight: fw.medium } } }}
                   />
                 </ListItemButton>
               </Link>
             </ListItem>
           ))}
-          <ListItem disablePadding>
-            <Link href={WRITE_HREF} style={{ textDecoration: "none", width: "100%" }} onClick={handleWriteClick}>
-              <ListItemButton>
-                <ListItemText primary={t.nav.write}
-                  slotProps={{ primary: { sx: { fontSize: fs.lg, color: BRAND_COLOR, fontWeight: fw.bold } } }}
-                />
-              </ListItemButton>
-            </Link>
-          </ListItem>
         </List>
 
-        <Box sx={{ px: 2, pb: 2 }}>
+        <Box sx={{ px: 2.5, pb: 2 }}>
           <LanguageSwitcher />
         </Box>
 
-        <Box sx={{ mt: "auto", px: 2, pb: 3 }}>
+        <Box sx={{ mt: "auto", px: 2.5, pb: 4 }}>
           <Link href={WRITE_HREF} style={{ textDecoration: "none" }} onClick={handleWriteClick}>
-            <Button fullWidth variant="contained" disableElevation
-              sx={{ bgcolor: BRAND_COLOR, color: "white", "&:hover": { bgcolor: BRAND_COLOR_HOVER }, fontWeight: fw.bold, fontSize: fs.md, borderRadius: dim.radiusPill, py: 1.5 }}
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              disableElevation
+              sx={{ fontWeight: fw.semibold, fontSize: fs.md, py: 1.5, letterSpacing: "0.02em" }}
             >
               {t.nav.write}
             </Button>

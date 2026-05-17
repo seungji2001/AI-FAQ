@@ -12,6 +12,7 @@ interface TodayEditorsProps {
 
 export default function TodayEditors({ users, title = "오늘의 에디터" }: TodayEditorsProps) {
   const editors = (users ?? []).slice(0, 5).map((u) => ({
+    userId: u.id,
     username: `@${u.username}`,
     followers: String(u.articleCount),
     articles: u.articleCount,

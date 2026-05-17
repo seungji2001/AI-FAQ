@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
@@ -12,6 +11,10 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import LogoutIcon from "@mui/icons-material/Logout";
+import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import { styled, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import MobileSidebar from "./MobileSidebar";
@@ -20,33 +23,23 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/constants/nav";
-import { BRAND_COLOR, BRAND_COLOR_HOVER, KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
+import { KAKAO_COLOR, KAKAO_COLOR_HOVER, IVORY, INK } from "@/lib/constants/theme";
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { toolbarInner } from "@/lib/styles/sx";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
 import { logout } from "@/lib/api/auth";
 import { useT } from "@/lib/i18n/context";
 
-const SearchBox = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.grey[200],
-  borderRadius: dim.searchBorderRadius,
-  padding: "4px 16px",
-  display: "flex",
-  alignItems: "center",
-  width: dim.searchWidth,
-  [theme.breakpoints.down("sm")]: { width: "100%" },
+const NavLink = styled(Typography)(({ theme: _theme }) => ({
+  fontSize: fs.md,
+  fontWeight: fw.medium,
+  color: INK,
+  cursor: "pointer",
+  letterSpacing: "0.01em",
+  whiteSpace: "nowrap",
+  "&:hover": { opacity: 0.5 },
+  transition: "opacity 0.15s",
 }));
-
-const NavItem = styled(Typography, { shouldForwardProp: (prop) => prop !== "active" })<{ active?: boolean }>(
-  ({ theme, active }) => ({
-    fontSize: fs.md,
-    fontWeight: active ? fw.bold : fw.normal,
-    color: active ? BRAND_COLOR : theme.palette.text.primary,
-    cursor: "pointer",
-    whiteSpace: "nowrap",
-    "&:hover": { opacity: 0.7 },
-  })
-);
 
 const WRITE_HREF = "/write";
 
@@ -56,7 +49,6 @@ export default function Header() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
@@ -85,53 +77,58 @@ export default function Header() {
 
   const navItems = NAV_ITEMS.filter((item) => item.href !== WRITE_HREF);
   const navLabels: Record<string, string> = {
-    "피드": t.nav.feed, "탐색": t.nav.explore, "마이페이지": t.nav.mypage,
+    "피드": t.nav.feed,
+    "탐색": t.nav.explore,
+    "마이페이지": t.nav.mypage,
   };
 
   return (
     <>
       <LoginDialog open={loginOpen} onClose={() => setLoginOpen(false)} />
 
-      <AppBar position="sticky" elevation={0}
-        sx={{ backgroundColor: "white", borderBottom: "1px solid", borderColor: "grey.300" }}
+      <AppBar
+        position="sticky"
+        elevation={0}
+        sx={{ backgroundColor: IVORY, borderBottom: "1px solid rgba(0,0,0,0.08)" }}
       >
         <Toolbar sx={toolbarInner}>
-          <Typography sx={{ fontSize: fs["3xl"], fontWeight: fw.bold, color: "text.primary", flexShrink: 0 }}>
-            THINGZ
-          </Typography>
-
-          <SearchBox sx={{ mx: "auto" }}>
-            <InputBase
-              placeholder={t.header.search}
-              fullWidth
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && searchQuery.trim()) {
-                  router.push(`/explore?tag=${encodeURIComponent(searchQuery.trim())}`);
-                  setSearchQuery("");
-                }
+          <Link href="/" style={{ textDecoration: "none" }}>
+            <Typography
+              sx={{
+                fontSize: fs["2xl"],
+                color: INK,
+                flexShrink: 0,
+                fontFamily: "var(--font-pacifico)",
+                letterSpacing: "0.02em",
+                "&:hover": { opacity: 0.7 },
+                transition: "opacity 0.15s",
               }}
-              inputProps={{ "aria-label": "search" }}
-              sx={{ fontSize: fs.sm, color: "text.secondary" }}
-            />
-          </SearchBox>
+            >
+              Thingz
+            </Typography>
+          </Link>
+
+          <Box sx={{ flex: 1 }} />
 
           {isMobile ? (
             <IconButton onClick={() => setSidebarOpen(true)} sx={{ flexShrink: 0 }}>
-              <MenuIcon sx={{ color: "text.primary" }} />
+              <MenuIcon sx={{ color: INK }} />
             </IconButton>
           ) : (
-            <Box sx={{ display: "flex", gap: { sm: 2, md: 3 }, alignItems: "center" }}>
+            <Box sx={{ display: "flex", gap: { sm: 2.5, md: 3.5 }, alignItems: "center", flexShrink: 0 }}>
               {navItems.map((item) => (
                 <Link key={item.label} href={item.href} style={{ textDecoration: "none" }}>
-                  <NavItem>{navLabels[item.label] ?? item.label}</NavItem>
+                  <NavLink>{navLabels[item.label] ?? item.label}</NavLink>
                 </Link>
               ))}
 
               <Link href={WRITE_HREF} style={{ textDecoration: "none" }} onClick={handleWriteClick}>
-                <Button disableElevation variant="contained" size="small"
-                  sx={{ bgcolor: BRAND_COLOR, color: "white", "&:hover": { bgcolor: BRAND_COLOR_HOVER }, fontSize: fs.sm, fontWeight: fw.bold, borderRadius: dim.radiusPill, px: 2.5 }}
+                <Button
+                  disableElevation
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  sx={{ fontSize: fs.sm, fontWeight: fw.semibold, px: 2.5, py: 1, letterSpacing: "0.02em" }}
                 >
                   {t.nav.write}
                 </Button>
@@ -142,18 +139,91 @@ export default function Header() {
               {username ? (
                 <>
                   <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)} sx={{ p: 0 }}>
-                    <Avatar sx={{ width: 32, height: 32, bgcolor: BRAND_COLOR, fontSize: fs.sm }}>
+                    <Avatar
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        bgcolor: "primary.main",
+                        color: "primary.contrastText",
+                        fontSize: fs.sm,
+                        fontWeight: fw.bold,
+                      }}
+                    >
                       {username[0].toUpperCase()}
                     </Avatar>
                   </IconButton>
-                  <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                    <MenuItem disabled sx={{ fontSize: fs.sm, color: "text.secondary" }}>@{username}</MenuItem>
-                    <MenuItem onClick={handleLogout} sx={{ fontSize: fs.sm }}>{t.nav.logout}</MenuItem>
+                  <Menu
+                    anchorEl={menuAnchor}
+                    open={Boolean(menuAnchor)}
+                    onClose={() => setMenuAnchor(null)}
+                    transformOrigin={{ horizontal: "right", vertical: "top" }}
+                    anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          mt: 1,
+                          minWidth: 220,
+                          borderRadius: dim.radiusCard,
+                          border: "1px solid",
+                          borderColor: "divider",
+                          boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                          overflow: "hidden",
+                        },
+                      },
+                    }}
+                  >
+                    {/* 유저 정보 섹션 */}
+                    <Box sx={{ px: 2, py: 1.5, display: "flex", alignItems: "center", gap: 1.5 }}>
+                      <Avatar sx={{ width: 36, height: 36, bgcolor: "primary.main", color: "primary.contrastText", fontSize: fs.sm, fontWeight: fw.bold }}>
+                        {username[0].toUpperCase()}
+                      </Avatar>
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography sx={{ fontSize: fs.md, fontWeight: fw.semibold, color: "text.primary", lineHeight: 1.3 }}>
+                          {username}
+                        </Typography>
+                        <Typography sx={{ fontSize: fs.sm, color: "text.secondary", lineHeight: 1.3 }}>
+                          @{username}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <Divider />
+
+                    <Link href="/mypage" style={{ textDecoration: "none", color: "inherit" }} onClick={() => setMenuAnchor(null)}>
+                      <MenuItem sx={{ py: 1.25, gap: 1.5, fontSize: fs.md, color: "text.primary", "&:hover": { bgcolor: "rgba(0,0,0,0.03)" } }}>
+                        <ListItemIcon sx={{ minWidth: "auto", color: "text.secondary" }}>
+                          <Person2OutlinedIcon sx={{ fontSize: 18 }} />
+                        </ListItemIcon>
+                        {t.nav.mypage}
+                      </MenuItem>
+                    </Link>
+
+                    <Divider />
+
+                    <MenuItem
+                      onClick={handleLogout}
+                      sx={{ py: 1.25, gap: 1.5, fontSize: fs.md, color: "text.secondary", "&:hover": { bgcolor: "rgba(0,0,0,0.03)", color: "text.primary" } }}
+                    >
+                      <ListItemIcon sx={{ minWidth: "auto", color: "inherit" }}>
+                        <LogoutIcon sx={{ fontSize: 18 }} />
+                      </ListItemIcon>
+                      {t.nav.logout}
+                    </MenuItem>
                   </Menu>
                 </>
               ) : (
-                <Button onClick={() => setLoginOpen(true)} variant="outlined" size="small"
-                  sx={{ borderColor: KAKAO_COLOR, bgcolor: KAKAO_COLOR, color: KAKAO_TEXT_COLOR, "&:hover": { bgcolor: KAKAO_COLOR_HOVER, borderColor: KAKAO_COLOR_HOVER }, fontSize: fs.sm, fontWeight: fw.bold, borderRadius: 2, px: 2 }}
+                <Button
+                  onClick={() => setLoginOpen(true)}
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  sx={{
+                    fontSize: fs.sm,
+                    fontWeight: fw.medium,
+                    px: 2,
+                    py: 0.875,
+                    transition: "all 0.2s",
+                  }}
                 >
                   {t.nav.login}
                 </Button>
@@ -163,7 +233,11 @@ export default function Header() {
         </Toolbar>
       </AppBar>
 
-      <MobileSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} onLoginRequest={() => setLoginOpen(true)} />
+      <MobileSidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        onLoginRequest={() => setLoginOpen(true)}
+      />
     </>
   );
 }

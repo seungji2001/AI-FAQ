@@ -11,14 +11,13 @@ interface ArticleEditorProfileProps {
   articles?: number;
   followers?: string;
   avatarSrc?: string;
-  following?: boolean;
   onLoginRequired?: () => void;
 }
 
 export default function ArticleEditorProfile({
   userId, username = "@film_essay_kim",
   bio = "필름 카메라와 아날로그 라이프스타일을 사랑합니다 📷",
-  articles = 34, followers = "1.2k", avatarSrc, following = false, onLoginRequired,
+  articles = 34, followers = "1.2k", avatarSrc, onLoginRequired,
 }: ArticleEditorProfileProps) {
   return (
     <Box sx={{ borderTop: "1px solid", borderColor: "grey.200", pt: 3 }}>
@@ -27,7 +26,7 @@ export default function ArticleEditorProfile({
       </Typography>
       <EditorItem
         userId={userId} username={username} followers={followers}
-        articles={articles} avatarSrc={avatarSrc} following={following}
+        articles={articles} avatarSrc={avatarSrc}
         onLoginRequired={onLoginRequired}
       />
       {bio && (
