@@ -3,8 +3,8 @@ export type Locale = "ko" | "en" | "ja";
 export interface Translations {
   nav: { feed: string; explore: string; write: string; mypage: string; login: string; logout: string };
   header: { search: string };
-  login: { description: string; startWithKakao: string };
-  feed: { recentArticles: string; noArticles: string; todayEditors: string };
+  login: { description: string; startWithKakao: string; terms: string };
+  feed: { recentArticles: string; noArticles: string; todayEditors: string; noEditors: string };
   article: {
     backToFeed: string; sold: string; markAsSold: string; markAsSoldConfirm: string;
     contactSection: string; instagramDm: string; kakaoChat: string;
@@ -26,9 +26,9 @@ export interface Translations {
     uploadFailed: string;
   };
   mypage: {
-    publishedTab: string; draftsTab: string; editProfile: string;
+    publishedTab: string; draftsTab: string; followingTab: string; editProfile: string;
     edit: string; delete: string; publishBtn: string;
-    deleteConfirm: string; noPublished: string; noDrafts: string;
+    deleteConfirm: string; noPublished: string; noDrafts: string; noFollowing: string;
     displayName: string; bio: string; instagramId: string; kakaoUrl: string;
     cancel: string; save: string; saving: string;
     saveFailed: string; deleteFailed: string; publishFailed: string;
@@ -43,10 +43,10 @@ export interface Translations {
 }
 
 export const ko: Translations = {
-  nav: { feed: "피드", explore: "탐색", write: "등록하기", mypage: "마이페이지", login: "로그인", logout: "로그아웃" },
+  nav: { feed: "피드", explore: "탐색", write: "글쓰기", mypage: "마이페이지", login: "로그인", logout: "로그아웃" },
   header: { search: "물건 이야기 검색" },
-  login: { description: "카카오로 로그인하고 나만의 물건 이야기를 등록해보세요", startWithKakao: "카카오로 시작하기" },
-  feed: { recentArticles: "최근 아티클", noArticles: "아직 아티클이 없습니다.", todayEditors: "오늘의 에디터" },
+  login: { description: "물건과의 이야기를 기록하고 나눠보세요.", startWithKakao: "카카오로 시작하기", terms: "로그인 시 서비스 이용약관에 동의하게 됩니다." },
+  feed: { recentArticles: "최근 아티클", noArticles: "아직 아티클이 없습니다.", todayEditors: "오늘의 에디터", noEditors: "에디터가 없어요." },
   article: {
     backToFeed: "← 피드로 돌아가기", sold: "판매완료", markAsSold: "판매 완료로 변경",
     markAsSoldConfirm: "판매 완료로 변경하시겠습니까?", contactSection: "거래 문의하기",
@@ -76,9 +76,9 @@ export const ko: Translations = {
     uploadFailed: "개 이미지 업로드에 실패했습니다.",
   },
   mypage: {
-    publishedTab: "발행된 글", draftsTab: "임시저장", editProfile: "프로필 수정",
+    publishedTab: "발행된 글", draftsTab: "임시저장", followingTab: "팔로잉", editProfile: "프로필 수정",
     edit: "수정", delete: "삭제", publishBtn: "발행",
-    deleteConfirm: "정말 삭제하시겠어요?", noPublished: "아직 발행한 아티클이 없어요.", noDrafts: "임시저장된 아티클이 없어요.",
+    deleteConfirm: "정말 삭제하시겠어요?", noPublished: "아직 발행한 아티클이 없어요.", noDrafts: "임시저장된 아티클이 없어요.", noFollowing: "팔로잉하는 에디터가 없어요.",
     displayName: "표시 이름", bio: "소개글", instagramId: "인스타그램 ID", kakaoUrl: "카카오 오픈채팅 링크",
     cancel: "취소", save: "저장", saving: "저장 중...",
     saveFailed: "저장 실패", deleteFailed: "삭제 실패", publishFailed: "발행 실패",
@@ -95,8 +95,8 @@ export const ko: Translations = {
 export const en: Translations = {
   nav: { feed: "Feed", explore: "Explore", write: "Register", mypage: "My Page", login: "Login", logout: "Logout" },
   header: { search: "Search item stories" },
-  login: { description: "Log in with Kakao and share your unique item stories", startWithKakao: "Start with Kakao" },
-  feed: { recentArticles: "Recent Articles", noArticles: "No articles yet.", todayEditors: "Today's Editors" },
+  login: { description: "Record and share your stories with things.", startWithKakao: "Continue with Kakao", terms: "By signing in, you agree to our Terms of Service." },
+  feed: { recentArticles: "Recent Articles", noArticles: "No articles yet.", todayEditors: "Today's Editors", noEditors: "No editors yet." },
   article: {
     backToFeed: "← Back to Feed", sold: "SOLD", markAsSold: "Mark as Sold",
     markAsSoldConfirm: "Mark this item as sold?", contactSection: "Contact Seller",
@@ -126,9 +126,9 @@ export const en: Translations = {
     uploadFailed: " image(s) failed to upload.",
   },
   mypage: {
-    publishedTab: "Published", draftsTab: "Drafts", editProfile: "Edit Profile",
+    publishedTab: "Published", draftsTab: "Drafts", followingTab: "Following", editProfile: "Edit Profile",
     edit: "Edit", delete: "Delete", publishBtn: "Publish",
-    deleteConfirm: "Are you sure you want to delete?", noPublished: "No published articles yet.", noDrafts: "No drafts saved.",
+    deleteConfirm: "Are you sure you want to delete?", noPublished: "No published articles yet.", noDrafts: "No drafts saved.", noFollowing: "You're not following anyone yet.",
     displayName: "Display Name", bio: "Bio", instagramId: "Instagram ID", kakaoUrl: "Kakao Open Chat Link",
     cancel: "Cancel", save: "Save", saving: "Saving...",
     saveFailed: "Save failed", deleteFailed: "Delete failed", publishFailed: "Publish failed",
@@ -145,8 +145,8 @@ export const en: Translations = {
 export const ja: Translations = {
   nav: { feed: "フィード", explore: "探索", write: "登録する", mypage: "マイページ", login: "ログイン", logout: "ログアウト" },
   header: { search: "物語を検索" },
-  login: { description: "カカオでログインして、あなただけの物語を登録してみましょう", startWithKakao: "カカオで始める" },
-  feed: { recentArticles: "最近の記事", noArticles: "まだ記事がありません。", todayEditors: "今日のエディター" },
+  login: { description: "物との物語を記録してシェアしましょう。", startWithKakao: "カカオで始める", terms: "ログインすることで利用規約に同意したことになります。" },
+  feed: { recentArticles: "最近の記事", noArticles: "まだ記事がありません。", todayEditors: "今日のエディター", noEditors: "エディターがいません。" },
   article: {
     backToFeed: "← フィードに戻る", sold: "売り切れ", markAsSold: "売り切れにする",
     markAsSoldConfirm: "売り切れにしますか？", contactSection: "取引について問い合わせる",
@@ -176,9 +176,9 @@ export const ja: Translations = {
     uploadFailed: "枚の画像のアップロードに失敗しました。",
   },
   mypage: {
-    publishedTab: "公開済み", draftsTab: "下書き", editProfile: "プロフィール編集",
+    publishedTab: "公開済み", draftsTab: "下書き", followingTab: "フォロー中", editProfile: "プロフィール編集",
     edit: "編集", delete: "削除", publishBtn: "公開",
-    deleteConfirm: "本当に削除しますか？", noPublished: "まだ公開した記事がありません。", noDrafts: "下書きが保存されていません。",
+    deleteConfirm: "本当に削除しますか？", noPublished: "まだ公開した記事がありません。", noDrafts: "下書きが保存されていません。", noFollowing: "フォローしているエディターはいません。",
     displayName: "表示名", bio: "自己紹介", instagramId: "インスタグラム ID", kakaoUrl: "カカオオープンチャットのリンク",
     cancel: "キャンセル", save: "保存", saving: "保存中...",
     saveFailed: "保存に失敗しました", deleteFailed: "削除に失敗しました", publishFailed: "公開に失敗しました",

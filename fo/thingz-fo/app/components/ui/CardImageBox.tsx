@@ -1,12 +1,13 @@
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import { SxProps, Theme } from "@mui/material/styles";
-import { cardImage } from "@/lib/styles/sx";
-import { BRAND_COLOR } from "@/lib/constants/theme";
+import { cardImage, imgContain } from "@/lib/styles/sx";
+import { INK, IVORY } from "@/lib/constants/theme";
 import { badgeChip } from "@/lib/styles/typography";
 
 interface CardImageBoxProps {
   imageSrc?: string;
+  alt?: string;
   aspectRatio: string | { [key: string]: string };
   badge?: string;
   badgePosition?: { top: number; left: number };
@@ -15,6 +16,7 @@ interface CardImageBoxProps {
 
 export default function CardImageBox({
   imageSrc,
+  alt = "",
   aspectRatio,
   badge,
   badgePosition = { top: 12, left: 16 },
@@ -24,14 +26,13 @@ export default function CardImageBox({
     <Box
       sx={[
         cardImage,
-        {
-          position: "relative" as const,
-          aspectRatio,
-          ...(imageSrc ? { backgroundImage: `url(${imageSrc})` } : {}),
-        },
+        { position: "relative" as const, aspectRatio },
         ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
       ]}
     >
+      {imageSrc && (
+        <Box component="img" src={imageSrc} alt={alt} sx={imgContain} />
+      )}
       {badge && (
         <Chip
           label={badge}
@@ -41,8 +42,8 @@ export default function CardImageBox({
             position: "absolute",
             top: badgePosition.top,
             left: badgePosition.left,
-            backgroundColor: BRAND_COLOR,
-            color: "white",
+            bgcolor: INK,
+            color: IVORY,
           }}
         />
       )}

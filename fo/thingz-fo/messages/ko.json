@@ -1,0 +1,87 @@
+{
+  "nav": {
+    "feed": "피드",
+    "explore": "탐색",
+    "publish": "발행",
+    "mypage": "마이페이지"
+  },
+  "header": {
+    "searchPlaceholder": "물건 이야기 검색"
+  },
+  "home": {
+    "recentArticles": "최근 아티클",
+    "noArticles": "아직 아티클이 없습니다.",
+    "todayEditors": "오늘의 에디터",
+    "noEditors": "에디터가 없어요."
+  },
+  "article": {
+    "backToFeed": "← 피드로 돌아가기"
+  },
+  "writeHeader": {
+    "saveDraft": "임시저장",
+    "processing": "처리 중...",
+    "publish": "발행하기"
+  },
+  "writeEditor": {
+    "uploadPhoto": "사진을 드래그하거나 클릭해서 업로드",
+    "uploadHint": "(최대 10장 · 첫 번째 사진이 커버)",
+    "titlePlaceholder": "이 물건과의 이야기를 제목으로...",
+    "contentPlaceholder": "어떤 물건인가요? 어디서 만났나요? 어떻게 함께했나요?\n\n이야기를 자유롭게 써주세요. 최소 200자를 권장해요.",
+    "addTag": "태그 추가",
+    "tagPlaceholder": "+ 태그"
+  },
+  "writeSaleSettings": {
+    "title": "판매 설정",
+    "forSale": "이 물건 판매하기",
+    "price": "판매 가격",
+    "priceUnit": "원",
+    "condition": "물건 상태",
+    "delivery": "거래 방식",
+    "contact": "거래 연락처",
+    "instagramPlaceholder": "인스타그램 ID (예: @thingz_official)",
+    "kakaoPlaceholder": "카카오 오픈채팅 링크",
+    "conditionS": "S급",
+    "conditionA": "A급",
+    "conditionB": "B급",
+    "conditionC": "C급",
+    "deliveryParcel": "택배",
+    "deliveryDirect": "직거래",
+    "deliveryNegotiate": "협의"
+  },
+  "writePage": {
+    "alertTitle": "제목을 입력해주세요.",
+    "alertContent": "본문을 입력해주세요.",
+    "saveDraftSuccess": "임시저장 완료!",
+    "saveDraftFailStatus": "저장 실패 ({status})",
+    "saveDraftFailGeneric": "저장 중 오류가 발생했습니다.",
+    "publishFailStatus": "발행 실패 ({status})",
+    "publishFailGeneric": "발행 중 오류가 발생했습니다."
+  },
+  "articleTrade": {
+    "conditionLabel": "상태",
+    "deliveryLabel": "거래",
+    "locationLabel": "지역",
+    "inquire": "거래 문의하기",
+    "instagram": "📷 인스타그램 DM",
+    "kakao": "💬 카카오 오픈채팅",
+    "seller": "판매자"
+  },
+  "editorItem": {
+    "followers": "팔로워 {followers} · 아티클 {articles}",
+    "following": "팔로잉",
+    "follow": "팔로우"
+  },
+  "todayEditors": {
+    "title": "오늘의 에디터"
+  },
+  "login": {
+    "description": "물건과의 이야기를 기록하고 나눠보세요.",
+    "startWithKakao": "카카오로 시작하기",
+    "terms": "로그인 시 서비스 이용약관에 동의하게 됩니다."
+  },
+  "users": {
+    "notFound": "존재하지 않는 유저입니다.",
+    "articles": "아티클",
+    "noArticles": "아직 아티클이 없습니다."
+  }
+}

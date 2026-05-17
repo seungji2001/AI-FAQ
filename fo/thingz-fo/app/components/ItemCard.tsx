@@ -2,8 +2,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
-import { BRAND_COLOR } from "@/lib/constants/theme";
 import { fs, fw, lh, dim } from "@/lib/styles/typography";
+import { cardImage, imgContain } from "@/lib/styles/sx";
 
 interface ItemCardProps {
   id?: string;
@@ -28,10 +28,15 @@ export default function ItemCard({
         sx={{
           display: "flex",
           gap: { xs: 2, md: 3 },
-          py: { xs: 2.5, md: 3 },
-          borderBottom: "1px solid",
-          borderColor: "grey.100",
+          p: { xs: 2, md: 2.5 },
+          bgcolor: "background.paper",
+          borderRadius: dim.radiusCard,
+          border: "1px solid",
+          borderColor: "divider",
+          boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
           alignItems: "flex-start",
+          transition: "box-shadow 0.15s",
+          "&:hover": { boxShadow: "0 2px 10px rgba(0,0,0,0.08)" },
           "&:hover .card-title": { color: "grey.600" },
         }}
       >
@@ -72,7 +77,7 @@ export default function ItemCard({
               </Typography>
             )}
             {price != null && (
-              <Typography sx={{ fontSize: fs.sm, color: BRAND_COLOR, fontWeight: fw.semibold }}>
+              <Typography sx={{ fontSize: fs.sm, color: "text.primary", fontWeight: fw.semibold }}>
                 {price.toLocaleString()}원
               </Typography>
             )}
@@ -81,18 +86,9 @@ export default function ItemCard({
 
         {/* 오른쪽: 썸네일 */}
         {imageSrc && (
-          <Box
-            sx={{
-              width: dim.thumbnailWidth,
-              height: dim.thumbnailWidth,
-              flexShrink: 0,
-              borderRadius: dim.radiusCard,
-              backgroundImage: `url(${imageSrc})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              bgcolor: "grey.200",
-            }}
-          />
+          <Box sx={{ ...cardImage, width: dim.thumbnailWidth, height: dim.thumbnailWidth, flexShrink: 0, borderRadius: dim.radiusCard }}>
+            <Box component="img" src={imageSrc} alt={title} sx={imgContain} />
+          </Box>
         )}
       </Box>
     </Link>

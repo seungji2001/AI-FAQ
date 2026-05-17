@@ -7,15 +7,13 @@ import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import Chip from "@mui/material/Chip";
 import SearchIcon from "@mui/icons-material/Search";
-import { fetchArticles, fetchArticlesByTag } from "@/lib/api/articles";
+import { fetchArticles, fetchArticlesByTag, fetchPopularTags } from "@/lib/api/articles";
 import { ArticleListItem } from "@/lib/types/article";
 import ArticleGrid from "@/app/components/ArticleGrid";
 import { mainContent } from "@/lib/styles/sx";
 import { fs, fw, titleMd, textSecondary } from "@/lib/styles/typography";
-import { BRAND_COLOR } from "@/lib/constants/theme";
+import { INK, IVORY } from "@/lib/constants/theme";
 import { useT } from "@/lib/i18n/context";
-
-const POPULAR_TAGS = ["필름카메라", "빈티지", "오디오", "자전거", "카메라렌즈", "시계", "책", "의류"];
 
 export default function ExploreClient() {
   const t = useT();
@@ -26,7 +24,12 @@ export default function ExploreClient() {
   const [input, setInput] = useState(initialTag);
   const [activeTag, setActiveTag] = useState(initialTag);
   const [articles, setArticles] = useState<ArticleListItem[]>([]);
+  const [popularTags, setPopularTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchPopularTags(12).then(setPopularTags).catch(() => setPopularTags([]));
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -54,13 +57,15 @@ export default function ExploreClient() {
         />
       </Box>
 
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 4 }}>
-        {POPULAR_TAGS.map((tag) => (
-          <Chip key={tag} label={`#${tag}`} clickable onClick={() => handleSearch(tag)}
-            sx={{ fontSize: fs.sm, fontWeight: activeTag === tag ? fw.bold : fw.normal, bgcolor: activeTag === tag ? BRAND_COLOR : "grey.100", color: activeTag === tag ? "white" : "text.primary", "&:hover": { bgcolor: activeTag === tag ? BRAND_COLOR : "grey.200" } }}
-          />
-        ))}
-      </Box>
+      {popularTags.length > 0 && (
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 4 }}>
+          {popularTags.map((tag) => (
+            <Chip key={tag} label={`#${tag}`} clickable onClick={() => handleSearch(tag)}
+              sx={{ fontSize: fs.sm, fontWeight: activeTag === tag ? fw.bold : fw.normal, bgcolor: activeTag === tag ? INK : "grey.100", color: activeTag === tag ? IVORY : "text.primary", "&:hover": { bgcolor: activeTag === tag ? INK : "grey.200" } }}
+            />
+          ))}
+        </Box>
+      )}
 
       {activeTag && (
         <Typography sx={{ ...textSecondary, mb: 2 }}>

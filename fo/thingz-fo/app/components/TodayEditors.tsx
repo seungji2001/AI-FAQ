@@ -8,9 +8,10 @@ import { fs, fw, textSecondary } from "@/lib/styles/typography";
 interface TodayEditorsProps {
   users?: UserItem[];
   title?: string;
+  noEditors?: string;
 }
 
-export default function TodayEditors({ users, title = "오늘의 에디터" }: TodayEditorsProps) {
+export default function TodayEditors({ users, title = "오늘의 에디터", noEditors = "에디터가 없어요." }: TodayEditorsProps) {
   const editors = (users ?? []).slice(0, 5).map((u) => ({
     userId: u.id,
     username: `@${u.username}`,
@@ -25,7 +26,7 @@ export default function TodayEditors({ users, title = "오늘의 에디터" }: T
         {title}
       </Typography>
       {editors.length === 0 ? (
-        <Typography sx={textSecondary}>에디터가 없어요.</Typography>
+        <Typography sx={textSecondary}>{noEditors}</Typography>
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           {editors.map((editor, i) => (

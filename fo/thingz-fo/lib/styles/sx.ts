@@ -1,5 +1,5 @@
 import { SxProps, Theme } from "@mui/material/styles";
-import { dim } from "./typography";
+import { dim } from "@/lib/styles/typography";
 
 // ─── 카드 (FeaturedCard — hover만 사용, ItemCard는 자체 스타일) ──
 export const cardBase: SxProps<Theme> = {
@@ -10,19 +10,31 @@ export const cardBase: SxProps<Theme> = {
   "&:hover": { opacity: 0.85 },
 };
 
+// 이미지 박스 컨테이너 — 고정 크기, 여백 포함
 export const cardImage: SxProps<Theme> = {
   width: "100%",
-  bgcolor: "grey.200",
-  backgroundSize: "cover",
-  backgroundPosition: "center",
+  bgcolor: "grey.100",
+  overflow: "hidden",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+// 이미지 태그 — 박스 안에서 비율 유지, contain
+export const imgContain: SxProps<Theme> = {
+  width: "100%",
+  height: "100%",
+  objectFit: "contain" as const,
+  display: "block",
 };
 
 // ─── 패널 (ArticleTrade, WriteSaleSettings 등 사이드 패널) ───
 export const panelBase: SxProps<Theme> = {
-  bgcolor: "white",
-  borderRadius: 2,
+  bgcolor: "background.paper",
+  borderRadius: dim.radiusCard,
   border: "1px solid",
-  borderColor: "grey.200",
+  borderColor: "divider",
+  boxShadow: "0 1px 6px rgba(0,0,0,0.05)",
 };
 
 // ─── 페이지 레이아웃 ─────────────────────────────────────────
@@ -74,10 +86,17 @@ export const toolbarInner: SxProps<Theme> = {
 export const articleGrid: SxProps<Theme> = {
   display: "flex",
   flexDirection: "column",
+  gap: 2,
 };
 
 // ─── 아티클 카드 구분선 ───────────────────────────────────────
 export const articleDivider: SxProps<Theme> = {
   borderBottom: "1px solid",
   borderColor: "grey.200",
+};
+
+// ─── 공통 버튼: 각진(square) 스타일 ─────────────────────────
+// Header, LoginDialog, MobileSidebar 등 의도적으로 borderRadius:0 적용
+export const squareBtn: SxProps<Theme> = {
+  borderRadius: dim.radiusNone,
 };

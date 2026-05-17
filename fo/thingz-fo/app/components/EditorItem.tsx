@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
+import Link from "next/link";
 import { dim, labelBold, captionText, btnFollow } from "@/lib/styles/typography";
 import { followUser, unfollowUser, checkIsFollowing } from "@/lib/api/follow";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
@@ -75,11 +76,25 @@ export default function EditorItem({
     ? `${(followerCount / 1000).toFixed(1)}k`
     : String(followerCount);
 
+  const profileHref = userId ? `/users/${userId}` : undefined;
+
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-      <Avatar src={avatarSrc} sx={{ width: dim.avatarSize, height: dim.avatarSize, flexShrink: 0 }} />
+      {profileHref ? (
+        <Link href={profileHref} style={{ flexShrink: 0 }}>
+          <Avatar src={avatarSrc} sx={{ width: dim.avatarSize, height: dim.avatarSize, cursor: "pointer", "&:hover": { opacity: 0.8 }, transition: "opacity 0.15s" }} />
+        </Link>
+      ) : (
+        <Avatar src={avatarSrc} sx={{ width: dim.avatarSize, height: dim.avatarSize, flexShrink: 0 }} />
+      )}
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography sx={labelBold}>{username}</Typography>
+        {profileHref ? (
+          <Link href={profileHref} style={{ textDecoration: "none" }}>
+            <Typography sx={{ ...labelBold, "&:hover": { opacity: 0.7 }, transition: "opacity 0.15s" }}>{username}</Typography>
+          </Link>
+        ) : (
+          <Typography sx={labelBold}>{username}</Typography>
+        )}
         <Typography sx={captionText}>{t.article.followers} {displayFollowers} · {t.article.articles} {articles}</Typography>
       </Box>
       {checked && (

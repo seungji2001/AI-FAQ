@@ -9,7 +9,7 @@ import Divider from "@mui/material/Divider";
 import LinearProgress from "@mui/material/LinearProgress";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { panelBase } from "@/lib/styles/sx";
+import { panelBase, cardImage, imgContain } from "@/lib/styles/sx";
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { OVERLAY_DARK, OVERLAY_MED } from "@/lib/constants/theme";
 import { useT } from "@/lib/i18n/context";
@@ -61,8 +61,8 @@ export default function WriteEditor({
       ) : (
         <Box sx={{ display: "flex", gap: 1.5, p: 2, overflowX: "auto" }}>
           {imageUrls.map((url, i) => (
-            <Box key={url} sx={{ position: "relative", width: 100, height: 100, borderRadius: 1, overflow: "hidden", flexShrink: 0 }}>
-              <Box component="img" src={url} alt={`이미지 ${i + 1}`} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <Box key={url} sx={{ ...cardImage, position: "relative", width: 100, height: 100, borderRadius: dim.radiusMd, flexShrink: 0 }}>
+              <Box component="img" src={url} alt={`이미지 ${i + 1}`} sx={imgContain} />
               {i === 0 && (
                 <Box sx={{ position: "absolute", bottom: 4, left: 4, bgcolor: OVERLAY_DARK, color: "white", fontSize: fs.xs, px: 0.5, borderRadius: 0.5 }}>
                   {t.write.cover}

@@ -1,0 +1,87 @@
+{
+  "nav": {
+    "feed": "Feed",
+    "explore": "Explore",
+    "publish": "Publish",
+    "mypage": "My Page"
+  },
+  "header": {
+    "searchPlaceholder": "Search thing stories"
+  },
+  "home": {
+    "recentArticles": "Recent Articles",
+    "noArticles": "No articles yet.",
+    "todayEditors": "Today's Editors",
+    "noEditors": "No editors yet."
+  },
+  "article": {
+    "backToFeed": "← Back to Feed"
+  },
+  "writeHeader": {
+    "saveDraft": "Save Draft",
+    "processing": "Processing...",
+    "publish": "Publish"
+  },
+  "writeEditor": {
+    "uploadPhoto": "Drag or click to upload photos",
+    "uploadHint": "(Up to 10 photos · First photo becomes cover)",
+    "titlePlaceholder": "Give your story a title...",
+    "contentPlaceholder": "What is this item? Where did you find it? How did you spend time together?\n\nWrite your story freely. At least 200 characters recommended.",
+    "addTag": "Add tag",
+    "tagPlaceholder": "+ Tag"
+  },
+  "writeSaleSettings": {
+    "title": "Sale Settings",
+    "forSale": "List this item for sale",
+    "price": "Sale Price",
+    "priceUnit": "KRW",
+    "condition": "Item Condition",
+    "delivery": "Delivery Method",
+    "contact": "Trade Contact",
+    "instagramPlaceholder": "Instagram ID (e.g. @thingz_official)",
+    "kakaoPlaceholder": "KakaoTalk Open Chat Link",
+    "conditionS": "Grade S",
+    "conditionA": "Grade A",
+    "conditionB": "Grade B",
+    "conditionC": "Grade C",
+    "deliveryParcel": "Parcel",
+    "deliveryDirect": "In-person",
+    "deliveryNegotiate": "Negotiable"
+  },
+  "writePage": {
+    "alertTitle": "Please enter a title.",
+    "alertContent": "Please enter the body.",
+    "saveDraftSuccess": "Draft saved!",
+    "saveDraftFailStatus": "Save failed ({status})",
+    "saveDraftFailGeneric": "An error occurred while saving.",
+    "publishFailStatus": "Publish failed ({status})",
+    "publishFailGeneric": "An error occurred while publishing."
+  },
+  "articleTrade": {
+    "conditionLabel": "Condition",
+    "deliveryLabel": "Delivery",
+    "locationLabel": "Location",
+    "inquire": "Contact Seller",
+    "instagram": "📷 Instagram DM",
+    "kakao": "💬 KakaoTalk Chat",
+    "seller": "Seller"
+  },
+  "editorItem": {
+    "followers": "Followers {followers} · Articles {articles}",
+    "following": "Following",
+    "follow": "Follow"
+  },
+  "todayEditors": {
+    "title": "Today's Editors"
+  },
+  "login": {
+    "description": "Record and share your stories with things.",
+    "startWithKakao": "Continue with Kakao",
+    "terms": "By signing in, you agree to our Terms of Service."
+  },
+  "users": {
+    "notFound": "User not found.",
+    "articles": "Articles",
+    "noArticles": "No articles yet."
+  }
+}

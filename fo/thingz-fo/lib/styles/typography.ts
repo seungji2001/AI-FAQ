@@ -67,30 +67,44 @@ export const dim = {
   contentMaxWidth:  "1440px",
 
   // border radius
+  radiusNone:       0,
+  radiusSm:         "4px",
+  radiusMd:         "6px",
+  radiusLg:         "12px",
   radiusPill:       "20px",
-  radiusTag:        "4px",
-  radiusCard:       "8px",
+  radiusTag:        "4px",   // dim.radiusSm 과 동일 — 태그/Chip 전용 alias
+  radiusCard:       "12px",  // panelBase, WriteEditor 등 카드/패널 공통
 } as const;
 
 // ─── Common button sx presets ────────────────────────────────
 export const btnDark: SxProps<Theme> = {
-  bgcolor: "grey.900",
-  color: "white",
-  borderRadius: 2,
+  bgcolor: "primary.main",
+  color: "primary.contrastText",
+  borderRadius: dim.radiusCard,
   fontSize: fs.sm,
   fontWeight: fw.medium,
   py: 1.5,
-  "&:hover": { bgcolor: "grey.800" },
+  "&:hover": { bgcolor: "primary.dark" },
 };
 
 export const btnPill: SxProps<Theme> = {
-  bgcolor: "grey.900",
-  color: "white",
-  borderRadius: "20px",
+  bgcolor: "primary.main",
+  color: "primary.contrastText",
+  borderRadius: dim.radiusPill,
   fontSize: fs.sm,
   fontWeight: fw.semibold,
   px: 3,
-  "&:hover": { bgcolor: "grey.800" },
+  "&:hover": { bgcolor: "primary.dark" },
+};
+
+// ─── 팔로우 버튼 (EditorItem, FollowButton 공유) ─────────────
+export const btnFollow: SxProps<Theme> = {
+  fontSize: fs.sm,
+  fontWeight: fw.semibold,
+  borderRadius: dim.radiusPill,
+  minWidth: dim.followBtnMinW,
+  height: dim.followBtnHeight,
+  flexShrink: 0,
 };
 
 // ─── Common chip/badge sx ────────────────────────────────────

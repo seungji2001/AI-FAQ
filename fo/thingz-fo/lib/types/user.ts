@@ -17,6 +17,7 @@ export interface UserProfile {
   instagramId: string | null;
   kakaoUrl: string | null;
   articleCount: number;
+  followerCount: number;
 }
 
 export interface UserUpdateRequest {

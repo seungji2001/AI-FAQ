@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ItemCard from "@/app/components/ItemCard";
 import { textSecondary } from "@/lib/styles/typography";
+import { articleGrid } from "@/lib/styles/sx";
 import { ArticleListItem } from "@/lib/types/article";
 
 interface ArticleGridProps {
@@ -14,7 +15,7 @@ export default function ArticleGrid({ articles, emptyMessage = "아티클이 없
   if (loading) return <Typography sx={textSecondary}>불러오는 중...</Typography>;
   if (articles.length === 0) return <Typography sx={textSecondary}>{emptyMessage}</Typography>;
   return (
-    <Box>
+    <Box sx={articleGrid}>
       {articles.map((a) => (
         <ItemCard
           key={a.id}

@@ -2,17 +2,19 @@
 
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
-import { BRAND_COLOR, BRAND_COLOR_HOVER } from "@/lib/constants/theme";
-import { fs, fw, dim } from "@/lib/styles/typography";
+import { btnFollow } from "@/lib/styles/typography";
 import { tokenStorage } from "@/lib/auth/token";
 import { followUser, unfollowUser, checkIsFollowing } from "@/lib/api/follow";
 import LoginDialog from "@/app/components/LoginDialog";
 import { useT } from "@/lib/i18n/context";
 import { useToast } from "@/app/components/ui/Toast";
 
-interface Props { userId: string }
+interface Props {
+  userId: string;
+  onFollowChange?: (delta: 1 | -1) => void;
+}
 
-export default function FollowButton({ userId }: Props) {
+export default function FollowButton({ userId, onFollowChange }: Props) {
   const t = useT();
   const toast = useToast();
   const [following, setFollowing] = useState(false);
@@ -37,8 +39,15 @@ export default function FollowButton({ userId }: Props) {
     if (loading) return;
     setLoading(true);
     try {
-      if (following) { await unfollowUser(userId); setFollowing(false); }
-      else { await followUser(userId); setFollowing(true); }
+      if (following) {
+        await unfollowUser(userId);
+        setFollowing(false);
+        onFollowChange?.(-1);
+      } else {
+        await followUser(userId);
+        setFollowing(true);
+        onFollowChange?.(1);
+      }
     } catch {
       toast.error(following ? t.article.unfollowFailed : t.article.followFailed);
     } finally {
@@ -49,8 +58,14 @@ export default function FollowButton({ userId }: Props) {
   return (
     <>
       <LoginDialog open={loginOpen} onClose={() => setLoginOpen(false)} />
-      <Button size="small" variant={following ? "outlined" : "contained"} disableElevation disabled={loading} onClick={handleClick}
-        sx={{ flexShrink: 0, fontSize: fs.sm, fontWeight: fw.bold, borderRadius: dim.radiusPill, minWidth: dim.followBtnMinW, height: dim.followBtnHeight, backgroundColor: following ? undefined : BRAND_COLOR, borderColor: following ? BRAND_COLOR : undefined, color: following ? BRAND_COLOR : "white", "&:hover": { backgroundColor: following ? undefined : BRAND_COLOR_HOVER } }}
+      <Button
+        size="small"
+        variant={following ? "outlined" : "contained"}
+        color="primary"
+        disableElevation
+        disabled={loading}
+        onClick={handleClick}
+        sx={btnFollow}
       >
         {following ? t.article.following : t.article.follow}
       </Button>

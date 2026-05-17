@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import InputBase from "@mui/material/InputBase";
 import Typography from "@mui/material/Typography";
 import { fs, dim } from "@/lib/styles/typography";
+import { IVORY } from "@/lib/constants/theme";
 
 interface InputRowProps {
   value: string;
@@ -17,8 +18,10 @@ interface InputRowProps {
 export default function InputRow({ value, onChange, placeholder, suffix, multiline, rows }: InputRowProps) {
   return (
     <Box sx={{
-      bgcolor: "grey.100",
-      borderRadius: 2,
+      bgcolor: IVORY,
+      border: "1px solid",
+      borderColor: "divider",
+      borderRadius: dim.radiusCard,
       px: 2,
       py: multiline ? 1.5 : 0,
       minHeight: multiline ? undefined : dim.inputRowHeight,

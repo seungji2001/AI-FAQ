@@ -2,9 +2,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
-import { BRAND_COLOR } from "@/lib/constants/theme";
 import { fs, fw, lh, titleLg, captionText, dim } from "@/lib/styles/typography";
-import { cardImage } from "@/lib/styles/sx";
+import { cardImage, imgContain } from "@/lib/styles/sx";
 
 interface ArticleContentProps {
   tag?: string;
@@ -29,7 +28,7 @@ export default function ArticleContent({
     <Box>
       {/* 태그 */}
       {tag && (
-        <Typography sx={{ fontSize: fs.sm, color: BRAND_COLOR, fontWeight: fw.semibold, textTransform: "uppercase", letterSpacing: "0.08em", mb: 2 }}>
+        <Typography sx={{ fontSize: fs.sm, color: "text.secondary", fontWeight: fw.semibold, textTransform: "uppercase", letterSpacing: "0.08em", mb: 2 }}>
           {tag}
         </Typography>
       )}
@@ -52,15 +51,9 @@ export default function ArticleContent({
 
       {/* 히어로 이미지 */}
       {imageSrc && (
-        <Box
-          sx={{
-            ...cardImage,
-            aspectRatio: { xs: "4/3", md: "16/7" },
-            borderRadius: dim.radiusCard,
-            backgroundImage: `url(${imageSrc})`,
-            mb: 3,
-          }}
-        />
+        <Box sx={{ ...cardImage, aspectRatio: { xs: "4/3", md: "16/7" }, borderRadius: dim.radiusCard, mb: 3 }}>
+          <Box component="img" src={imageSrc} alt={title} sx={imgContain} />
+        </Box>
       )}
 
       {/* 본문 */}
@@ -79,12 +72,11 @@ export default function ArticleContent({
 
       {/* 추가 이미지 */}
       {thumbnails.length > 0 && (
-        <Box sx={{ display: "flex", gap: 1.5, mt: 3, flexWrap: "wrap" }}>
+        <Box sx={{ display: "flex", gap: 2, mt: 3, flexWrap: "wrap" }}>
           {thumbnails.map((src, i) => (
-            <Box
-              key={i}
-              sx={{ width: dim.thumbnailWidth, aspectRatio: "4/3", borderRadius: dim.radiusCard, flexShrink: 0, ...cardImage, backgroundImage: `url(${src})` }}
-            />
+            <Box key={i} sx={{ ...cardImage, width: { xs: 160, sm: 200, md: 240 }, aspectRatio: "4/3", borderRadius: dim.radiusCard, flexShrink: 0 }}>
+              <Box component="img" src={src} alt={`이미지 ${i + 2}`} sx={imgContain} />
+            </Box>
           ))}
         </Box>
       )}

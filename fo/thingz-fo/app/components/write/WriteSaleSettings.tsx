@@ -9,16 +9,15 @@ import InputRow from "@/app/components/ui/InputRow";
 import SelectChip from "@/app/components/ui/SelectChip";
 import SectionLabel from "@/app/components/ui/SectionLabel";
 import { panelBase } from "@/lib/styles/sx";
-import { BRAND_COLOR } from "@/lib/constants/theme";
-import { fs, titleMd } from "@/lib/styles/typography";
+import { IVORY } from "@/lib/constants/theme";
+import { fs, fw, titleMd } from "@/lib/styles/typography";
 import { useT } from "@/lib/i18n/context";
 
-const OrangeSwitch = styled(Switch)(() => ({
+const InkSwitch = styled(Switch)(() => ({
   "& .MuiSwitch-switchBase.Mui-checked": { color: "white" },
-  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": { backgroundColor: BRAND_COLOR },
+  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": { backgroundColor: "#1A1A1A" },
 }));
 
-// condition: "S"|"A"|"B"|"C"  delivery: "택배"|"직거래"|"협의"
 export interface SaleSettingsValue {
   isSale: boolean; price: string; condition: string; delivery: string; instagramId: string; kakaoUrl: string;
 }
@@ -45,13 +44,23 @@ export default function WriteSaleSettings({ value, onChange }: WriteSaleSettings
   ];
 
   return (
-    <Box sx={{ ...panelBase, p: 3, display: "flex", flexDirection: "column", gap: 2.5 }}>
+    <Box
+      sx={{
+        ...panelBase,
+        bgcolor: IVORY,
+        border: "1px solid rgba(0,0,0,0.08)",
+        p: 3,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2.5,
+      }}
+    >
       <Typography sx={titleMd}>{t.write.saleSettings}</Typography>
-      <Divider />
+      <Divider sx={{ borderColor: "rgba(0,0,0,0.08)" }} />
 
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <Typography sx={{ fontSize: fs.md }}>{t.write.sellItem}</Typography>
-        <OrangeSwitch checked={value.isSale} onChange={(e) => set({ isSale: e.target.checked })} />
+        <InkSwitch checked={value.isSale} onChange={(e) => set({ isSale: e.target.checked })} />
       </Box>
 
       {value.isSale && (
@@ -81,7 +90,7 @@ export default function WriteSaleSettings({ value, onChange }: WriteSaleSettings
             </Box>
           </Box>
 
-          <Divider />
+          <Divider sx={{ borderColor: "rgba(0,0,0,0.08)" }} />
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
             <SectionLabel>{t.write.contactInfo}</SectionLabel>

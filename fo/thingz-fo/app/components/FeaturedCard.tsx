@@ -3,7 +3,8 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
 import { fs, fw, lh, ls, dim } from "@/lib/styles/typography";
-import { BRAND_COLOR } from "@/lib/constants/theme";
+import { cardImage, imgContain } from "@/lib/styles/sx";
+import { INK, IVORY } from "@/lib/constants/theme";
 
 interface FeaturedCardProps {
   id?: string;
@@ -28,26 +29,24 @@ export default function FeaturedCard({
         {/* 이미지 */}
         <Box
           sx={{
-            width: "100%",
+            ...cardImage,
             aspectRatio: { xs: "16/9", md: "21/9" },
             borderRadius: dim.radiusCard,
-            backgroundImage: imageSrc ? `url(${imageSrc})` : undefined,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            bgcolor: "grey.200",
             mb: 2.5,
-            overflow: "hidden",
             position: "relative",
           }}
         >
-          <Box sx={{ position: "absolute", top: 16, left: 16, bgcolor: BRAND_COLOR, color: "white", px: 1.5, py: 0.5, borderRadius: dim.radiusTag, fontSize: fs.sm, fontWeight: fw.semibold, letterSpacing: ls.wide }}>
+          {imageSrc && (
+            <Box component="img" src={imageSrc} alt={title} sx={imgContain} />
+          )}
+          <Box sx={{ position: "absolute", top: 16, left: 16, bgcolor: INK, color: IVORY, px: 1.5, py: 0.5, borderRadius: dim.radiusTag, fontSize: fs.sm, fontWeight: fw.semibold, letterSpacing: ls.wide }}>
             FEATURED
           </Box>
         </Box>
 
         {/* 텍스트 */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-          <Typography sx={{ fontSize: fs.sm, color: BRAND_COLOR, fontWeight: fw.semibold, textTransform: "uppercase", letterSpacing: ls.wider }}>
+          <Typography sx={{ fontSize: fs.sm, color: "text.secondary", fontWeight: fw.semibold, textTransform: "uppercase", letterSpacing: ls.wider }}>
             {category}
           </Typography>
 
@@ -68,7 +67,7 @@ export default function FeaturedCard({
             {price && (
               <>
                 <Typography sx={{ fontSize: fs.md, color: "text.disabled" }}>·</Typography>
-                <Typography sx={{ fontSize: fs.md, color: BRAND_COLOR, fontWeight: fw.semibold }}>{price}</Typography>
+                <Typography sx={{ fontSize: fs.md, color: "text.primary", fontWeight: fw.semibold }}>{price}</Typography>
               </>
             )}
           </Box>
