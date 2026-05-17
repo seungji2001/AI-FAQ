@@ -27,18 +27,18 @@ test.describe("아티클 상세 페이지", () => {
     await expect(page.getByText(article.title).first()).toBeVisible({ timeout: 10_000 });
   });
 
-  test("피드로 돌아가기 링크가 표시된다", async ({ page }) => {
+  test("헤더 피드 링크가 표시된다", async ({ page }) => {
     if (!articleId) { test.skip(); return; }
     await page.goto(`/ko/article/${articleId}`);
     await page.waitForLoadState("networkidle");
-    await expect(page.locator("a", { hasText: /피드로 돌아가기/ }).first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator("header a", { hasText: "피드" }).first()).toBeVisible({ timeout: 10_000 });
   });
 
-  test("피드로 돌아가기 클릭 시 메인으로 이동한다", async ({ page }) => {
+  test("헤더 피드 링크 클릭 시 메인으로 이동한다", async ({ page }) => {
     if (!articleId) { test.skip(); return; }
     await page.goto(`/ko/article/${articleId}`);
     await page.waitForLoadState("networkidle");
-    await page.locator("a", { hasText: /피드로 돌아가기/ }).first().click();
+    await page.locator("header a", { hasText: "피드" }).first().click();
     await expect(page).toHaveURL(/\/ko(\/)?$/, { timeout: 10_000 });
   });
 

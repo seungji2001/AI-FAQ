@@ -51,7 +51,23 @@
       "Bash(echo \"Frontend PID: $!\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
       "Bash(wait)",
-      "Bash(open *)"
+      "Bash(open *)",
+      "Bash(python3 *)",
+      "PowerShell($bytes = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create\\(\\).GetBytes\\($bytes\\); [Convert]::ToBase64String\\($bytes\\))",
+      "Bash(xargs grep -l \"publish\\\\|write\\\\|Write\")",
+      "Bash(curl -s http://localhost:8080/api/fo/articles/9cdff991-927e-4228-b714-efd7f8c8831a)",
+      "Bash(curl *)",
+      "Bash(grep *)",
+      "Bash(Get-ChildItem C:\\\\Users\\\\백승지\\\\IdeaProjects\\\\AI-FAQ\\\\fo\\\\thingz-fo\\\\messages\\\\ *)",
+      "Bash(git push *)",
+      "Bash(node -e ' *)",
+      "Bash(gh repo *)",
+      "Bash(gh pr *)",
+      "Bash(git remote *)",
+      "Bash(winget install *)",
+      "Bash(del *)",
+      "Bash(gh auth *)",
+      "PowerShell(gh auth *)"
     ]
   }
 }

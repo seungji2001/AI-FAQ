@@ -77,7 +77,23 @@
   "login": {
     "description": "Record and share your stories with things.",
     "startWithKakao": "Continue with Kakao",
-    "terms": "By signing in, you agree to our Terms of Service."
+    "terms": "By signing in, you agree to our Terms of Service.",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "loginBtn": "Login",
+    "signupBtn": "Sign Up",
+    "switchToSignup": "Don't have an account? Sign up",
+    "switchToLogin": "Already have an account? Login",
+    "orDivider": "or",
+    "emailRequired": "Please enter your email.",
+    "passwordRequired": "Please enter your password.",
+    "usernameRequired": "Please enter a username.",
+    "passwordMinLength": "Password must be at least 8 characters.",
+    "usernameMinLength": "Username must be at least 2 characters.",
+    "loginFailed": "Invalid email or password.",
+    "signupFailed": "Sign up failed.",
+    "signupSuccess": "Sign up complete! Please log in."
   },
   "users": {
     "notFound": "User not found.",

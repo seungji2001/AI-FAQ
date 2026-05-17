@@ -1,14 +1,19 @@
 package com.plateer.aifaq.fo.controller;
 
 import com.plateer.aifaq.config.JwtTokenProvider;
+import com.plateer.aifaq.fo.dto.LoginRequest;
+import com.plateer.aifaq.fo.dto.SignupRequest;
 import com.plateer.aifaq.fo.dto.TokenDto;
+import com.plateer.aifaq.fo.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Tag(name = "Auth", description = "인증 API")
@@ -19,6 +24,20 @@ public class AuthController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final AuthService authService;
+
+    @Operation(summary = "이메일 회원가입")
+    @PostMapping("/signup")
+    public ResponseEntity<Void> signup(@Valid @RequestBody SignupRequest request) {
+        authService.signup(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "이메일 로그인")
+    @PostMapping("/login")
+    public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
 
     @Operation(summary = "토큰 재발급", description = "Refresh Token으로 새로운 Access/Refresh Token을 발급합니다.")
     @PostMapping("/refresh")

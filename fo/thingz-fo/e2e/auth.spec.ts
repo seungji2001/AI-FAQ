@@ -19,12 +19,12 @@ test.describe("비로그인 상태", () => {
   });
 
   test("등록하기 클릭 시 로그인 다이얼로그가 표시된다", async ({ page }) => {
-    await page.getByRole("button", { name: /발행|등록|write/i }).first().click();
+    await page.getByRole("button", { name: "글쓰기" }).first().click();
     await expect(page.getByRole("dialog")).toBeVisible({ timeout: 5_000 });
   });
 
   test("로그인 다이얼로그에 카카오 버튼이 표시된다", async ({ page }) => {
-    await page.getByRole("button", { name: /발행|등록|write/i }).first().click();
+    await page.getByRole("button", { name: "글쓰기" }).first().click();
     await expect(page.getByRole("button", { name: /카카오/ })).toBeVisible({ timeout: 5_000 });
   });
 
@@ -34,7 +34,7 @@ test.describe("비로그인 상태", () => {
       kakaoRequested = true;
       await route.abort();
     });
-    await page.getByRole("button", { name: /발행|등록|write/i }).first().click();
+    await page.getByRole("button", { name: "글쓰기" }).first().click();
     await page.getByRole("button", { name: /카카오/ }).click();
     await page.waitForTimeout(1_000);
     expect(kakaoRequested).toBe(true);

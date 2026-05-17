@@ -71,6 +71,12 @@ public class FollowController {
         return ResponseEntity.ok(followService.getFollowers(id));
     }
 
+    @Operation(summary = "내 팔로잉 목록 조회", description = "로그인한 유저가 팔로우하는 사람 목록을 반환합니다.")
+    @GetMapping("/me/following")
+    public ResponseEntity<List<UserDto>> getMyFollowing(@AuthenticationPrincipal CustomOAuth2User user) {
+        return ResponseEntity.ok(followService.getFollowing(user.getUserId()));
+    }
+
     @Operation(summary = "팔로잉 목록 조회", description = "특정 유저가 팔로우하는 사람 목록을 반환합니다.")
     @GetMapping("/{id}/following")
     public ResponseEntity<List<UserDto>> getFollowing(

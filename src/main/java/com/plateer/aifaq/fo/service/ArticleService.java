@@ -29,7 +29,7 @@ public class ArticleService {
 
     @Cacheable(value = "popularTags", key = "#limit")
     public List<String> getPopularTags(int limit) {
-        return tagRepository.findPopularTagNames(limit);
+        return tagRepository.findPopularTagNames(org.springframework.data.domain.PageRequest.of(0, limit));
     }
 
     @Cacheable(value = "articles", key = "'all'")

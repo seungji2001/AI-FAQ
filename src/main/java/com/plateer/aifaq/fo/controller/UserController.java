@@ -49,6 +49,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "프로필 사진 업데이트", description = "S3에 업로드한 이미지 URL로 프로필 사진을 변경합니다.")
+    @PatchMapping("/me/avatar")
+    public ResponseEntity<Void> updateAvatar(
+            @RequestBody java.util.Map<String, String> body,
+            @AuthenticationPrincipal CustomOAuth2User user) {
+        userService.updateAvatar(user.getUserId(), body.get("avatarUrl"));
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "유저 프로필 조회", description = "특정 유저의 프로필 정보를 반환합니다.",
         responses = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -57,8 +66,10 @@ public class UserController {
     )
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(
-            @Parameter(description = "유저 UUID", required = true) @PathVariable UUID id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+            @Parameter(description = "유저 UUID", required = true) @PathVariable String id,
+            @AuthenticationPrincipal CustomOAuth2User principal) {
+        UUID userId = resolveUserId(id, principal);
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
 
     @Operation(summary = "유저 아티클 목록 조회", description = "특정 유저가 발행한 아티클 목록을 반환합니다.",
@@ -69,7 +80,17 @@ public class UserController {
     )
     @GetMapping("/{id}/articles")
     public ResponseEntity<List<ArticleListDto>> getUserArticles(
-            @Parameter(description = "유저 UUID", required = true) @PathVariable UUID id) {
-        return ResponseEntity.ok(articleService.getArticlesByUser(id));
+            @Parameter(description = "유저 UUID", required = true) @PathVariable String id,
+            @AuthenticationPrincipal CustomOAuth2User principal) {
+        UUID userId = resolveUserId(id, principal);
+        return ResponseEntity.ok(articleService.getArticlesByUser(userId));
+    }
+
+    private UUID resolveUserId(String id, CustomOAuth2User principal) {
+        if ("me".equals(id)) {
+            if (principal == null) throw new IllegalArgumentException("로그인이 필요합니다.");
+            return principal.getUserId();
+        }
+        return UUID.fromString(id);
     }
 }

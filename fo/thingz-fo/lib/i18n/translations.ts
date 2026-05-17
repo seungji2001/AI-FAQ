@@ -3,7 +3,16 @@ export type Locale = "ko" | "en" | "ja";
 export interface Translations {
   nav: { feed: string; explore: string; write: string; mypage: string; login: string; logout: string };
   header: { search: string };
-  login: { description: string; startWithKakao: string; terms: string };
+  login: {
+    description: string; startWithKakao: string; terms: string;
+    email: string; password: string; username: string;
+    loginBtn: string; signupBtn: string;
+    switchToSignup: string; switchToLogin: string;
+    orDivider: string;
+    emailRequired: string; passwordRequired: string; usernameRequired: string;
+    passwordMinLength: string; usernameMinLength: string;
+    loginFailed: string; signupFailed: string; signupSuccess: string;
+  };
   feed: { recentArticles: string; noArticles: string; todayEditors: string; noEditors: string };
   article: {
     backToFeed: string; sold: string; markAsSold: string; markAsSoldConfirm: string;
@@ -45,7 +54,16 @@ export interface Translations {
 export const ko: Translations = {
   nav: { feed: "피드", explore: "탐색", write: "글쓰기", mypage: "마이페이지", login: "로그인", logout: "로그아웃" },
   header: { search: "물건 이야기 검색" },
-  login: { description: "물건과의 이야기를 기록하고 나눠보세요.", startWithKakao: "카카오로 시작하기", terms: "로그인 시 서비스 이용약관에 동의하게 됩니다." },
+  login: {
+    description: "물건과의 이야기를 기록하고 나눠보세요.", startWithKakao: "카카오로 시작하기", terms: "로그인 시 서비스 이용약관에 동의하게 됩니다.",
+    email: "이메일", password: "비밀번호", username: "사용자명",
+    loginBtn: "로그인", signupBtn: "회원가입",
+    switchToSignup: "계정이 없으신가요? 회원가입", switchToLogin: "이미 계정이 있으신가요? 로그인",
+    orDivider: "또는",
+    emailRequired: "이메일을 입력해주세요.", passwordRequired: "비밀번호를 입력해주세요.", usernameRequired: "사용자명을 입력해주세요.",
+    passwordMinLength: "비밀번호는 8자 이상이어야 합니다.", usernameMinLength: "사용자명은 2자 이상이어야 합니다.",
+    loginFailed: "이메일 또는 비밀번호가 올바르지 않습니다.", signupFailed: "회원가입에 실패했습니다.", signupSuccess: "회원가입 완료! 로그인해주세요.",
+  },
   feed: { recentArticles: "최근 아티클", noArticles: "아직 아티클이 없습니다.", todayEditors: "오늘의 에디터", noEditors: "에디터가 없어요." },
   article: {
     backToFeed: "← 피드로 돌아가기", sold: "판매완료", markAsSold: "판매 완료로 변경",
@@ -95,7 +113,16 @@ export const ko: Translations = {
 export const en: Translations = {
   nav: { feed: "Feed", explore: "Explore", write: "Register", mypage: "My Page", login: "Login", logout: "Logout" },
   header: { search: "Search item stories" },
-  login: { description: "Record and share your stories with things.", startWithKakao: "Continue with Kakao", terms: "By signing in, you agree to our Terms of Service." },
+  login: {
+    description: "Record and share your stories with things.", startWithKakao: "Continue with Kakao", terms: "By signing in, you agree to our Terms of Service.",
+    email: "Email", password: "Password", username: "Username",
+    loginBtn: "Login", signupBtn: "Sign Up",
+    switchToSignup: "Don't have an account? Sign up", switchToLogin: "Already have an account? Login",
+    orDivider: "or",
+    emailRequired: "Please enter your email.", passwordRequired: "Please enter your password.", usernameRequired: "Please enter a username.",
+    passwordMinLength: "Password must be at least 8 characters.", usernameMinLength: "Username must be at least 2 characters.",
+    loginFailed: "Invalid email or password.", signupFailed: "Sign up failed.", signupSuccess: "Sign up complete! Please log in.",
+  },
   feed: { recentArticles: "Recent Articles", noArticles: "No articles yet.", todayEditors: "Today's Editors", noEditors: "No editors yet." },
   article: {
     backToFeed: "← Back to Feed", sold: "SOLD", markAsSold: "Mark as Sold",
@@ -145,7 +172,16 @@ export const en: Translations = {
 export const ja: Translations = {
   nav: { feed: "フィード", explore: "探索", write: "登録する", mypage: "マイページ", login: "ログイン", logout: "ログアウト" },
   header: { search: "物語を検索" },
-  login: { description: "物との物語を記録してシェアしましょう。", startWithKakao: "カカオで始める", terms: "ログインすることで利用規約に同意したことになります。" },
+  login: {
+    description: "物との物語を記録してシェアしましょう。", startWithKakao: "カカオで始める", terms: "ログインすることで利用規約に同意したことになります。",
+    email: "メール", password: "パスワード", username: "ユーザー名",
+    loginBtn: "ログイン", signupBtn: "会員登録",
+    switchToSignup: "アカウントがありませんか？会員登録", switchToLogin: "すでにアカウントがありますか？ログイン",
+    orDivider: "または",
+    emailRequired: "メールを入力してください。", passwordRequired: "パスワードを入力してください。", usernameRequired: "ユーザー名を入力してください。",
+    passwordMinLength: "パスワードは8文字以上必要です。", usernameMinLength: "ユーザー名は2文字以上必要です。",
+    loginFailed: "メールまたはパスワードが正しくありません。", signupFailed: "会員登録に失敗しました。", signupSuccess: "会員登録完了！ログインしてください。",
+  },
   feed: { recentArticles: "最近の記事", noArticles: "まだ記事がありません。", todayEditors: "今日のエディター", noEditors: "エディターがいません。" },
   article: {
     backToFeed: "← フィードに戻る", sold: "売り切れ", markAsSold: "売り切れにする",

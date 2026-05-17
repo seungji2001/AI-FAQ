@@ -43,4 +43,12 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
         user.editProfile(request.getDisplayName(), request.getBio(), request.getInstagramId(), request.getKakaoUrl());
     }
+
+    @CacheEvict(value = "users", allEntries = true)
+    @Transactional
+    public void updateAvatar(UUID userId, String avatarUrl) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        user.updateAvatar(avatarUrl);
+    }
 }

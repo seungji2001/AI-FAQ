@@ -47,6 +47,12 @@ public class User {
     @Column(unique = true)
     private Long kakaoId;
 
+    @Column(unique = true, length = 100)
+    private String email;
+
+    @Column(columnDefinition = "TEXT")
+    private String password;
+
     @Column(nullable = false)
     @Builder.Default
     private Boolean isActive = false;
@@ -69,5 +75,9 @@ public class User {
         if (bio != null) this.bio = bio;
         if (instagramId != null) this.instagramId = instagramId;
         if (kakaoUrl != null) this.kakaoUrl = kakaoUrl;
+    }
+
+    public void updateAvatar(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

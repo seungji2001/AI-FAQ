@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
@@ -16,10 +16,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
+import PublishIcon from "@mui/icons-material/Publish";
 import Link from "next/link";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
 import { fetchArticlesByUser, fetchMyDrafts, deleteArticle, publishDraft } from "@/lib/api/articles";
-import { fetchUser, updateMyProfile } from "@/lib/api/users";
+import { fetchMyProfile, updateMyProfile, updateMyAvatar } from "@/lib/api/users";
+import { uploadImage } from "@/lib/api/upload";
 import { fetchFollowing } from "@/lib/api/follow";
 import { ApiError } from "@/lib/api/client";
 import { ArticleListItem } from "@/lib/types/article";
@@ -28,7 +30,7 @@ import ItemCard from "@/app/components/ItemCard";
 import EditorItem from "@/app/components/EditorItem";
 import InputRow from "@/app/components/ui/InputRow";
 import { articleGrid, mainContent, panelBase } from "@/lib/styles/sx";
-import { fs, fw, titleMd, textSecondary, labelBold, captionText } from "@/lib/styles/typography";
+import { fs, fw, titleMd, textSecondary, labelBold } from "@/lib/styles/typography";
 import { KAKAO_COLOR, KAKAO_TEXT_COLOR } from "@/lib/constants/theme";
 import { useT } from "@/lib/i18n/context";
 import { useToast } from "@/app/components/ui/Toast";
@@ -46,6 +48,7 @@ export default function MyPage() {
   const t = useT();
   const toast = useToast();
   const router = useRouter();
+  const { locale } = useParams() as { locale: string };
   const [tab, setTab] = useState(0);
   const [published, setPublished] = useState<ArticleListItem[]>([]);
   const [drafts, setDrafts] = useState<ArticleListItem[]>([]);
@@ -55,6 +58,7 @@ export default function MyPage() {
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState<UserUpdateRequest>({});
   const [saving, setSaving] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   useEffect(() => {
     const token = tokenStorage.getAccessToken();
@@ -63,7 +67,7 @@ export default function MyPage() {
     if (!user) { router.replace("/"); return; }
 
     Promise.all([
-      fetchUser(user.userId).catch(() => null),
+      fetchMyProfile().catch(() => null),
       fetchArticlesByUser(user.userId).catch(() => []),
       fetchMyDrafts().catch(() => []),
       fetchFollowing().catch(() => []),
@@ -120,6 +124,23 @@ export default function MyPage() {
     }
   };
 
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    try {
+      const url = await uploadImage(file);
+      await updateMyAvatar(url);
+      setProfile((prev) => prev ? { ...prev, avatarUrl: url } : prev);
+      toast.success("프로필 사진이 변경되었습니다.");
+    } catch {
+      toast.error("프로필 사진 업로드에 실패했습니다.");
+    } finally {
+      setAvatarUploading(false);
+      e.target.value = "";
+    }
+  };
+
   const displayName = profile?.displayName ?? profile?.username ?? "";
   const username = profile?.username ?? "";
 
@@ -127,9 +148,28 @@ export default function MyPage() {
     <Box sx={mainContent}>
       {/* 프로필 헤더 */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-        <Avatar src={profile?.avatarUrl ?? undefined} sx={{ width: 56, height: 56, bgcolor: KAKAO_COLOR, color: KAKAO_TEXT_COLOR, fontSize: fs["2xl"], fontWeight: fw.bold }}>
-          {username[0]?.toUpperCase()}
-        </Avatar>
+        <Box sx={{ position: "relative", flexShrink: 0 }}>
+          <input
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            style={{ display: "none" }}
+            id="avatar-upload"
+            onChange={handleAvatarChange}
+          />
+          <label htmlFor="avatar-upload" style={{ cursor: "pointer" }}>
+            <Avatar
+              src={profile?.avatarUrl ?? undefined}
+              sx={{ width: 56, height: 56, bgcolor: KAKAO_COLOR, color: KAKAO_TEXT_COLOR, fontSize: fs["2xl"], fontWeight: fw.bold, opacity: avatarUploading ? 0.5 : 1, transition: "opacity 0.2s" }}
+            >
+              {username[0]?.toUpperCase()}
+            </Avatar>
+            <Box sx={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", bgcolor: "rgba(0,0,0,0.35)", borderRadius: "50%", opacity: 0, "&:hover": { opacity: 1 }, transition: "opacity 0.2s" }}>
+              <Typography sx={{ fontSize: "10px", color: "white", fontWeight: fw.bold, textAlign: "center", lineHeight: 1.2 }}>
+                {avatarUploading ? "..." : "변경"}
+              </Typography>
+            </Box>
+          </label>
+        </Box>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography sx={{ fontSize: fs["2xl"], fontWeight: fw.bold }}>{displayName || `@${username}`}</Typography>
           <Typography sx={textSecondary}>
@@ -162,9 +202,8 @@ export default function MyPage() {
             {published.map((a) => (
               <Box key={a.id} sx={{ position: "relative" }}>
                 <ItemCard id={a.id} title={a.title} tag={a.tags[0] ?? ""} imageSrc={a.coverUrl ?? undefined} />
-                {/* 카드 내부 우상단 액션 버튼 */}
-                <Box sx={{ position: "absolute", top: 8, right: 8, display: "flex", gap: 0.5 }}>
-                  <Link href={`/edit/${a.id}`}>
+                <Box sx={{ position: "absolute", bottom: 8, left: 8, display: "flex", gap: 0.5 }}>
+                  <Link href={`/${locale}/edit/${a.id}`}>
                     <IconButton size="small" sx={{ bgcolor: "background.paper", border: "1px solid", borderColor: "divider", borderRadius: "8px", p: 0.5, "&:hover": { bgcolor: "grey.100" } }}>
                       <EditOutlinedIcon sx={{ fontSize: 14, color: "text.secondary" }} />
                     </IconButton>
@@ -184,22 +223,20 @@ export default function MyPage() {
         ) : (
           <Box sx={articleGrid}>
             {drafts.map((a) => (
-              <Box key={a.id} sx={{ ...panelBase, p: 2, display: "flex", alignItems: "center", gap: 2 }}>
-                <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography sx={{ fontSize: fs.md, fontWeight: fw.bold, mb: 0.25 }} noWrap>{a.title}</Typography>
-                  <Typography sx={captionText}>{a.tags.join("  ")}</Typography>
-                </Box>
-                <Box sx={{ display: "flex", gap: 1, flexShrink: 0 }}>
-                  <Link href={`/edit/${a.id}`}>
-                    <IconButton size="small" sx={{ bgcolor: "grey.100", borderRadius: "8px", p: 0.5, "&:hover": { bgcolor: "grey.200" } }}>
+              <Box key={a.id} sx={{ position: "relative" }}>
+                <ItemCard id={a.id} title={a.title} tag={a.tags[0] ?? ""} imageSrc={a.coverUrl ?? undefined} />
+                <Box sx={{ position: "absolute", bottom: 8, left: 8, display: "flex", gap: 0.5 }}>
+                  <Link href={`/${locale}/edit/${a.id}`}>
+                    <IconButton size="small" sx={{ bgcolor: "background.paper", border: "1px solid", borderColor: "divider", borderRadius: "8px", p: 0.5, "&:hover": { bgcolor: "grey.100" } }}>
                       <EditOutlinedIcon sx={{ fontSize: 14, color: "text.secondary" }} />
                     </IconButton>
                   </Link>
-                  <Button size="small" variant="contained" color="primary" disableElevation onClick={() => handlePublishDraft(a.id)}
-                    sx={{ fontSize: fs.xs, px: 1.5, py: 0.5, minWidth: 0 }}>
-                    {t.mypage.publishBtn}
-                  </Button>
-                  <IconButton size="small" onClick={() => handleDelete(a.id)} sx={{ bgcolor: "grey.100", borderRadius: "8px", p: 0.5, "&:hover": { bgcolor: "error.50", color: "error.main" } }}>
+                  <IconButton size="small"
+                    onClick={() => handlePublishDraft(a.id)}
+                    sx={{ bgcolor: "background.paper", border: "1px solid", borderColor: "divider", borderRadius: "8px", p: 0.5, "&:hover": { bgcolor: "primary.50", borderColor: "primary.200" } }}>
+                    <PublishIcon sx={{ fontSize: 14, color: "primary.main" }} />
+                  </IconButton>
+                  <IconButton size="small" onClick={() => handleDelete(a.id)} sx={{ bgcolor: "background.paper", border: "1px solid", borderColor: "divider", borderRadius: "8px", p: 0.5, "&:hover": { bgcolor: "error.50", borderColor: "error.200", color: "error.main" } }}>
                     <DeleteIcon sx={{ fontSize: 14, color: "text.secondary" }} />
                   </IconButton>
                 </Box>
