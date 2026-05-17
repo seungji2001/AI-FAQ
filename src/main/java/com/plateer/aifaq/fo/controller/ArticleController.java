@@ -30,6 +30,14 @@ public class ArticleController {
 
     private final ArticleService articleService;
 
+    @Operation(summary = "인기 태그 조회", description = "발행된 아티클 기준 사용 횟수 상위 태그 이름 목록을 반환합니다.")
+    @GetMapping("/tags/popular")
+    public ResponseEntity<List<String>> getPopularTags(
+            @Parameter(description = "반환할 태그 수 (기본 10)")
+            @RequestParam(defaultValue = "10") int limit) {
+        return ResponseEntity.ok(articleService.getPopularTags(limit));
+    }
+
     @Operation(summary = "아티클 목록 조회", description = "발행된 아티클 전체 목록을 반환합니다.")
     @GetMapping
     public ResponseEntity<List<ArticleListDto>> getArticles(

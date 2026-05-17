@@ -25,12 +25,12 @@ public class S3Service {
     private String region;
 
     public PresignResponse generatePresignedUrl(String fileName, String contentType) {
-        String key = "articles/" + UUID.randomUUID() + "/" + fileName;
+        String ext = fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.')) : "";
+        String key = "articles/" + UUID.randomUUID() + "/" + UUID.randomUUID() + ext;
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
-                .contentType(contentType)
                 .build();
 
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()

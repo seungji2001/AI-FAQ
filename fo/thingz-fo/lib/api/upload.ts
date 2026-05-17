@@ -20,7 +20,6 @@ export async function uploadToS3(presignedUrl: string, file: File, onProgress?: 
     xhr.onload = () => xhr.status < 300 ? resolve() : reject(new Error(`S3 업로드 실패: ${xhr.status}`));
     xhr.onerror = () => reject(new Error("S3 업로드 오류"));
     xhr.open("PUT", presignedUrl);
-    xhr.setRequestHeader("Content-Type", file.type);
     xhr.send(file);
   });
 }

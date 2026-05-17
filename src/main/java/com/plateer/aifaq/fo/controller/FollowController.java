@@ -1,6 +1,7 @@
 package com.plateer.aifaq.fo.controller;
 
 import com.plateer.aifaq.config.auth.CustomOAuth2User;
+import com.plateer.aifaq.fo.dto.UserDto;
 import com.plateer.aifaq.fo.service.FollowService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -60,5 +62,19 @@ public class FollowController {
             @AuthenticationPrincipal CustomOAuth2User user) {
         followService.unfollow(id, user.getUserId());
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "팔로워 목록 조회", description = "특정 유저를 팔로우하는 사람 목록을 반환합니다.")
+    @GetMapping("/{id}/followers")
+    public ResponseEntity<List<UserDto>> getFollowers(
+            @Parameter(description = "조회 대상 유저 UUID", required = true) @PathVariable UUID id) {
+        return ResponseEntity.ok(followService.getFollowers(id));
+    }
+
+    @Operation(summary = "팔로잉 목록 조회", description = "특정 유저가 팔로우하는 사람 목록을 반환합니다.")
+    @GetMapping("/{id}/following")
+    public ResponseEntity<List<UserDto>> getFollowing(
+            @Parameter(description = "조회 대상 유저 UUID", required = true) @PathVariable UUID id) {
+        return ResponseEntity.ok(followService.getFollowing(id));
     }
 }

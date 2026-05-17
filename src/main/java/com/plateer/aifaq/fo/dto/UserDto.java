@@ -17,18 +17,20 @@ public class UserDto {
     private String bio;
     private String avatarUrl;
     private int articleCount;
+    private long followerCount;
 
     private String coverUrl;
     private String instagramId;
     private String kakaoUrl;
 
-    public UserDto(User user) {
+    public UserDto(User user, long followerCount) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.displayName = user.getDisplayName();
         this.bio = user.getBio();
         this.avatarUrl = user.getAvatarUrl();
         this.articleCount = user.getArticles().size();
+        this.followerCount = followerCount;
         this.coverUrl = user.getCoverUrl();
         this.instagramId = user.getInstagramId();
         this.kakaoUrl = user.getKakaoUrl();

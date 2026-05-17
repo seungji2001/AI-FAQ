@@ -1,5 +1,6 @@
 package com.plateer.aifaq.fo.service;
 
+import com.plateer.aifaq.fo.dto.UserDto;
 import com.plateer.aifaq.fo.entity.Follow;
 import com.plateer.aifaq.fo.entity.User;
 import com.plateer.aifaq.fo.repository.FollowRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -52,5 +54,23 @@ public class FollowService {
 
     public boolean isFollowing(UUID followingId, UUID followerId) {
         return followRepository.existsById(new Follow.FollowId(followerId, followingId));
+    }
+
+    // 나를 팔로우한 사람들 (팔로워 목록)
+    public List<UserDto> getFollowers(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        return followRepository.findByFollowing(user).stream()
+                .map(f -> new UserDto(f.getFollower(), followRepository.countByFollowing(f.getFollower())))
+                .toList();
+    }
+
+    // 내가 팔로우한 사람들 (팔로잉 목록)
+    public List<UserDto> getFollowing(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        return followRepository.findByFollower(user).stream()
+                .map(f -> new UserDto(f.getFollowing(), followRepository.countByFollowing(f.getFollowing())))
+                .toList();
     }
 }

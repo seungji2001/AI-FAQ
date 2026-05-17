@@ -9,6 +9,10 @@ export async function fetchArticlesByTag(tag: string): Promise<ArticleListItem[]
   return apiClient.get<ArticleListItem[]>(`/articles?tag=${encodeURIComponent(tag)}`);
 }
 
+export async function fetchPopularTags(limit = 10): Promise<string[]> {
+  return apiClient.get<string[]>(`/articles/tags/popular?limit=${limit}`);
+}
+
 export async function fetchArticlesByUser(userId: string): Promise<ArticleListItem[]> {
   return apiClient.get<ArticleListItem[]>(`/users/${userId}/articles`);
 }

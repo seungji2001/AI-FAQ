@@ -27,6 +27,11 @@ public class ArticleService {
     private final FollowRepository followRepository;
     private final ItemRepository itemRepository;
 
+    @Cacheable(value = "popularTags", key = "#limit")
+    public List<String> getPopularTags(int limit) {
+        return tagRepository.findPopularTagNames(limit);
+    }
+
     @Cacheable(value = "articles", key = "'all'")
     public List<ArticleListDto> getArticles() {
         return articleRepository.findPublishedArticles().stream()
@@ -35,9 +40,12 @@ public class ArticleService {
     }
 
     @Cacheable(value = "articles", key = "#id")
+    @Transactional(readOnly = true)
     public ArticleDetailDto getArticle(UUID id) {
         Article article = articleRepository.findPublishedById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Article not found: " + id));
+        article.getImages().size();
+        article.getArticleTags().size();
         long followerCount = followRepository.countByFollowing(article.getUser());
         return new ArticleDetailDto(article, followerCount);
     }
@@ -62,9 +70,12 @@ public class ArticleService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public ArticleDetailDto getArticleForEdit(UUID id, UUID userId) {
         Article article = articleRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Article not found or access denied"));
+        article.getImages().size();
+        article.getArticleTags().size();
         long followerCount = followRepository.countByFollowing(article.getUser());
         return new ArticleDetailDto(article, followerCount);
     }

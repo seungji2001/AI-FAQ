@@ -36,7 +36,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 Duration.ofDays(7)
         );
 
-        String redirectUrl = frontendUrl + "/auth/callback"
+        String redirectUrl = frontendUrl + "/ko/auth/callback"
                 + "?accessToken=" + accessToken
                 + "&refreshToken=" + refreshToken;
 
