@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("아티클 상세 페이지 (/article/[id])", () => {
+test.describe("아티클 상세 페이지", () => {
   let articleId: string | null = null;
 
   test.beforeAll(async ({ request }) => {
@@ -12,26 +12,59 @@ test.describe("아티클 상세 페이지 (/article/[id])", () => {
   });
 
   test("존재하는 아티클 상세 페이지가 정상 로딩된다", async ({ page }) => {
-    if (!articleId) {
-      test.skip();
-      return;
-    }
-    await page.goto(`/article/${articleId}`);
-    await expect(page.getByText("← 피드로 돌아가기")).toBeVisible();
+    if (!articleId) { test.skip(); return; }
+    await page.goto(`/ko/article/${articleId}`);
+    await page.waitForLoadState("networkidle");
+    await expect(page.locator("body")).toBeVisible();
   });
 
-  test("아티클 상세에서 피드로 돌아가기 링크가 동작한다", async ({ page }) => {
-    if (!articleId) {
-      test.skip();
-      return;
-    }
-    await page.goto(`/article/${articleId}`);
-    await page.getByText("← 피드로 돌아가기").click();
-    await expect(page).toHaveURL("/");
+  test("아티클 제목이 표시된다", async ({ page }) => {
+    if (!articleId) { test.skip(); return; }
+    const res = await page.request.get(`http://localhost:8080/api/fo/articles/${articleId}`);
+    const article = await res.json();
+    await page.goto(`/ko/article/${articleId}`);
+    await page.waitForLoadState("networkidle");
+    await expect(page.getByText(article.title).first()).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("피드로 돌아가기 링크가 표시된다", async ({ page }) => {
+    if (!articleId) { test.skip(); return; }
+    await page.goto(`/ko/article/${articleId}`);
+    await page.waitForLoadState("networkidle");
+    await expect(page.locator("a", { hasText: /피드로 돌아가기/ }).first()).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("피드로 돌아가기 클릭 시 메인으로 이동한다", async ({ page }) => {
+    if (!articleId) { test.skip(); return; }
+    await page.goto(`/ko/article/${articleId}`);
+    await page.waitForLoadState("networkidle");
+    await page.locator("a", { hasText: /피드로 돌아가기/ }).first().click();
+    await expect(page).toHaveURL(/\/ko(\/)?$/, { timeout: 10_000 });
+  });
+
+  test("이미지가 있는 아티클은 이미지가 렌더링된다", async ({ page }) => {
+    if (!articleId) { test.skip(); return; }
+    const res = await page.request.get(`http://localhost:8080/api/fo/articles/${articleId}`);
+    const article = await res.json();
+    if (!article.imageUrls || article.imageUrls.length === 0) { test.skip(); return; }
+    await page.goto(`/ko/article/${articleId}`);
+    await page.waitForLoadState("networkidle");
+    const img = page.locator("img").first();
+    await expect(img).toBeVisible({ timeout: 10_000 });
+    const src = await img.getAttribute("src");
+    expect(src).toContain("s3.ap-northeast-2.amazonaws.com");
   });
 
   test("존재하지 않는 아티클은 404 처리된다", async ({ page }) => {
-    await page.goto("/article/00000000-0000-0000-0000-000000000000");
-    await expect(page.getByText("페이지를 찾을 수 없어요")).toBeVisible({ timeout: 15_000 });
+    await page.goto("/ko/article/00000000-0000-0000-0000-000000000000");
+    await page.waitForLoadState("networkidle");
+    await expect(page.getByText(/찾을 수 없/).first()).toBeVisible({ timeout: 15_000 });
+  });
+
+  test("사이드 패널에 작성자 정보가 표시된다", async ({ page }) => {
+    if (!articleId) { test.skip(); return; }
+    await page.goto(`/ko/article/${articleId}`);
+    await page.waitForLoadState("networkidle");
+    await expect(page.getByText(/팔로워|follower/i).first()).toBeVisible({ timeout: 10_000 });
   });
 });

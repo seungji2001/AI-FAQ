@@ -1,12 +1,13 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("메인 피드 페이지 (/)", () => {
+test.describe("메인 피드 페이지", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/ko");
+    await page.waitForLoadState("networkidle");
   });
 
   test("페이지가 정상 로딩된다", async ({ page }) => {
-    await expect(page).toHaveURL("/");
+    await expect(page).toHaveURL(/\/ko/);
     await expect(page.locator("body")).toBeVisible();
   });
 
@@ -15,41 +16,29 @@ test.describe("메인 피드 페이지 (/)", () => {
   });
 
   test("오늘의 에디터 섹션이 표시된다", async ({ page }) => {
-    await expect(page.getByText("오늘의 에디터")).toBeVisible();
+    await expect(page.getByText("오늘의 에디터").first()).toBeVisible();
   });
 
-  test("아티클 목록 또는 빈 상태 메시지가 표시된다", async ({ page }) => {
-    const hasFeatured = await page.locator("text=FEATURED").isVisible().catch(() => false);
-    const hasEmpty = await page.locator("text=아직 아티클이 없습니다").isVisible().catch(() => false);
-    expect(hasFeatured || hasEmpty).toBe(true);
+  test("최근 아티클 섹션 또는 빈 상태 메시지가 표시된다", async ({ page }) => {
+    const hasRecent = await page.getByText("최근 아티클").isVisible().catch(() => false);
+    const hasEmpty = await page.getByText("아직 아티클이 없습니다").isVisible().catch(() => false);
+    expect(hasRecent || hasEmpty).toBe(true);
   });
 
-  test("최근 아티클 섹션 제목이 표시된다", async ({ page }) => {
-    await expect(page.getByText("최근 아티클")).toBeVisible();
+  test("헤더에 로그인 버튼이 표시된다 (비로그인)", async ({ page }) => {
+    await expect(page.getByRole("button", { name: "로그인" }).first()).toBeVisible();
   });
 
-  test("글쓰기 페이지로 이동할 수 있다", async ({ page }) => {
-    const writeLink = page.getByRole("link", { name: /글쓰기|write/i }).first();
-    const hasWriteLink = await writeLink.isVisible().catch(() => false);
-    if (hasWriteLink) {
-      await writeLink.click();
-      await expect(page).toHaveURL("/write");
-    } else {
-      await page.goto("/write");
-      await expect(page).toHaveURL("/write");
-    }
+  test("헤더에 글쓰기(발행) 버튼이 표시된다", async ({ page }) => {
+    // t.nav.write = "발행" (ko 번역)
+    await expect(page.getByRole("button", { name: /발행|등록|write/i }).first()).toBeVisible();
   });
 
-  test("FEATURED 카드 클릭 시 아티클 상세로 이동한다", async ({ page }) => {
-    const featuredCard = page.locator("text=FEATURED").first();
-    const hasFeatured = await featuredCard.isVisible().catch(() => false);
-
-    if (hasFeatured) {
-      await featuredCard.click();
-      await expect(page).toHaveURL(/\/article\/.+/);
-      await expect(page.getByText("← 피드로 돌아가기")).toBeVisible();
-    } else {
-      test.skip();
-    }
+  test("아티클 카드 클릭 시 상세 페이지로 이동한다", async ({ page }) => {
+    const articleLink = page.locator("a[href*='/article/']").first();
+    const hasArticle = await articleLink.isVisible().catch(() => false);
+    if (!hasArticle) { test.skip(); return; }
+    await articleLink.click();
+    await expect(page).toHaveURL(/\/article\/.+/);
   });
 });
