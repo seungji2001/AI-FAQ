@@ -1,5 +1,5 @@
 # ─── Stage 1: Build ──────────────────────────────────────────
-FROM eclipse-temurin:17-jdk-alpine AS build
+FROM eclipse-temurin:17-jdk-jammy AS build
 WORKDIR /app
 
 COPY gradle/ gradle/
@@ -10,10 +10,10 @@ COPY src/ src/
 RUN ./gradlew bootJar -x test --no-daemon
 
 # ─── Stage 2: Run ────────────────────────────────────────────
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
-RUN addgroup -S spring && adduser -S spring -G spring
+RUN groupadd -r spring && useradd -r -g spring spring
 USER spring
 
 COPY --from=build /app/build/libs/*.jar app.jar
