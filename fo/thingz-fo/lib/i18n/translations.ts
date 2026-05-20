@@ -3,16 +3,6 @@ export type Locale = "ko" | "en" | "ja";
 export interface Translations {
   nav: { feed: string; explore: string; write: string; mypage: string; login: string; logout: string };
   header: { search: string };
-  login: {
-    description: string; startWithKakao: string; terms: string;
-    email: string; password: string; username: string;
-    loginBtn: string; signupBtn: string;
-    switchToSignup: string; switchToLogin: string;
-    orDivider: string;
-    emailRequired: string; passwordRequired: string; usernameRequired: string;
-    passwordMinLength: string; usernameMinLength: string;
-    loginFailed: string; signupFailed: string; signupSuccess: string;
-  };
   feed: { recentArticles: string; noArticles: string; todayEditors: string; noEditors: string };
   article: {
     backToFeed: string; sold: string; markAsSold: string; markAsSoldConfirm: string;
@@ -43,6 +33,21 @@ export interface Translations {
     saveFailed: string; deleteFailed: string; publishFailed: string;
     deleteError: string; publishError: string; saveError: string;
     loading: string;
+    saveSuccess: string; deleteSuccess: string; publishSuccess: string;
+    avatarSuccess: string; avatarError: string;
+    noFollowers: string; followersLoadFailed: string;
+    close: string; change: string;
+  };
+  login: {
+    description: string; startWithKakao: string; terms: string;
+    email: string; password: string; username: string;
+    loginBtn: string; signupBtn: string;
+    switchToSignup: string; switchToLogin: string;
+    orDivider: string;
+    emailRequired: string; passwordRequired: string; usernameRequired: string;
+    passwordMinLength: string; usernameMinLength: string;
+    loginFailed: string; signupFailed: string; signupSuccess: string;
+    socialLoginTab: string; emailTab: string;
   };
   explore: { title: string; searchPlaceholder: string; results: string; noArticles: string };
   users: { articles: string; noArticles: string; notFound: string };
@@ -63,6 +68,7 @@ export const ko: Translations = {
     emailRequired: "이메일을 입력해주세요.", passwordRequired: "비밀번호를 입력해주세요.", usernameRequired: "사용자명을 입력해주세요.",
     passwordMinLength: "비밀번호는 8자 이상이어야 합니다.", usernameMinLength: "사용자명은 2자 이상이어야 합니다.",
     loginFailed: "이메일 또는 비밀번호가 올바르지 않습니다.", signupFailed: "회원가입에 실패했습니다.", signupSuccess: "회원가입 완료! 로그인해주세요.",
+    socialLoginTab: "소셜 로그인", emailTab: "이메일",
   },
   feed: { recentArticles: "최근 아티클", noArticles: "아직 아티클이 없습니다.", todayEditors: "오늘의 에디터", noEditors: "에디터가 없어요." },
   article: {
@@ -102,6 +108,10 @@ export const ko: Translations = {
     saveFailed: "저장 실패", deleteFailed: "삭제 실패", publishFailed: "발행 실패",
     deleteError: "삭제 중 오류가 발생했습니다.", publishError: "발행 중 오류가 발생했습니다.", saveError: "저장 중 오류가 발생했습니다.",
     loading: "불러오는 중...",
+    saveSuccess: "저장 완료!", deleteSuccess: "삭제되었습니다.", publishSuccess: "발행되었습니다.",
+    avatarSuccess: "프로필 사진이 변경되었습니다.", avatarError: "프로필 사진 업로드에 실패했습니다.",
+    noFollowers: "팔로워가 없습니다.", followersLoadFailed: "팔로워 목록을 불러오지 못했습니다.",
+    close: "닫기", change: "변경",
   },
   explore: { title: "탐색", searchPlaceholder: "태그로 검색 (예: 필름카메라)", results: "#{tag} 검색 결과 {count}개", noArticles: "아티클이 없어요." },
   users: { articles: "아티클", noArticles: "아직 발행한 아티클이 없어요.", notFound: "유저를 찾을 수 없습니다." },
@@ -122,6 +132,7 @@ export const en: Translations = {
     emailRequired: "Please enter your email.", passwordRequired: "Please enter your password.", usernameRequired: "Please enter a username.",
     passwordMinLength: "Password must be at least 8 characters.", usernameMinLength: "Username must be at least 2 characters.",
     loginFailed: "Invalid email or password.", signupFailed: "Sign up failed.", signupSuccess: "Sign up complete! Please log in.",
+    socialLoginTab: "Social Login", emailTab: "Email",
   },
   feed: { recentArticles: "Recent Articles", noArticles: "No articles yet.", todayEditors: "Today's Editors", noEditors: "No editors yet." },
   article: {
@@ -161,6 +172,10 @@ export const en: Translations = {
     saveFailed: "Save failed", deleteFailed: "Delete failed", publishFailed: "Publish failed",
     deleteError: "An error occurred while deleting.", publishError: "An error occurred while publishing.", saveError: "An error occurred while saving.",
     loading: "Loading...",
+    saveSuccess: "Saved!", deleteSuccess: "Deleted.", publishSuccess: "Published.",
+    avatarSuccess: "Profile photo updated.", avatarError: "Failed to upload profile photo.",
+    noFollowers: "No followers yet.", followersLoadFailed: "Failed to load followers.",
+    close: "Close", change: "Change",
   },
   explore: { title: "Explore", searchPlaceholder: "Search by tag (e.g. film camera)", results: "#{tag}: {count} results", noArticles: "No articles found." },
   users: { articles: "Articles", noArticles: "No published articles yet.", notFound: "User not found." },
@@ -181,6 +196,7 @@ export const ja: Translations = {
     emailRequired: "メールを入力してください。", passwordRequired: "パスワードを入力してください。", usernameRequired: "ユーザー名を入力してください。",
     passwordMinLength: "パスワードは8文字以上必要です。", usernameMinLength: "ユーザー名は2文字以上必要です。",
     loginFailed: "メールまたはパスワードが正しくありません。", signupFailed: "会員登録に失敗しました。", signupSuccess: "会員登録完了！ログインしてください。",
+    socialLoginTab: "ソーシャルログイン", emailTab: "メール",
   },
   feed: { recentArticles: "最近の記事", noArticles: "まだ記事がありません。", todayEditors: "今日のエディター", noEditors: "エディターがいません。" },
   article: {
@@ -220,6 +236,10 @@ export const ja: Translations = {
     saveFailed: "保存に失敗しました", deleteFailed: "削除に失敗しました", publishFailed: "公開に失敗しました",
     deleteError: "削除中にエラーが発生しました。", publishError: "公開中にエラーが発生しました。", saveError: "保存中にエラーが発生しました。",
     loading: "読み込み中...",
+    saveSuccess: "保存しました！", deleteSuccess: "削除しました。", publishSuccess: "公開しました。",
+    avatarSuccess: "プロフィール写真を変更しました。", avatarError: "プロフィール写真のアップロードに失敗しました。",
+    noFollowers: "フォロワーはいません。", followersLoadFailed: "フォロワー一覧の取得に失敗しました。",
+    close: "閉じる", change: "変更",
   },
   explore: { title: "探索", searchPlaceholder: "タグで検索（例：フィルムカメラ）", results: "#{tag}：{count}件", noArticles: "記事がありません。" },
   users: { articles: "記事", noArticles: "まだ公開した記事がありません。", notFound: "ユーザーが見つかりません。" },

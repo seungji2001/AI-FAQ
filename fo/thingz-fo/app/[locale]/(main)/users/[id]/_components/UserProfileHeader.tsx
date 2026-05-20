@@ -76,9 +76,9 @@ export default function UserProfileHeader({ user, articleCount }: Props) {
         <DialogTitle sx={titleMd}>{t.article.followers}</DialogTitle>
         <DialogContent>
           {followersLoading ? (
-            <Typography sx={textSecondary}>불러오는 중...</Typography>
+            <Typography sx={textSecondary}>{t.mypage.loading}</Typography>
           ) : followers.length === 0 ? (
-            <Typography sx={textSecondary}>팔로워가 없습니다.</Typography>
+            <Typography sx={textSecondary}>{t.mypage.noFollowers}</Typography>
           ) : (
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, pt: 1 }}>
               {followers.map((u) => (
@@ -96,7 +96,7 @@ export default function UserProfileHeader({ user, articleCount }: Props) {
           )}
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setFollowersOpen(false)} sx={{ fontSize: fs.sm }}>닫기</Button>
+          <Button onClick={() => setFollowersOpen(false)} sx={{ fontSize: fs.sm }}>{t.mypage.close}</Button>
         </DialogActions>
       </Dialog>
     </Box>

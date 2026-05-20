@@ -121,8 +121,8 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
           variant="fullWidth"
           sx={{ mb: 3, "& .MuiTab-root": { fontSize: fs.sm, fontWeight: fw.medium } }}
         >
-          <Tab label="소셜 로그인" />
-          <Tab label="이메일" />
+          <Tab label={t.login.socialLoginTab} />
+          <Tab label={t.login.emailTab} />
         </Tabs>
 
         {/* 소셜 탭 */}

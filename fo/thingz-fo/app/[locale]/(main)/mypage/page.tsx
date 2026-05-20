@@ -92,7 +92,7 @@ export default function MyPage() {
       setFollowers(data);
       setFollowersLoaded(true);
     } catch {
-      toast.error("팔로워 목록을 불러오지 못했습니다.");
+      toast.error(t.mypage.followersLoadFailed);
     } finally {
       setFollowersLoading(false);
     }
@@ -109,7 +109,7 @@ export default function MyPage() {
       await updateMyProfile(editForm);
       setProfile((prev) => prev ? { ...prev, ...editForm } : prev);
       setEditOpen(false);
-      toast.success(t.mypage.save + " 완료");
+      toast.success(t.mypage.saveSuccess);
     } catch (e) {
       toast.error(e instanceof ApiError ? `${t.mypage.saveFailed} (${(e as ApiError).status})` : t.mypage.saveError);
     } finally {
@@ -123,7 +123,7 @@ export default function MyPage() {
       await deleteArticle(id);
       setPublished((prev) => prev.filter((a) => a.id !== id));
       setDrafts((prev) => prev.filter((a) => a.id !== id));
-      toast.success("삭제되었습니다.");
+      toast.success(t.mypage.deleteSuccess);
     } catch (e) {
       toast.error(e instanceof ApiError ? `${t.mypage.deleteFailed} (${(e as ApiError).status})` : t.mypage.deleteError);
     }
@@ -137,7 +137,7 @@ export default function MyPage() {
         setDrafts((prev) => prev.filter((a) => a.id !== id));
         setPublished((prev) => [article, ...prev]);
       }
-      toast.success("발행되었습니다.");
+      toast.success(t.mypage.publishSuccess);
     } catch (e) {
       toast.error(e instanceof ApiError ? `${t.mypage.publishFailed} (${(e as ApiError).status})` : t.mypage.publishError);
     }
@@ -151,9 +151,9 @@ export default function MyPage() {
       const url = await uploadImage(file);
       await updateMyAvatar(url);
       setProfile((prev) => prev ? { ...prev, avatarUrl: url } : prev);
-      toast.success("프로필 사진이 변경되었습니다.");
+      toast.success(t.mypage.avatarSuccess);
     } catch {
-      toast.error("프로필 사진 업로드에 실패했습니다.");
+      toast.error(t.mypage.avatarError);
     } finally {
       setAvatarUploading(false);
       e.target.value = "";
@@ -184,7 +184,7 @@ export default function MyPage() {
             </Avatar>
             <Box sx={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", bgcolor: "rgba(0,0,0,0.35)", borderRadius: "50%", opacity: 0, "&:hover": { opacity: 1 }, transition: "opacity 0.2s" }}>
               <Typography sx={{ fontSize: "10px", color: "white", fontWeight: fw.bold, textAlign: "center", lineHeight: 1.2 }}>
-                {avatarUploading ? "..." : "변경"}
+                {avatarUploading ? "..." : t.mypage.change}
               </Typography>
             </Box>
           </label>
@@ -301,9 +301,9 @@ export default function MyPage() {
         <DialogTitle sx={titleMd}>{t.article.followers}</DialogTitle>
         <DialogContent>
           {followersLoading ? (
-            <Typography sx={textSecondary}>불러오는 중...</Typography>
+            <Typography sx={textSecondary}>{t.mypage.loading}</Typography>
           ) : followers.length === 0 ? (
-            <Typography sx={textSecondary}>팔로워가 없습니다.</Typography>
+            <Typography sx={textSecondary}>{t.mypage.noFollowers}</Typography>
           ) : (
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, pt: 1 }}>
               {followers.map((u) => (
@@ -321,7 +321,7 @@ export default function MyPage() {
           )}
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setFollowersOpen(false)} sx={{ fontSize: fs.sm }}>닫기</Button>
+          <Button onClick={() => setFollowersOpen(false)} sx={{ fontSize: fs.sm }}>{t.mypage.close}</Button>
         </DialogActions>
       </Dialog>
 
