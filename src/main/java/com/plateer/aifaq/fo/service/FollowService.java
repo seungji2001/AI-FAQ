@@ -61,7 +61,7 @@ public class FollowService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
         return followRepository.findByFollowing(user).stream()
-                .map(f -> new UserDto(f.getFollower(), followRepository.countByFollowing(f.getFollower())))
+                .map(f -> new UserDto(f.getFollower(), followRepository.countByFollowing(f.getFollower()), followRepository.countByFollower(f.getFollower())))
                 .toList();
     }
 
@@ -70,7 +70,7 @@ public class FollowService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
         return followRepository.findByFollower(user).stream()
-                .map(f -> new UserDto(f.getFollowing(), followRepository.countByFollowing(f.getFollowing())))
+                .map(f -> new UserDto(f.getFollowing(), followRepository.countByFollowing(f.getFollowing()), followRepository.countByFollower(f.getFollowing())))
                 .toList();
     }
 }
