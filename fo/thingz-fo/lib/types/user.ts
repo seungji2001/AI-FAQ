@@ -18,6 +18,7 @@ export interface UserProfile {
   kakaoUrl: string | null;
   articleCount: number;
   followerCount: number;
+  followingCount: number;
 }
 
 export interface UserUpdateRequest {

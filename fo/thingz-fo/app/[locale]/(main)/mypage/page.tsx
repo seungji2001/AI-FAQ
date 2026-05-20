@@ -22,7 +22,7 @@ import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
 import { fetchArticlesByUser, fetchMyDrafts, deleteArticle, publishDraft } from "@/lib/api/articles";
 import { fetchMyProfile, updateMyProfile, updateMyAvatar } from "@/lib/api/users";
 import { uploadImage } from "@/lib/api/upload";
-import { fetchFollowing } from "@/lib/api/follow";
+import { fetchFollowing, fetchFollowers } from "@/lib/api/follow";
 import { ApiError } from "@/lib/api/client";
 import { ArticleListItem } from "@/lib/types/article";
 import { UserItem, UserProfile, UserUpdateRequest } from "@/lib/types/user";
@@ -56,6 +56,10 @@ export default function MyPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
+  const [followersOpen, setFollowersOpen] = useState(false);
+  const [followers, setFollowers] = useState<UserItem[]>([]);
+  const [followersLoading, setFollowersLoading] = useState(false);
+  const [followersLoaded, setFollowersLoaded] = useState(false);
   const [editForm, setEditForm] = useState<UserUpdateRequest>({});
   const [saving, setSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
@@ -78,6 +82,21 @@ export default function MyPage() {
       setFollowing(fol);
     }).finally(() => setLoading(false));
   }, [router]);
+
+  const openFollowers = async () => {
+    setFollowersOpen(true);
+    if (followersLoaded) return;
+    setFollowersLoading(true);
+    try {
+      const data = await fetchFollowers(profile!.id);
+      setFollowers(data);
+      setFollowersLoaded(true);
+    } catch {
+      toast.error("팔로워 목록을 불러오지 못했습니다.");
+    } finally {
+      setFollowersLoading(false);
+    }
+  };
 
   const openEdit = () => {
     setEditForm({ displayName: profile?.displayName ?? "", bio: profile?.bio ?? "", instagramId: profile?.instagramId ?? "", kakaoUrl: profile?.kakaoUrl ?? "" });
@@ -173,7 +192,19 @@ export default function MyPage() {
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography sx={{ fontSize: fs["2xl"], fontWeight: fw.bold }}>{displayName || `@${username}`}</Typography>
           <Typography sx={textSecondary}>
-            @{username} · {t.mypage.publishedTab} {published.length} · {t.mypage.followingTab} {following.length}
+            @{username} · {t.mypage.publishedTab} {published.length} · {t.mypage.followingTab} {profile?.followingCount ?? following.length}
+            {profile && (
+              <>
+                {" · "}
+                <Box
+                  component="span"
+                  onClick={openFollowers}
+                  sx={{ cursor: "pointer", "&:hover": { color: "text.primary" } }}
+                >
+                  {t.article.followers} {profile.followerCount}
+                </Box>
+              </>
+            )}
           </Typography>
           {profile?.bio && <Typography sx={{ fontSize: fs.sm, mt: 0.5 }}>{profile.bio}</Typography>}
         </Box>
@@ -224,7 +255,7 @@ export default function MyPage() {
           <Box sx={articleGrid}>
             {drafts.map((a) => (
               <Box key={a.id} sx={{ position: "relative" }}>
-                <ItemCard id={a.id} title={a.title} tag={a.tags[0] ?? ""} imageSrc={a.coverUrl ?? undefined} />
+                <ItemCard id={a.id} title={a.title} tag={a.tags[0] ?? ""} imageSrc={a.coverUrl ?? undefined} href={`/${locale}/edit/${a.id}`} />
                 <Box sx={{ position: "absolute", bottom: 8, left: 8, display: "flex", gap: 0.5 }}>
                   <Link href={`/${locale}/edit/${a.id}`}>
                     <IconButton size="small" sx={{ bgcolor: "background.paper", border: "1px solid", borderColor: "divider", borderRadius: "8px", p: 0.5, "&:hover": { bgcolor: "grey.100" } }}>
@@ -264,6 +295,35 @@ export default function MyPage() {
           </Box>
         )
       )}
+
+      {/* 팔로워 다이얼로그 */}
+      <Dialog open={followersOpen} onClose={() => setFollowersOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle sx={titleMd}>{t.article.followers}</DialogTitle>
+        <DialogContent>
+          {followersLoading ? (
+            <Typography sx={textSecondary}>불러오는 중...</Typography>
+          ) : followers.length === 0 ? (
+            <Typography sx={textSecondary}>팔로워가 없습니다.</Typography>
+          ) : (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, pt: 1 }}>
+              {followers.map((u) => (
+                <Box key={u.id} sx={{ ...panelBase, p: 1.5 }}>
+                  <EditorItem
+                    userId={u.id}
+                    username={`@${u.username}`}
+                    followers={String(u.articleCount)}
+                    articles={u.articleCount}
+                    avatarSrc={u.avatarUrl ?? undefined}
+                  />
+                </Box>
+              ))}
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setFollowersOpen(false)} sx={{ fontSize: fs.sm }}>닫기</Button>
+        </DialogActions>
+      </Dialog>
 
       {/* 프로필 수정 다이얼로그 */}
       <Dialog open={editOpen} onClose={() => setEditOpen(false)} maxWidth="xs" fullWidth>

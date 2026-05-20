@@ -26,14 +26,14 @@ public class UserService {
     @Cacheable(value = "users", key = "'active'")
     public List<UserDto> getActiveUsers() {
         return userRepository.findByIsActiveTrueOrderByCreatedAtDesc().stream()
-                .map(u -> new UserDto(u, followRepository.countByFollowing(u)))
+                .map(u -> new UserDto(u, followRepository.countByFollowing(u), followRepository.countByFollower(u)))
                 .toList();
     }
 
     public UserDto getUserById(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + id));
-        return new UserDto(user, followRepository.countByFollowing(user));
+        return new UserDto(user, followRepository.countByFollowing(user), followRepository.countByFollower(user));
     }
 
     @CacheEvict(value = "users", allEntries = true)
