@@ -15,7 +15,7 @@ export default function TodayEditors({ users, title = "오늘의 에디터", noE
   const editors = (users ?? []).slice(0, 5).map((u) => ({
     userId: u.id,
     username: `@${u.username}`,
-    followers: String(u.articleCount),
+    followers: String(u.followerCount),
     articles: u.articleCount,
     avatarSrc: u.avatarUrl ?? undefined,
   }));
