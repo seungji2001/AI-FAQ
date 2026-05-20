@@ -286,7 +286,7 @@ export default function MyPage() {
                 <EditorItem
                   userId={u.id}
                   username={`@${u.username}`}
-                  followers={String(u.articleCount)}
+                  followers={String(u.followerCount)}
                   articles={u.articleCount}
                   avatarSrc={u.avatarUrl ?? undefined}
                 />
@@ -311,7 +311,7 @@ export default function MyPage() {
                   <EditorItem
                     userId={u.id}
                     username={`@${u.username}`}
-                    followers={String(u.articleCount)}
+                    followers={String(u.followerCount)}
                     articles={u.articleCount}
                     avatarSrc={u.avatarUrl ?? undefined}
                   />

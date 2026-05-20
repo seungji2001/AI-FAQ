@@ -5,6 +5,7 @@ export interface UserItem {
   bio: string;
   avatarUrl: string | null;
   articleCount: number;
+  followerCount: number;
 }
 
 export interface UserProfile {

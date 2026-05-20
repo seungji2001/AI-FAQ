@@ -69,7 +69,7 @@ export default function UserProfileHeader({ user, articleCount }: Props) {
           <Typography sx={{ fontSize: fs.sm, mt: 0.5 }}>{user.bio}</Typography>
         )}
       </Box>
-      <FollowButton userId={user.id} onFollowChange={(delta) => setFollowerCount((c) => Math.max(0, c + delta))} />
+      <FollowButton userId={user.id} onFollowChange={(delta) => { setFollowerCount((c) => Math.max(0, c + delta)); setFollowersLoaded(false); }} />
 
       {/* 팔로워 다이얼로그 */}
       <Dialog open={followersOpen} onClose={() => setFollowersOpen(false)} maxWidth="xs" fullWidth>
@@ -86,7 +86,7 @@ export default function UserProfileHeader({ user, articleCount }: Props) {
                   <EditorItem
                     userId={u.id}
                     username={`@${u.username}`}
-                    followers={String(u.articleCount)}
+                    followers={String(u.followerCount)}
                     articles={u.articleCount}
                     avatarSrc={u.avatarUrl ?? undefined}
                   />
