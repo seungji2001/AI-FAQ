@@ -12,6 +12,7 @@ interface ItemCardProps {
   author?: string;
   imageSrc?: string;
   price?: number | null;
+  href?: string;
 }
 
 export default function ItemCard({
@@ -21,9 +22,10 @@ export default function ItemCard({
   author,
   imageSrc,
   price,
+  href,
 }: ItemCardProps) {
   return (
-    <Link href={`/article/${id}`} style={{ textDecoration: "none" }}>
+    <Link href={href ?? `/article/${id}`} style={{ textDecoration: "none" }}>
       <Box
         sx={{
           display: "flex",

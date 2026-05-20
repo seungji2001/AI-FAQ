@@ -52,7 +52,6 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
       "Bash(wait)",
       "Bash(open *)",
-<<<<<<< Updated upstream
       "Bash(python3 *)",
       "PowerShell($bytes = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create\\(\\).GetBytes\\($bytes\\); [Convert]::ToBase64String\\($bytes\\))",
       "Bash(xargs grep -l \"publish\\\\|write\\\\|Write\")",
@@ -68,14 +67,9 @@
       "Bash(winget install *)",
       "Bash(del *)",
       "Bash(gh auth *)",
-      "PowerShell(gh auth *)"
-=======
-      "Bash(docker info *)",
-      "Bash(curl -s http://localhost:8080)",
-      "Bash(curl -s http://localhost:8080/login)",
-      "Bash(docker compose *)",
-      "Bash(docker exec jenkins *)"
->>>>>>> Stashed changes
+      "PowerShell(gh auth *)",
+      "Bash(git pull *)",
+      "Bash(git stash *)"
     ]
   }
 }
