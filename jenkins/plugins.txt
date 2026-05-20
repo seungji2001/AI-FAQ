@@ -1,0 +1,25 @@
+# 파이프라인 핵심
+workflow-aggregator
+pipeline-stage-view
+
+# Git / GitHub 연동
+git
+github
+github-branch-source
+
+# Docker
+docker-workflow
+docker-plugin
+
+# 크리덴셜 관리
+credentials
+credentials-binding
+plain-credentials
+
+# UI
+blueocean
+
+# 유틸
+timestamper
+ws-cleanup
+ansicolor
