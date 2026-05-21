@@ -21,6 +21,9 @@ bin/
 **/application-secure.properties
 application-secure.properties
 
+# Firebase 서비스 계정 (절대 커밋 금지)
+**/firebase-service-account.json
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
