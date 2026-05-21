@@ -84,7 +84,10 @@ public class AppleAuthService {
                 .parseSignedClaims(identityToken)
                 .getPayload();
 
-        if (!claims.getAudience().contains(bundleId)) {
+        // Expo Go 개발 환경에서는 aud가 host.exp.Exponent로 발급됨
+        boolean validAudience = claims.getAudience().contains(bundleId)
+                || claims.getAudience().contains("host.exp.Exponent");
+        if (!validAudience) {
             throw new IllegalArgumentException("identity token audience가 일치하지 않습니다.");
         }
 

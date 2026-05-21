@@ -24,7 +24,7 @@ public class JwtTokenProvider {
     private long refreshTokenValidity;
 
     private SecretKey key() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+        return Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secret));
     }
 
     public String createAccessToken(UUID userId, String username) {
