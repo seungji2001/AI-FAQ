@@ -68,8 +68,23 @@
       "Bash(del *)",
       "Bash(gh auth *)",
       "PowerShell(gh auth *)",
-      "Bash(git pull *)",
-      "Bash(git stash *)"
+      "Bash(docker info *)",
+      "Bash(curl -s http://localhost:8080)",
+      "Bash(curl -s http://localhost:8080/login)",
+      "Bash(docker compose *)",
+      "Bash(docker exec jenkins *)",
+      "Bash(claude doctor *)",
+      "Bash(brew list *)",
+      "Bash(swift --version)",
+      "Bash(xcode-select -p)",
+      "Bash(swiftc -typecheck Models/AuthModels.swift Core/Auth/KeychainManager.swift Core/Auth/TokenManager.swift Core/Network/APIEndpoint.swift Core/Network/APIClient.swift Core/Services/DeviceTokenService.swift)",
+      "Bash(xcrun simctl *)",
+      "Bash(npx create-expo-app@latest *)",
+      "Bash(npx expo *)",
+      "Bash(pkill -f \"expo start\")",
+      "Bash(ipconfig getifaddr *)",
+      "Bash(git stash *)",
+      "Bash(awk -F: '{print $1}')"
     ]
   }
 }
