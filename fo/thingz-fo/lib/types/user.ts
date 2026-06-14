@@ -5,6 +5,7 @@ export interface UserItem {
   bio: string;
   avatarUrl: string | null;
   articleCount: number;
+  followerCount: number;
 }
 
 export interface UserProfile {
@@ -18,6 +19,7 @@ export interface UserProfile {
   kakaoUrl: string | null;
   articleCount: number;
   followerCount: number;
+  followingCount: number;
 }
 
 export interface UserUpdateRequest {

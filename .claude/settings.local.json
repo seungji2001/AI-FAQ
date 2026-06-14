@@ -83,6 +83,8 @@
       "Bash(npx expo *)",
       "Bash(pkill -f \"expo start\")",
       "Bash(ipconfig getifaddr *)"
+      "Bash(git pull *)",
+      "Bash(git stash *)"
     ]
   }
 }

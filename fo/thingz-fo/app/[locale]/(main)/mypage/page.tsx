@@ -22,7 +22,7 @@ import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
 import { fetchArticlesByUser, fetchMyDrafts, deleteArticle, publishDraft } from "@/lib/api/articles";
 import { fetchMyProfile, updateMyProfile, updateMyAvatar } from "@/lib/api/users";
 import { uploadImage } from "@/lib/api/upload";
-import { fetchFollowing } from "@/lib/api/follow";
+import { fetchFollowing, fetchFollowers } from "@/lib/api/follow";
 import { ApiError } from "@/lib/api/client";
 import { ArticleListItem } from "@/lib/types/article";
 import { UserItem, UserProfile, UserUpdateRequest } from "@/lib/types/user";
@@ -56,6 +56,10 @@ export default function MyPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
+  const [followersOpen, setFollowersOpen] = useState(false);
+  const [followers, setFollowers] = useState<UserItem[]>([]);
+  const [followersLoading, setFollowersLoading] = useState(false);
+  const [followersLoaded, setFollowersLoaded] = useState(false);
   const [editForm, setEditForm] = useState<UserUpdateRequest>({});
   const [saving, setSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
@@ -79,6 +83,21 @@ export default function MyPage() {
     }).finally(() => setLoading(false));
   }, [router]);
 
+  const openFollowers = async () => {
+    setFollowersOpen(true);
+    if (followersLoaded) return;
+    setFollowersLoading(true);
+    try {
+      const data = await fetchFollowers(profile!.id);
+      setFollowers(data);
+      setFollowersLoaded(true);
+    } catch {
+      toast.error(t.mypage.followersLoadFailed);
+    } finally {
+      setFollowersLoading(false);
+    }
+  };
+
   const openEdit = () => {
     setEditForm({ displayName: profile?.displayName ?? "", bio: profile?.bio ?? "", instagramId: profile?.instagramId ?? "", kakaoUrl: profile?.kakaoUrl ?? "" });
     setEditOpen(true);
@@ -90,7 +109,7 @@ export default function MyPage() {
       await updateMyProfile(editForm);
       setProfile((prev) => prev ? { ...prev, ...editForm } : prev);
       setEditOpen(false);
-      toast.success(t.mypage.save + " 완료");
+      toast.success(t.mypage.saveSuccess);
     } catch (e) {
       toast.error(e instanceof ApiError ? `${t.mypage.saveFailed} (${(e as ApiError).status})` : t.mypage.saveError);
     } finally {
@@ -104,7 +123,7 @@ export default function MyPage() {
       await deleteArticle(id);
       setPublished((prev) => prev.filter((a) => a.id !== id));
       setDrafts((prev) => prev.filter((a) => a.id !== id));
-      toast.success("삭제되었습니다.");
+      toast.success(t.mypage.deleteSuccess);
     } catch (e) {
       toast.error(e instanceof ApiError ? `${t.mypage.deleteFailed} (${(e as ApiError).status})` : t.mypage.deleteError);
     }
@@ -118,7 +137,7 @@ export default function MyPage() {
         setDrafts((prev) => prev.filter((a) => a.id !== id));
         setPublished((prev) => [article, ...prev]);
       }
-      toast.success("발행되었습니다.");
+      toast.success(t.mypage.publishSuccess);
     } catch (e) {
       toast.error(e instanceof ApiError ? `${t.mypage.publishFailed} (${(e as ApiError).status})` : t.mypage.publishError);
     }
@@ -132,9 +151,9 @@ export default function MyPage() {
       const url = await uploadImage(file);
       await updateMyAvatar(url);
       setProfile((prev) => prev ? { ...prev, avatarUrl: url } : prev);
-      toast.success("프로필 사진이 변경되었습니다.");
+      toast.success(t.mypage.avatarSuccess);
     } catch {
-      toast.error("프로필 사진 업로드에 실패했습니다.");
+      toast.error(t.mypage.avatarError);
     } finally {
       setAvatarUploading(false);
       e.target.value = "";
@@ -165,7 +184,7 @@ export default function MyPage() {
             </Avatar>
             <Box sx={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", bgcolor: "rgba(0,0,0,0.35)", borderRadius: "50%", opacity: 0, "&:hover": { opacity: 1 }, transition: "opacity 0.2s" }}>
               <Typography sx={{ fontSize: "10px", color: "white", fontWeight: fw.bold, textAlign: "center", lineHeight: 1.2 }}>
-                {avatarUploading ? "..." : "변경"}
+                {avatarUploading ? "..." : t.mypage.change}
               </Typography>
             </Box>
           </label>
@@ -173,7 +192,19 @@ export default function MyPage() {
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography sx={{ fontSize: fs["2xl"], fontWeight: fw.bold }}>{displayName || `@${username}`}</Typography>
           <Typography sx={textSecondary}>
-            @{username} · {t.mypage.publishedTab} {published.length} · {t.mypage.followingTab} {following.length}
+            @{username} · {t.mypage.publishedTab} {published.length} · {t.mypage.followingTab} {profile?.followingCount ?? following.length}
+            {profile && (
+              <>
+                {" · "}
+                <Box
+                  component="span"
+                  onClick={openFollowers}
+                  sx={{ cursor: "pointer", "&:hover": { color: "text.primary" } }}
+                >
+                  {t.article.followers} {profile.followerCount}
+                </Box>
+              </>
+            )}
           </Typography>
           {profile?.bio && <Typography sx={{ fontSize: fs.sm, mt: 0.5 }}>{profile.bio}</Typography>}
         </Box>
@@ -224,7 +255,7 @@ export default function MyPage() {
           <Box sx={articleGrid}>
             {drafts.map((a) => (
               <Box key={a.id} sx={{ position: "relative" }}>
-                <ItemCard id={a.id} title={a.title} tag={a.tags[0] ?? ""} imageSrc={a.coverUrl ?? undefined} />
+                <ItemCard id={a.id} title={a.title} tag={a.tags[0] ?? ""} imageSrc={a.coverUrl ?? undefined} href={`/${locale}/edit/${a.id}`} />
                 <Box sx={{ position: "absolute", bottom: 8, left: 8, display: "flex", gap: 0.5 }}>
                   <Link href={`/${locale}/edit/${a.id}`}>
                     <IconButton size="small" sx={{ bgcolor: "background.paper", border: "1px solid", borderColor: "divider", borderRadius: "8px", p: 0.5, "&:hover": { bgcolor: "grey.100" } }}>
@@ -255,7 +286,7 @@ export default function MyPage() {
                 <EditorItem
                   userId={u.id}
                   username={`@${u.username}`}
-                  followers={String(u.articleCount)}
+                  followers={String(u.followerCount)}
                   articles={u.articleCount}
                   avatarSrc={u.avatarUrl ?? undefined}
                 />
@@ -264,6 +295,35 @@ export default function MyPage() {
           </Box>
         )
       )}
+
+      {/* 팔로워 다이얼로그 */}
+      <Dialog open={followersOpen} onClose={() => setFollowersOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle sx={titleMd}>{t.article.followers}</DialogTitle>
+        <DialogContent>
+          {followersLoading ? (
+            <Typography sx={textSecondary}>{t.mypage.loading}</Typography>
+          ) : followers.length === 0 ? (
+            <Typography sx={textSecondary}>{t.mypage.noFollowers}</Typography>
+          ) : (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, pt: 1 }}>
+              {followers.map((u) => (
+                <Box key={u.id} sx={{ ...panelBase, p: 1.5 }}>
+                  <EditorItem
+                    userId={u.id}
+                    username={`@${u.username}`}
+                    followers={String(u.followerCount)}
+                    articles={u.articleCount}
+                    avatarSrc={u.avatarUrl ?? undefined}
+                  />
+                </Box>
+              ))}
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setFollowersOpen(false)} sx={{ fontSize: fs.sm }}>{t.mypage.close}</Button>
+        </DialogActions>
+      </Dialog>
 
       {/* 프로필 수정 다이얼로그 */}
       <Dialog open={editOpen} onClose={() => setEditOpen(false)} maxWidth="xs" fullWidth>
