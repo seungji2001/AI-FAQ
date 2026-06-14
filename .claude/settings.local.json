@@ -82,9 +82,7 @@
       "Bash(npx create-expo-app@latest *)",
       "Bash(npx expo *)",
       "Bash(pkill -f \"expo start\")",
-      "Bash(ipconfig getifaddr *)",
-      "Bash(git stash *)",
-      "Bash(awk -F: '{print $1}')"
+      "Bash(ipconfig getifaddr *)"
     ]
   }
 }
