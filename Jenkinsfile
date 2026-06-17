@@ -14,6 +14,7 @@ pipeline {
 
         // ─── 경로 ────────────────────────────────────────────
         FE_DIR = "fo/thingz-fo"
+        VERIFY_HOST = "host.docker.internal"
     }
 
     options {
@@ -119,12 +120,12 @@ pipeline {
                 echo "✅ 서비스 응답 확인 중..."
                 sh """
                     # 백엔드 헬스 체크
-                    timeout 60 sh -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 3; done'
+                    timeout 60 sh -c 'until curl -sf http://\${VERIFY_HOST}:8080/actuator/health; do sleep 3; done'
                     echo ""
                     echo "✅ 백엔드 정상"
 
                     # 프론트엔드 헬스 체크
-                    timeout 60 sh -c 'until curl -sf http://localhost:\${FRONTEND_PORT:-3001}; do sleep 3; done'
+                    timeout 60 sh -c 'until curl -sf http://\${VERIFY_HOST}:\${FRONTEND_PORT:-3001}; do sleep 3; done'
                     echo "✅ 프론트엔드 정상"
                 """
             }
