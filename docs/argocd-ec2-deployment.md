@@ -229,7 +229,14 @@ rm /tmp/thingz-secret.yaml
 
 ## Jenkins GitOps 전환
 
-현재 Jenkinsfile은 Docker Compose 배포 방식입니다. ArgoCD로 전환할 때 Jenkins는 다음만 담당하게 만듭니다.
+현재 Jenkinsfile은 Docker Compose 배포를 유지하면서 GHCR에 이미지를 push합니다.
+
+Jenkins credential:
+- `GHCR_CREDENTIALS`: GitHub username + package write 권한이 있는 PAT
+- `NEXT_PUBLIC_API_BASE`: frontend build arg
+- `THINGZ_ENV_FILE`: 현재 Docker Compose 배포용 `.env`
+
+ArgoCD로 완전히 전환할 때 Jenkins는 다음만 담당하게 만듭니다.
 
 1. checkout
 2. backend/frontend Docker build
@@ -254,4 +261,3 @@ rm /tmp/thingz-secret.yaml
 - [ ] S3 CORS 설정 확인
 - [ ] DB EC2 3306 inbound가 app EC2 security group에만 열렸는지 확인
 - [ ] DB 백업이 S3에 올라가는지 복원 테스트
-

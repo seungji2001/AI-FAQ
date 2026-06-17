@@ -8,6 +8,8 @@ pipeline {
         // ─── 이미지 이름 ──────────────────────────────────────
         BACKEND_IMAGE  = "thingz-backend"
         FRONTEND_IMAGE = "thingz-frontend"
+        BACKEND_REGISTRY_IMAGE = "ghcr.io/seungji2001/thingz-backend"
+        FRONTEND_REGISTRY_IMAGE = "ghcr.io/seungji2001/thingz-frontend"
 
         // ─── 경로 ────────────────────────────────────────────
         FE_DIR = "fo/thingz-fo"
@@ -39,6 +41,8 @@ pipeline {
                     docker build \
                         -t ${BACKEND_IMAGE}:${IMAGE_TAG} \
                         -t ${BACKEND_IMAGE}:latest \
+                        -t ${BACKEND_REGISTRY_IMAGE}:${IMAGE_TAG} \
+                        -t ${BACKEND_REGISTRY_IMAGE}:latest \
                         .
                 """
             }
@@ -54,13 +58,32 @@ pipeline {
                             --build-arg NEXT_PUBLIC_API_BASE=${API_BASE} \
                             -t ${FRONTEND_IMAGE}:${IMAGE_TAG} \
                             -t ${FRONTEND_IMAGE}:latest \
+                            -t ${FRONTEND_REGISTRY_IMAGE}:${IMAGE_TAG} \
+                            -t ${FRONTEND_REGISTRY_IMAGE}:latest \
                             ${FE_DIR}
                     """
                 }
             }
         }
 
-        // ── 4. 배포 ──────────────────────────────────────────
+        // ── 4. 이미지 Registry Push ─────────────────────────
+        stage('Push Images') {
+            steps {
+                echo "📦 GHCR 이미지 push 중... (태그: ${IMAGE_TAG})"
+                withCredentials([usernamePassword(credentialsId: 'GHCR_CREDENTIALS', usernameVariable: 'GHCR_USER', passwordVariable: 'GHCR_TOKEN')]) {
+                    sh """
+                        echo "\${GHCR_TOKEN}" | docker login ghcr.io -u "\${GHCR_USER}" --password-stdin
+
+                        docker push ${BACKEND_REGISTRY_IMAGE}:${IMAGE_TAG}
+                        docker push ${BACKEND_REGISTRY_IMAGE}:latest
+                        docker push ${FRONTEND_REGISTRY_IMAGE}:${IMAGE_TAG}
+                        docker push ${FRONTEND_REGISTRY_IMAGE}:latest
+                    """
+                }
+            }
+        }
+
+        // ── 5. 배포 ──────────────────────────────────────────
         stage('Deploy') {
             steps {
                 echo "🚀 Docker Compose 배포 중... (태그: ${IMAGE_TAG})"
@@ -86,7 +109,7 @@ pipeline {
             }
         }
 
-        // ── 5. 검증 ──────────────────────────────────────────
+        // ── 6. 검증 ──────────────────────────────────────────
         stage('Verify') {
             steps {
                 echo "✅ 서비스 응답 확인 중..."
@@ -111,6 +134,8 @@ pipeline {
             ✅ 배포 완료
             브랜치 : ${env.BRANCH_NAME ?: 'main'}
             이미지  : ${IMAGE_TAG}
+            GHCR    : ${BACKEND_REGISTRY_IMAGE}:${IMAGE_TAG}
+                    ${FRONTEND_REGISTRY_IMAGE}:${IMAGE_TAG}
             백엔드  : http://localhost:8080
             프론트  : http://localhost:3000
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -127,6 +152,7 @@ pipeline {
         always {
             // 임시 .env 파일 삭제 (보안)
             sh 'rm -f .env'
+            sh 'docker logout ghcr.io || true'
         }
     }
 }

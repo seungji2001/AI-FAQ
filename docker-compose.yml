@@ -37,6 +37,7 @@ services:
     container_name: thingz-backend
     restart: unless-stopped
     environment:
+      SPRING_PROFILES_ACTIVE: prod
       DB_HOST: mysql
       DB_PORT: 3306
       DB_USERNAME: ${DB_USERNAME:-root}
