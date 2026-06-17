@@ -124,7 +124,7 @@ pipeline {
                     echo "✅ 백엔드 정상"
 
                     # 프론트엔드 헬스 체크
-                    timeout 60 sh -c 'until curl -sf http://localhost:3000; do sleep 3; done'
+                    timeout 60 sh -c 'until curl -sf http://localhost:\${FRONTEND_PORT:-3001}; do sleep 3; done'
                     echo "✅ 프론트엔드 정상"
                 """
             }
@@ -141,7 +141,7 @@ pipeline {
             GHCR    : ${env.BACKEND_REGISTRY_IMAGE}:${env.IMAGE_TAG}
                     ${env.FRONTEND_REGISTRY_IMAGE}:${env.IMAGE_TAG}
             백엔드  : http://localhost:8080
-            프론트  : http://localhost:3000
+            프론트  : http://localhost:${env.FRONTEND_PORT ?: '3001'}
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             """
         }
