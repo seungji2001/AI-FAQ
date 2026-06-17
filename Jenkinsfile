@@ -6,9 +6,6 @@ pipeline {
     }
 
     environment {
-        // ─── 이미지 태그: Checkout 이후 Git 커밋 앞 7자리로 설정 ──
-        IMAGE_TAG = ""
-
         // ─── 이미지 이름 ──────────────────────────────────────
         BACKEND_IMAGE  = "thingz-backend"
         FRONTEND_IMAGE = "thingz-frontend"
@@ -159,7 +156,7 @@ pipeline {
                 """
             }
         }
-        always {
+        cleanup {
             // 임시 .env 파일 삭제 (보안)
             sh 'rm -f .env'
             sh 'docker logout ghcr.io || true'
