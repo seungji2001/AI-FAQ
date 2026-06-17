@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thingz-backend
+  namespace: thingz
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: thingz-backend
+  template:
+    metadata:
+      labels:
+        app: thingz-backend
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/seungji2001/thingz-backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: thingz-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: thingz-config
+                  key: DB_PORT
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: thingz-config
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: thingz-secrets
+                  key: DB_PASSWORD
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: thingz-config
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: thingz-config
+                  key: REDIS_PORT
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: thingz-secrets
+                  key: JWT_SECRET
+            - name: KAKAO_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: thingz-secrets
+                  key: KAKAO_CLIENT_ID
+            - name: KAKAO_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: thingz-secrets
+                  key: KAKAO_CLIENT_SECRET
+            - name: KAKAO_REDIRECT_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: thingz-config
+                  key: KAKAO_REDIRECT_URI
+            - name: AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: thingz-secrets
+                  key: AWS_ACCESS_KEY
+            - name: AWS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: thingz-secrets
+                  key: AWS_SECRET_KEY
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: thingz-config
+                  key: AWS_REGION
+            - name: S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: thingz-secrets
+                  key: S3_BUCKET
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: thingz-secrets
+                  key: OPENAI_API_KEY
+            - name: FRONTEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: thingz-config
+                  key: FRONTEND_URL
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 40
+            periodSeconds: 10
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: thingz-backend
+  namespace: thingz
+spec:
+  selector:
+    app: thingz-backend
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: thingz-config
+  namespace: thingz
+data:
+  DB_HOST: "REPLACE_WITH_DB_PRIVATE_IP_OR_DNS"
+  DB_PORT: "3306"
+  DB_USERNAME: "thingz"
+  REDIS_HOST: "thingz-redis"
+  REDIS_PORT: "6379"
+  AWS_REGION: "ap-northeast-2"
+  FRONTEND_URL: "https://thingz.example.com"
+  KAKAO_REDIRECT_URI: "https://thingz.example.com/login/oauth2/code/kakao"
+

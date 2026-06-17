@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thingz-frontend
+  namespace: thingz
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: thingz-frontend
+  template:
+    metadata:
+      labels:
+        app: thingz-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/seungji2001/thingz-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: NEXT_PUBLIC_API_BASE
+              value: "/api/fo"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 45
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 100m
+              memory: 192Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: thingz-frontend
+  namespace: thingz
+spec:
+  selector:
+    app: thingz-frontend
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
+
