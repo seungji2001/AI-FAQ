@@ -229,7 +229,7 @@ rm /tmp/thingz-secret.yaml
 
 ## Jenkins GitOps 전환
 
-현재 Jenkinsfile은 Docker Compose 배포를 유지하면서 GHCR에 이미지를 push합니다.
+현재 Jenkinsfile은 Docker Compose 배포를 유지합니다. `PUSH_TO_GHCR` 파라미터를 켠 빌드에서는 GHCR에도 이미지를 push합니다.
 
 Jenkins credential:
 - `GHCR_CREDENTIALS`: GitHub username + package write 권한이 있는 PAT

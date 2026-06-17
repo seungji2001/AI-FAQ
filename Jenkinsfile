@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        booleanParam(name: 'PUSH_TO_GHCR', defaultValue: false, description: 'Push backend/frontend images to GHCR')
+    }
+
     environment {
         // ─── 이미지 태그: Checkout 이후 Git 커밋 앞 7자리로 설정 ──
         IMAGE_TAG = ""
@@ -68,6 +72,9 @@ pipeline {
 
         // ── 4. 이미지 Registry Push ─────────────────────────
         stage('Push Images') {
+            when {
+                expression { return params.PUSH_TO_GHCR }
+            }
             steps {
                 echo "📦 GHCR 이미지 push 중... (태그: ${IMAGE_TAG})"
                 withCredentials([usernamePassword(credentialsId: 'GHCR_CREDENTIALS', usernameVariable: 'GHCR_USER', passwordVariable: 'GHCR_TOKEN')]) {
