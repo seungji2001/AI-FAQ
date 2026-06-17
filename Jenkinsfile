@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        // ─── 이미지 태그: Git 커밋 앞 7자리 ──────────────────
-        IMAGE_TAG = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+        // ─── 이미지 태그: Checkout 이후 Git 커밋 앞 7자리로 설정 ──
+        IMAGE_TAG = ""
 
         // ─── 이미지 이름 ──────────────────────────────────────
         BACKEND_IMAGE  = "thingz-backend"
@@ -23,8 +23,11 @@ pipeline {
         // ── 1. 소스 체크아웃 ─────────────────────────────────
         stage('Checkout') {
             steps {
-                echo "📥 브랜치: ${env.BRANCH_NAME ?: 'main'} | 태그: ${IMAGE_TAG}"
                 checkout scm
+                script {
+                    env.IMAGE_TAG = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                }
+                echo "📥 브랜치: ${env.BRANCH_NAME ?: 'main'} | 태그: ${IMAGE_TAG}"
             }
         }
 
