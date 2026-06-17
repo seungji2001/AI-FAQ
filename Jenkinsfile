@@ -33,7 +33,7 @@ pipeline {
                 script {
                     env.IMAGE_TAG = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                 }
-                echo "📥 브랜치: ${env.BRANCH_NAME ?: 'main'} | 태그: ${IMAGE_TAG}"
+                echo "📥 브랜치: ${env.BRANCH_NAME ?: 'main'} | 태그: ${env.IMAGE_TAG}"
             }
         }
 
@@ -43,10 +43,10 @@ pipeline {
                 echo "🔨 Spring Boot 이미지 빌드 중..."
                 sh """
                     docker build \
-                        -t ${BACKEND_IMAGE}:${IMAGE_TAG} \
-                        -t ${BACKEND_IMAGE}:latest \
-                        -t ${BACKEND_REGISTRY_IMAGE}:${IMAGE_TAG} \
-                        -t ${BACKEND_REGISTRY_IMAGE}:latest \
+                        -t \${BACKEND_IMAGE}:\${IMAGE_TAG} \
+                        -t \${BACKEND_IMAGE}:latest \
+                        -t \${BACKEND_REGISTRY_IMAGE}:\${IMAGE_TAG} \
+                        -t \${BACKEND_REGISTRY_IMAGE}:latest \
                         .
                 """
             }
@@ -59,12 +59,12 @@ pipeline {
                 withCredentials([string(credentialsId: 'NEXT_PUBLIC_API_BASE', variable: 'API_BASE')]) {
                     sh """
                         docker build \
-                            --build-arg NEXT_PUBLIC_API_BASE=${API_BASE} \
-                            -t ${FRONTEND_IMAGE}:${IMAGE_TAG} \
-                            -t ${FRONTEND_IMAGE}:latest \
-                            -t ${FRONTEND_REGISTRY_IMAGE}:${IMAGE_TAG} \
-                            -t ${FRONTEND_REGISTRY_IMAGE}:latest \
-                            ${FE_DIR}
+                            --build-arg NEXT_PUBLIC_API_BASE=\${API_BASE} \
+                            -t \${FRONTEND_IMAGE}:\${IMAGE_TAG} \
+                            -t \${FRONTEND_IMAGE}:latest \
+                            -t \${FRONTEND_REGISTRY_IMAGE}:\${IMAGE_TAG} \
+                            -t \${FRONTEND_REGISTRY_IMAGE}:latest \
+                            \${FE_DIR}
                     """
                 }
             }
@@ -76,15 +76,15 @@ pipeline {
                 expression { return params.PUSH_TO_GHCR }
             }
             steps {
-                echo "📦 GHCR 이미지 push 중... (태그: ${IMAGE_TAG})"
+                echo "📦 GHCR 이미지 push 중... (태그: ${env.IMAGE_TAG})"
                 withCredentials([usernamePassword(credentialsId: 'GHCR_CREDENTIALS', usernameVariable: 'GHCR_USER', passwordVariable: 'GHCR_TOKEN')]) {
                     sh """
                         echo "\${GHCR_TOKEN}" | docker login ghcr.io -u "\${GHCR_USER}" --password-stdin
 
-                        docker push ${BACKEND_REGISTRY_IMAGE}:${IMAGE_TAG}
-                        docker push ${BACKEND_REGISTRY_IMAGE}:latest
-                        docker push ${FRONTEND_REGISTRY_IMAGE}:${IMAGE_TAG}
-                        docker push ${FRONTEND_REGISTRY_IMAGE}:latest
+                        docker push \${BACKEND_REGISTRY_IMAGE}:\${IMAGE_TAG}
+                        docker push \${BACKEND_REGISTRY_IMAGE}:latest
+                        docker push \${FRONTEND_REGISTRY_IMAGE}:\${IMAGE_TAG}
+                        docker push \${FRONTEND_REGISTRY_IMAGE}:latest
                     """
                 }
             }
@@ -93,14 +93,14 @@ pipeline {
         // ── 5. 배포 ──────────────────────────────────────────
         stage('Deploy') {
             steps {
-                echo "🚀 Docker Compose 배포 중... (태그: ${IMAGE_TAG})"
+                echo "🚀 Docker Compose 배포 중... (태그: ${env.IMAGE_TAG})"
                 withCredentials([file(credentialsId: 'THINGZ_ENV_FILE', variable: 'ENV_FILE')]) {
                     sh """
                         # 환경변수 파일 복사
                         cp \${ENV_FILE} .env
 
                         # 이미지 태그 주입 후 재시작
-                        IMAGE_TAG=${IMAGE_TAG} docker compose up -d --no-build
+                        IMAGE_TAG=\${IMAGE_TAG} docker compose up -d --no-build
 
                         # 헬스 체크 대기 (최대 2분)
                         echo "⏳ 서비스 기동 대기..."
@@ -140,9 +140,9 @@ pipeline {
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             ✅ 배포 완료
             브랜치 : ${env.BRANCH_NAME ?: 'main'}
-            이미지  : ${IMAGE_TAG}
-            GHCR    : ${BACKEND_REGISTRY_IMAGE}:${IMAGE_TAG}
-                    ${FRONTEND_REGISTRY_IMAGE}:${IMAGE_TAG}
+            이미지  : ${env.IMAGE_TAG}
+            GHCR    : ${env.BACKEND_REGISTRY_IMAGE}:${env.IMAGE_TAG}
+                    ${env.FRONTEND_REGISTRY_IMAGE}:${env.IMAGE_TAG}
             백엔드  : http://localhost:8080
             프론트  : http://localhost:3000
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -151,10 +151,13 @@ pipeline {
         failure {
             echo "❌ 배포 실패 — 로그를 확인하세요"
             // 실패 시 이전 이미지로 롤백
-            sh """
-                echo "⏪ latest 이미지로 롤백 시도..."
-                IMAGE_TAG=latest docker compose up -d --no-build || true
-            """
+            withCredentials([file(credentialsId: 'THINGZ_ENV_FILE', variable: 'ENV_FILE')]) {
+                sh """
+                    echo "⏪ latest 이미지로 롤백 시도..."
+                    cp \${ENV_FILE} .env
+                    IMAGE_TAG=latest docker compose up -d --no-build || true
+                """
+            }
         }
         always {
             // 임시 .env 파일 삭제 (보안)
