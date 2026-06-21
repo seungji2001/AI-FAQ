@@ -19,7 +19,7 @@ public class DeviceToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false, columnDefinition = "BINARY(16)")
+    @Column(name = "user_id", nullable = false)
     private UUID userId;
 
     @Column(unique = true, nullable = false, columnDefinition = "TEXT")

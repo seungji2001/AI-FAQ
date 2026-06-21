@@ -17,7 +17,6 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
     @OneToOne(fetch = FetchType.LAZY)

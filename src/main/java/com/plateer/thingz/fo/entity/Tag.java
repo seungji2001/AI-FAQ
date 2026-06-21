@@ -15,7 +15,6 @@ public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(unique = true, nullable = false, length = 50)
