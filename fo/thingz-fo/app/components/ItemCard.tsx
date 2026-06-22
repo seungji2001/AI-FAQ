@@ -4,6 +4,7 @@ import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
 import { fs, fw, lh, dim } from "@/lib/styles/typography";
 import { cardImage, imgContain } from "@/lib/styles/sx";
+import { BRAND_COLOR } from "@/lib/constants/theme";
 
 interface ItemCardProps {
   id?: string;
@@ -25,10 +26,11 @@ export default function ItemCard({
   href,
 }: ItemCardProps) {
   return (
-    <Link href={href ?? `/article/${id}`} style={{ textDecoration: "none" }}>
+    <Link href={href ?? `/article/${id}`} style={{ textDecoration: "none", display: "block", minWidth: 0 }}>
       <Box
         sx={{
           display: "flex",
+          minWidth: 0,
           gap: { xs: 2, md: 3 },
           p: { xs: 2, md: 2.5 },
           bgcolor: "background.paper",
@@ -79,7 +81,7 @@ export default function ItemCard({
               </Typography>
             )}
             {price != null && (
-              <Typography sx={{ fontSize: fs.sm, color: "text.primary", fontWeight: fw.semibold }}>
+              <Typography sx={{ fontSize: fs.sm, color: BRAND_COLOR, fontWeight: fw.bold }}>
                 {price.toLocaleString()}원
               </Typography>
             )}
@@ -87,11 +89,24 @@ export default function ItemCard({
         </Box>
 
         {/* 오른쪽: 썸네일 */}
-        {imageSrc && (
-          <Box sx={{ ...cardImage, width: dim.thumbnailWidth, height: dim.thumbnailWidth, flexShrink: 0, borderRadius: dim.radiusCard }}>
+        <Box sx={{ ...cardImage, width: dim.thumbnailWidth, height: dim.thumbnailWidth, flexShrink: 0, borderRadius: dim.radiusCard }}>
+          {imageSrc ? (
             <Box component="img" src={imageSrc} alt={title} sx={imgContain} />
-          </Box>
-        )}
+          ) : (
+            <Box
+              sx={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                bgcolor: "grey.100",
+              }}
+            >
+              <Box sx={{ width: 18, height: 18, borderRadius: "50%", bgcolor: BRAND_COLOR, opacity: 0.75 }} />
+            </Box>
+          )}
+        </Box>
       </Box>
     </Link>
   );

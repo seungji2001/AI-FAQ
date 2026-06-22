@@ -8,10 +8,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @MapperScan({"com.plateer.thingz.bo.mapper"})
 @EnableScheduling
-public class AiFaqApplication {
+public class ThingzApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AiFaqApplication.class, args);
+        SpringApplication.run(ThingzApplication.class, args);
     }
 
 }

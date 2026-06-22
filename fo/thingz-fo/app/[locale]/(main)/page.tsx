@@ -40,14 +40,16 @@ export default async function Home() {
             {t("recentArticles")}
           </Typography>
           {rest.length > 0 ? (
-            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" }, gap: 3 }}>
+            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", xl: "1fr 1fr 1fr" }, gap: 3 }}>
               {rest.map((article) => (
                 <ItemCard
                   key={article.id}
                   id={article.id}
                   title={article.title}
+                  author={article.author}
                   tag={article.tags[0] ?? ""}
                   imageSrc={article.coverUrl ?? undefined}
+                  price={article.price}
                 />
               ))}
             </Box>

@@ -4,7 +4,7 @@ import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
 import { fs, fw, lh, ls, dim } from "@/lib/styles/typography";
 import { cardImage, imgContain } from "@/lib/styles/sx";
-import { INK, IVORY } from "@/lib/constants/theme";
+import { BRAND_COLOR, INK, IVORY } from "@/lib/constants/theme";
 
 interface FeaturedCardProps {
   id?: string;
@@ -36,8 +36,30 @@ export default function FeaturedCard({
             position: "relative",
           }}
         >
-          {imageSrc && (
+          {imageSrc ? (
             <Box component="img" src={imageSrc} alt={title} sx={imgContain} />
+          ) : (
+            <Box
+              sx={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 1,
+                bgcolor: "background.paper",
+                border: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              <Typography sx={{ fontFamily: "var(--font-pacifico)", fontSize: { xs: fs["5xl"], md: fs["6xl"] }, color: BRAND_COLOR }}>
+                Thingz
+              </Typography>
+              <Typography sx={{ fontSize: fs.xs, color: "text.secondary", fontWeight: fw.semibold, letterSpacing: ls.wide }}>
+                STORY WAITING FOR A PHOTO
+              </Typography>
+            </Box>
           )}
           <Box sx={{ position: "absolute", top: 16, left: 16, bgcolor: INK, color: IVORY, px: 1.5, py: 0.5, borderRadius: dim.radiusTag, fontSize: fs.sm, fontWeight: fw.semibold, letterSpacing: ls.wide }}>
             FEATURED
@@ -67,7 +89,7 @@ export default function FeaturedCard({
             {price && (
               <>
                 <Typography sx={{ fontSize: fs.md, color: "text.disabled" }}>·</Typography>
-                <Typography sx={{ fontSize: fs.md, color: "text.primary", fontWeight: fw.semibold }}>{price}</Typography>
+                <Typography sx={{ fontSize: fs.md, color: BRAND_COLOR, fontWeight: fw.bold }}>{price}</Typography>
               </>
             )}
           </Box>

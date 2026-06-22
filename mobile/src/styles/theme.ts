@@ -6,6 +6,8 @@ export const Colors = {
   inkLight:     '#2C2C2C',
   textSecondary:'#6B6B6B',
   divider:      'rgba(0,0,0,0.08)',
+  brand:        '#FBA96E',
+  brandSoft:    '#FFF1E7',
   kakao:        '#FEE500',
   white:        '#FFFFFF',
   gray100:      '#F5F5F5',

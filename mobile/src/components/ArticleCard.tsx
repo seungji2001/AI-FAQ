@@ -13,9 +13,12 @@ export default function ArticleCard({ article, onPress, featured }: Props) {
   return (
     <TouchableOpacity style={[styles.card, featured && styles.featured]} onPress={onPress} activeOpacity={0.85}>
       {article.coverUrl ? (
-        <Image source={{ uri: article.coverUrl }} style={[styles.image, featured && styles.featuredImage]} />
+        <Image source={{ uri: article.coverUrl }} style={[styles.image, featured && styles.featuredImage]} resizeMode="cover" />
       ) : (
-        <View style={[styles.placeholder, featured && styles.featuredImage]} />
+        <View style={[styles.placeholder, featured && styles.featuredImage]}>
+          <Text style={styles.placeholderMark}>Thingz</Text>
+          <Text style={styles.placeholderText}>사진을 기다리는 이야기</Text>
+        </View>
       )}
       <View style={styles.info}>
         {article.tags[0] && <Text style={styles.tag}>#{article.tags[0]}</Text>}
@@ -51,7 +54,20 @@ const styles = StyleSheet.create({
   placeholder: {
     width: '100%',
     height: 160,
-    backgroundColor: Colors.ivoryDark,
+    backgroundColor: Colors.brandSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  },
+  placeholderMark: {
+    color: Colors.brand,
+    fontSize: FontSize.xl4,
+    fontWeight: FontWeight.bold,
+  },
+  placeholderText: {
+    color: Colors.textSecondary,
+    fontSize: FontSize.xs,
+    fontWeight: FontWeight.semibold,
   },
   info: {
     padding: 12,
@@ -80,7 +96,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: FontSize.md,
     fontWeight: FontWeight.bold,
-    color: Colors.ink,
+    color: Colors.brand,
     marginTop: 2,
   },
 });
