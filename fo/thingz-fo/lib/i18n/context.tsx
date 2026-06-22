@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import { Locale, Translations, getT } from "./translations";
 
 interface LanguageContextValue {
@@ -15,23 +15,12 @@ const LanguageContext = createContext<LanguageContextValue>({
   setLocale: () => {},
 });
 
-function readLocale(): Locale {
-  if (typeof document === "undefined") return "ko";
-  const match = document.cookie.match(/(?:^|;\s*)locale=([^;]+)/);
-  const val = match?.[1];
-  return (val === "en" || val === "ja" || val === "ko") ? val : "ko";
-}
-
 function writeLocale(locale: Locale) {
   document.cookie = `locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
 }
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("ko");
-
-  useEffect(() => {
-    setLocaleState(readLocale());
-  }, []);
+export function LanguageProvider({ children, initialLocale = "ko" }: { children: ReactNode; initialLocale?: Locale }) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
   const setLocale = (l: Locale) => {
     writeLocale(l);

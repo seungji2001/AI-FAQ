@@ -10,7 +10,7 @@ import SelectChip from "@/app/components/ui/SelectChip";
 import SectionLabel from "@/app/components/ui/SectionLabel";
 import { panelBase } from "@/lib/styles/sx";
 import { IVORY } from "@/lib/constants/theme";
-import { fs, fw, titleMd } from "@/lib/styles/typography";
+import { fs, titleMd } from "@/lib/styles/typography";
 import { useT } from "@/lib/i18n/context";
 
 const InkSwitch = styled(Switch)(() => ({

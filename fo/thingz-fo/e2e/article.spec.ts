@@ -61,7 +61,6 @@ test.describe("아티클 상세 페이지", () => {
 
   test("존재하지 않는 아티클은 404 처리된다", async ({ page }) => {
     await page.goto("/ko/article/00000000-0000-0000-0000-000000000000");
-    await page.waitForLoadState("networkidle");
     await expect(page.getByText(/찾을 수 없/).first()).toBeVisible({ timeout: 15_000 });
   });
 

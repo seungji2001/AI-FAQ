@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useMemo, ReactNode } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { fs } from "@/lib/styles/typography";
@@ -46,12 +46,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const close = (id: number) =>
     setItems((prev) => prev.filter((item) => item.id !== id));
 
-  const toast = {
+  const toast = useMemo(() => ({
     success: (msg: string) => show(msg, "success"),
-    error:   (msg: string) => show(msg, "error"),
-    warn:    (msg: string) => show(msg, "warning"),
-    info:    (msg: string) => show(msg, "info"),
-  };
+    error: (msg: string) => show(msg, "error"),
+    warn: (msg: string) => show(msg, "warning"),
+    info: (msg: string) => show(msg, "info"),
+  }), [show]);
 
   return (
     <ToastContext.Provider value={{ toast }}>

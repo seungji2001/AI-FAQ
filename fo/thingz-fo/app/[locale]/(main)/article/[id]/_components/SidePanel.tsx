@@ -1,6 +1,5 @@
 "use client";
 
-import Box from "@mui/material/Box";
 import ArticleTrade from "@/app/components/article/ArticleTrade";
 import ArticleEditorProfile from "@/app/components/article/ArticleEditorProfile";
 import { ArticleDetail } from "@/lib/types/article";

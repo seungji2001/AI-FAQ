@@ -23,18 +23,26 @@ export default function ExploreClient() {
 
   const [input, setInput] = useState(initialTag);
   const [activeTag, setActiveTag] = useState(initialTag);
-  const [articles, setArticles] = useState<ArticleListItem[]>([]);
+  const [articleResult, setArticleResult] = useState<{ tag: string; articles: ArticleListItem[] } | null>(null);
   const [popularTags, setPopularTags] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  const articles = articleResult?.tag === activeTag ? articleResult.articles : [];
+  const loading = articleResult?.tag !== activeTag;
 
   useEffect(() => {
     fetchPopularTags(12).then(setPopularTags).catch(() => setPopularTags([]));
   }, []);
 
   useEffect(() => {
-    setLoading(true);
+    let cancelled = false;
     const fetcher = activeTag ? fetchArticlesByTag(activeTag) : fetchArticles();
-    fetcher.then(setArticles).catch(() => setArticles([])).finally(() => setLoading(false));
+    fetcher
+      .then((nextArticles) => {
+        if (!cancelled) setArticleResult({ tag: activeTag, articles: nextArticles });
+      })
+      .catch(() => {
+        if (!cancelled) setArticleResult({ tag: activeTag, articles: [] });
+      });
+    return () => { cancelled = true; };
   }, [activeTag]);
 
   const handleSearch = (tag: string) => {

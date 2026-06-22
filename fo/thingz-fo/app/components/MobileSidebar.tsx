@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -19,6 +18,7 @@ import { KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_TEXT_COLOR, IVORY, INK } from "@/
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { squareBtn } from "@/lib/styles/sx";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
+import { useAccessToken } from "@/lib/auth/useAccessToken";
 import { logout } from "@/lib/api/auth";
 import { useT } from "@/lib/i18n/context";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -33,16 +33,11 @@ interface MobileSidebarProps {
 
 export default function MobileSidebar({ open, onClose, onLoginRequest }: MobileSidebarProps) {
   const t = useT();
-  const [username, setUsername] = useState<string | null>(null);
-
-  useEffect(() => {
-    const token = tokenStorage.getAccessToken();
-    if (token) setUsername(getUserFromToken(token)?.username ?? null);
-  }, [open]);
+  const accessToken = useAccessToken();
+  const username = accessToken ? getUserFromToken(accessToken)?.username ?? null : null;
 
   const handleLogout = async () => {
     await logout();
-    setUsername(null);
     onClose();
   };
 

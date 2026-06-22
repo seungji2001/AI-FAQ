@@ -3,7 +3,7 @@
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import { fs, fw, dim } from "@/lib/styles/typography";
+import { fs, fw } from "@/lib/styles/typography";
 import { useT } from "@/lib/i18n/context";
 
 interface WriteHeaderProps {

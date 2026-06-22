@@ -9,6 +9,7 @@ import Link from "next/link";
 import { dim, labelBold, captionText, btnFollow } from "@/lib/styles/typography";
 import { followUser, unfollowUser, checkIsFollowing } from "@/lib/api/follow";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
+import { useAccessToken } from "@/lib/auth/useAccessToken";
 import { useT } from "@/lib/i18n/context";
 import { useToast } from "@/app/components/ui/Toast";
 
@@ -29,27 +30,23 @@ export default function EditorItem({
   const toast = useToast();
   const [following, setFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isOwner, setIsOwner] = useState(false);
-  const [checked, setChecked] = useState(false);
+  const [followingCheck, setFollowingCheck] = useState<{ userId: string; checked: boolean }>({ userId: "", checked: false });
   const [followerCount, setFollowerCount] = useState(() => parseInt(followers.replace(/,/g, ""), 10) || 0);
+  const accessToken = useAccessToken();
+  const currentUser = accessToken ? getUserFromToken(accessToken) : null;
+  const isOwner = Boolean(userId && currentUser?.userId === userId);
+  const needsFollowingCheck = Boolean(userId && accessToken && !isOwner);
+  const checked = !needsFollowingCheck || (followingCheck.userId === userId && followingCheck.checked);
 
   useEffect(() => {
-    if (!userId) { setChecked(true); return; }
-    const token = tokenStorage.getAccessToken();
-    if (!token) { setChecked(true); return; }
-    const me = getUserFromToken(token);
-    if (me?.userId === userId) {
-      setIsOwner(true);
-      setChecked(true);
-      return;
-    }
+    if (!userId || !accessToken || isOwner) return;
     let cancelled = false;
     checkIsFollowing(userId)
       .then((val) => { if (!cancelled) setFollowing(val); })
       .catch(() => {})
-      .finally(() => { if (!cancelled) setChecked(true); });
+      .finally(() => { if (!cancelled) setFollowingCheck({ userId, checked: true }); });
     return () => { cancelled = true; };
-  }, [userId]);
+  }, [accessToken, isOwner, userId]);
 
   if (isOwner) return null;
 

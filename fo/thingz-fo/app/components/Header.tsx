@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -26,6 +26,7 @@ import { IVORY, INK } from "@/lib/constants/theme";
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { toolbarInner } from "@/lib/styles/sx";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
+import { useAccessToken } from "@/lib/auth/useAccessToken";
 import { logout } from "@/lib/api/auth";
 import { useT } from "@/lib/i18n/context";
 
@@ -46,21 +47,13 @@ export default function Header() {
   const t = useT();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const router = useRouter();
-
-  useEffect(() => {
-    const token = tokenStorage.getAccessToken();
-    if (token) {
-      const user = getUserFromToken(token);
-      setUsername(user?.username ?? null);
-    }
-  }, []);
+  const accessToken = useAccessToken();
+  const username = accessToken ? getUserFromToken(accessToken)?.username ?? null : null;
 
   const handleLogout = async () => {
     await logout();
-    setUsername(null);
     setMenuAnchor(null);
     router.push("/");
   };

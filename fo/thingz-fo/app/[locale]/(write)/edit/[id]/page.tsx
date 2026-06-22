@@ -60,7 +60,7 @@ export default function EditPage() {
         toast.error("아티클을 불러올 수 없습니다.");
         router.replace(`/${locale}`);
       });
-  }, [id, locale]);
+  }, [id, locale, router, setContent, setImageUrls, setSale, setTags, setTitle, toast]);
 
   const handleSaveDraft = async () => {
     if (!validate(false)) return;
