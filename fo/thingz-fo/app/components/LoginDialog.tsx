@@ -79,9 +79,9 @@ export default function LoginDialog({ open, onClose, onSuccess }: LoginDialogPro
       } else {
         const tokens = await loginWithEmail(email, password);
         tokenStorage.setTokens(tokens.accessToken, tokens.refreshToken);
-        onSuccess?.();
         handleClose();
         router.refresh();
+        onSuccess?.();
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : (mode === "signup" ? t.login.signupFailed : t.login.loginFailed);

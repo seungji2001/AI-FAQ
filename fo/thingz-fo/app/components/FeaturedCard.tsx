@@ -1,7 +1,10 @@
+"use client";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { fs, fw, lh, ls, dim } from "@/lib/styles/typography";
 import { cardImage, imgContain } from "@/lib/styles/sx";
 import { BRAND_COLOR, INK, IVORY } from "@/lib/constants/theme";
@@ -23,8 +26,9 @@ export default function FeaturedCard({
   price,
   imageSrc,
 }: FeaturedCardProps) {
+  const { locale = "ko" } = useParams() as { locale?: string };
   return (
-    <Link href={`/article/${id}`} style={{ textDecoration: "none" }}>
+    <Link href={`/${locale}/article/${id}`} style={{ textDecoration: "none" }}>
       <Box sx={{ "&:hover .featured-title": { opacity: 0.75 }, transition: "opacity 0.15s" }}>
         {/* 이미지 */}
         <Box
