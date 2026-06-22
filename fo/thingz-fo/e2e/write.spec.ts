@@ -58,7 +58,7 @@ test.describe("글쓰기 페이지 (/write)", () => {
     await tagInput.fill("삭제테스트");
     await tagInput.press("Enter");
     await expect(page.getByText("#삭제테스트")).toBeVisible();
-    await page.locator("[data-testid='CancelIcon']").first().click();
+    await page.locator(".MuiChip-deleteIcon").first().click();
     await expect(page.getByText("#삭제테스트")).not.toBeVisible();
   });
 
