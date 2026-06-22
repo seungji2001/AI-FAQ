@@ -54,7 +54,7 @@ export default function Header() {
     const token = tokenStorage.getAccessToken();
     if (token) {
       const user = getUserFromToken(token);
-      window.setTimeout(() => setUsername(user?.username ?? null), 0);
+      setUsername(user?.username ?? null);
     }
   }, []);
 

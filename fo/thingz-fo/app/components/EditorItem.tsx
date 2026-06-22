@@ -34,22 +34,21 @@ export default function EditorItem({
   const [followerCount, setFollowerCount] = useState(() => parseInt(followers.replace(/,/g, ""), 10) || 0);
 
   useEffect(() => {
-    const markChecked = () => window.setTimeout(() => setChecked(true), 0);
-    if (!userId) { markChecked(); return; }
+    if (!userId) { setChecked(true); return; }
     const token = tokenStorage.getAccessToken();
-    if (!token) { markChecked(); return; }
+    if (!token) { setChecked(true); return; }
     const me = getUserFromToken(token);
     if (me?.userId === userId) {
-      window.setTimeout(() => {
-        setIsOwner(true);
-        setChecked(true);
-      }, 0);
+      setIsOwner(true);
+      setChecked(true);
       return;
     }
+    let cancelled = false;
     checkIsFollowing(userId)
-      .then(setFollowing)
+      .then((val) => { if (!cancelled) setFollowing(val); })
       .catch(() => {})
-      .finally(() => setChecked(true));
+      .finally(() => { if (!cancelled) setChecked(true); });
+    return () => { cancelled = true; };
   }, [userId]);
 
   if (isOwner) return null;

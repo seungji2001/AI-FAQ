@@ -37,7 +37,6 @@ export default function WritePage() {
 
   const requireLogin = (): boolean => {
     if (!tokenStorage.getAccessToken()) {
-      setIsAuthed(false);
       setLoginDialogOpen(true);
       return true;
     }

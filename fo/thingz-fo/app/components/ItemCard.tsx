@@ -1,7 +1,10 @@
+"use client";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { fs, fw, lh, dim } from "@/lib/styles/typography";
 import { cardImage, imgContain } from "@/lib/styles/sx";
 import { BRAND_COLOR } from "@/lib/constants/theme";
@@ -25,8 +28,9 @@ export default function ItemCard({
   price,
   href,
 }: ItemCardProps) {
+  const { locale = "ko" } = useParams() as { locale?: string };
   return (
-    <Link href={href ?? `/article/${id}`} style={{ textDecoration: "none", display: "block", minWidth: 0 }}>
+    <Link href={href ?? `/${locale}/article/${id}`} style={{ textDecoration: "none", display: "block", minWidth: 0 }}>
       <Box
         sx={{
           display: "flex",
