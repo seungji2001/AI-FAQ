@@ -64,3 +64,4 @@ src/main/resources/static/bo/css/output.css
 .claude/settings.local.json
 DEPLOYMENT_PLAN.md
 STATUS_UPDATE.md
+.vercel

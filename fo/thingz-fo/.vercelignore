@@ -1,0 +1,17 @@
+node_modules
+.next
+.pnp
+.pnp.*
+.yarn
+coverage
+build
+out
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.env*
+*.tsbuildinfo
+e2e
+test-results
+playwright-report
