@@ -59,6 +59,7 @@ src/main/resources/static/bo/css/output.css
 ### Playwright ###
 **/test-results/
 **/playwright-report/
+**/e2e/screenshots/
 
 ### Claude ###
 .claude/settings.local.json
