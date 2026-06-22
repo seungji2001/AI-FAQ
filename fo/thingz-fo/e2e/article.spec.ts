@@ -4,10 +4,14 @@ test.describe("아티클 상세 페이지", () => {
   let articleId: string | null = null;
 
   test.beforeAll(async ({ request }) => {
-    const res = await request.get("http://localhost:8080/api/fo/articles");
-    if (res.ok()) {
-      const articles = await res.json();
-      if (articles.length > 0) articleId = articles[0].id;
+    try {
+      const res = await request.get("http://localhost:8080/api/fo/articles");
+      if (res.ok()) {
+        const articles = await res.json();
+        if (articles.length > 0) articleId = articles[0].id;
+      }
+    } catch {
+      // 로컬 백엔드 미실행 시 article 의존 테스트는 개별 skip
     }
   });
 
