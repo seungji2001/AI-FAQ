@@ -30,11 +30,15 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtTokenProvider.createAccessToken(user.getUserId(), user.getUsername());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId());
 
-        redisTemplate.opsForValue().set(
-                "refresh:" + user.getUserId(),
-                refreshToken,
-                Duration.ofDays(7)
-        );
+        try {
+            redisTemplate.opsForValue().set(
+                    "refresh:" + user.getUserId(),
+                    refreshToken,
+                    Duration.ofDays(7)
+            );
+        } catch (Exception ignored) {
+            // Redis 미설정 환경에서도 로그인 완료되도록 허용
+        }
 
         String redirectUrl = frontendUrl + "/ko/auth/callback"
                 + "?accessToken=" + accessToken
