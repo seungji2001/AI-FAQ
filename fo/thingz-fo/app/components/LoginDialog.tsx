@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
@@ -23,13 +24,15 @@ import { useToast } from "@/app/components/ui/Toast";
 interface LoginDialogProps {
   open: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
 type Mode = "login" | "signup";
 
-export default function LoginDialog({ open, onClose }: LoginDialogProps) {
+export default function LoginDialog({ open, onClose, onSuccess }: LoginDialogProps) {
   const t = useT();
   const toast = useToast();
+  const router = useRouter();
 
   const [tab, setTab] = useState<0 | 1>(0); // 0: 소셜, 1: 이메일
   const [mode, setMode] = useState<Mode>("login");
@@ -76,8 +79,9 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
       } else {
         const tokens = await loginWithEmail(email, password);
         tokenStorage.setTokens(tokens.accessToken, tokens.refreshToken);
+        onSuccess?.();
         handleClose();
-        window.location.reload();
+        router.refresh();
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : (mode === "signup" ? t.login.signupFailed : t.login.loginFailed);

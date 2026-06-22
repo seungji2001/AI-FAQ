@@ -34,13 +34,16 @@ export default function EditorItem({
   const [followerCount, setFollowerCount] = useState(() => parseInt(followers.replace(/,/g, ""), 10) || 0);
 
   useEffect(() => {
-    if (!userId) { setChecked(true); return; }
+    const markChecked = () => window.setTimeout(() => setChecked(true), 0);
+    if (!userId) { markChecked(); return; }
     const token = tokenStorage.getAccessToken();
-    if (!token) { setChecked(true); return; }
+    if (!token) { markChecked(); return; }
     const me = getUserFromToken(token);
     if (me?.userId === userId) {
-      setIsOwner(true);
-      setChecked(true);
+      window.setTimeout(() => {
+        setIsOwner(true);
+        setChecked(true);
+      }, 0);
       return;
     }
     checkIsFollowing(userId)
@@ -89,11 +92,24 @@ export default function EditorItem({
       )}
       <Box sx={{ flex: 1, minWidth: 0 }}>
         {profileHref ? (
-          <Link href={profileHref} style={{ textDecoration: "none" }}>
-            <Typography sx={{ ...labelBold, "&:hover": { opacity: 0.7 }, transition: "opacity 0.15s" }}>{username}</Typography>
+          <Link href={profileHref} style={{ textDecoration: "none", display: "block", minWidth: 0 }}>
+            <Typography
+              sx={{
+                ...labelBold,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                "&:hover": { opacity: 0.7 },
+                transition: "opacity 0.15s",
+              }}
+            >
+              {username}
+            </Typography>
           </Link>
         ) : (
-          <Typography sx={labelBold}>{username}</Typography>
+          <Typography sx={{ ...labelBold, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {username}
+          </Typography>
         )}
         <Typography sx={captionText}>{t.article.followers} {displayFollowers} · {t.article.articles} {articles}</Typography>
       </Box>

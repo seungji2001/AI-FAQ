@@ -47,46 +47,52 @@
 
 ## 🛠️ 기술 스택
 
-### Frontend
-- **Next.js** (App Router)
-- **TypeScript**
-- **Tailwind CSS**
+### Frontend (`fo/thingz-fo`)
+- **Next.js 16** (App Router) + **TypeScript**
+- **MUI (Material UI) v9** — `sx` 기반 스타일링
+- **next-intl** — 다국어(ko/en/ja)
 
-### Backend
-- **Next.js API Routes** / 별도 서버
-- **REST API**
+### Backend (Spring Boot)
+- **Java 17 / Spring Boot 3.2**
+- **MySQL 8** (JPA + MyBatis 혼용), **Redis** (토큰/캐시)
+- **Spring Security + Kakao OAuth2 + JWT** 인증
+- **AWS S3** (이미지 업로드, presigned URL), **OpenAI** (FAQ 요약 배치)
 
-### 기타
+### Infra / 기타
+- **Docker / docker-compose**, **Jenkins** CI/CD
 - **GitHub** (버전 관리)
 
 ---
 
 ## 🚀 실행 방법
 
+### 백엔드 (루트)
 ```bash
-# 패키지 설치
-npm install
-
-# 개발 서버 실행
-npm run dev
+./gradlew bootRun        # http://localhost:8080
 ```
 
-브라우저에서 `http://localhost:3000` 접속
+### 프론트엔드 (`fo/thingz-fo`)
+```bash
+npm install
+npm run dev              # http://localhost:3000 (포트 충돌 시 -p 3005)
+```
+
+> 백엔드는 `application-secure.properties`(로컬 시크릿) 또는 환경변수가 필요합니다. 운영 배포는 `DEPLOYMENT_PLAN.md` 참고.
 
 ---
 
-## 📁 프로젝트 구조
+## 📁 저장소 구조
 
 ```
-thingz/
-├── app/
-│   ├── feed/          # 피드 페이지
-│   ├── explore/       # 탐색 페이지
-│   ├── my-page/       # 마이 페이지
-│   └── items/         # 상품 상세 페이지
-├── components/        # 공통 컴포넌트
-├── public/            # 정적 파일
-└── styles/            # 글로벌 스타일
+thingz/                  # 백엔드(Spring Boot) 루트
+├── src/main/java/com/plateer/thingz/
+│   ├── fo/              # 프론트 연동 API (/api/fo/*)
+│   ├── bo/              # 백오피스/레거시 (MyBatis)
+│   └── batch/           # OpenAI FAQ 요약 배치
+├── fo/thingz-fo/        # 웹 프론트엔드 (Next.js + MUI)
+├── mobile/              # 모바일 앱 (Expo)
+├── Dockerfile · docker-compose.yml · Jenkinsfile
+└── DEPLOYMENT_PLAN.md   # 배포 plan & 현황
 ```
 
 ---

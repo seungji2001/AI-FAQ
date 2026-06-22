@@ -21,6 +21,7 @@ export default function EditPage() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
+  const locale = params.locale as string;
   const [ready, setReady] = useState(false);
 
   const {
@@ -33,7 +34,7 @@ export default function EditPage() {
   } = useWriteForm();
 
   useEffect(() => {
-    if (!tokenStorage.getAccessToken()) { router.replace("/"); return; }
+    if (!tokenStorage.getAccessToken()) { router.replace(`/${locale}`); return; }
 
     fetchArticleForEdit(id)
       .then((article) => {
@@ -57,7 +58,7 @@ export default function EditPage() {
       })
       .catch(() => {
         toast.error("아티클을 불러올 수 없습니다.");
-        router.replace("/");
+        router.replace(`/${locale}`);
       });
   }, [id]);
 
@@ -77,7 +78,7 @@ export default function EditPage() {
     setLoading(true);
     try {
       await updateArticle(id, { title, content, tags, imageUrls, item: buildItemPayload() });
-      router.push(`/article/${id}`);
+      router.push(`/${locale}/article/${id}`);
     } catch (e) {
       toast.error(e instanceof ApiError ? `${t.write.publishFailed} (${(e as ApiError).status})` : t.write.publishError);
     } finally { setLoading(false); }

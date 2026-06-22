@@ -1,5 +1,5 @@
 {
-  "name": "ai-faq",
+  "name": "thingz",
   "version": "1.0.0",
   "description": "> 라이브 커머스 채팅 데이터를 AI로 분석하여 자동으로 상품 FAQ를 생성하는 시스템",
   "main": "tailwind.config.js",
@@ -9,16 +9,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seungji2001/AI-FAQ.git"
+    "url": "git+https://github.com/seungji2001/THINGZ.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/seungji2001/AI-FAQ/issues"
+    "url": "https://github.com/seungji2001/THINGZ/issues"
   },
-  "homepage": "https://github.com/seungji2001/AI-FAQ#readme",
+  "homepage": "https://github.com/seungji2001/THINGZ#readme",
   "devDependencies": {
     "autoprefixer": "^10.5.0",
     "postcss": "^8.5.9",

@@ -15,22 +15,21 @@ import Divider from "@mui/material/Divider";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
-import { styled, useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import { styled } from "@mui/material/styles";
 import MobileSidebar from "./MobileSidebar";
 import LoginDialog from "./LoginDialog";
 import LanguageSwitcher from "./LanguageSwitcher";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/constants/nav";
-import { KAKAO_COLOR, KAKAO_COLOR_HOVER, IVORY, INK } from "@/lib/constants/theme";
+import { IVORY, INK } from "@/lib/constants/theme";
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { toolbarInner } from "@/lib/styles/sx";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
 import { logout } from "@/lib/api/auth";
 import { useT } from "@/lib/i18n/context";
 
-const NavLink = styled(Typography)(({ theme: _theme }) => ({
+const NavLink = styled(Typography)(() => ({
   fontSize: fs.md,
   fontWeight: fw.medium,
   color: INK,
@@ -49,15 +48,13 @@ export default function Header() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
 
   useEffect(() => {
     const token = tokenStorage.getAccessToken();
     if (token) {
       const user = getUserFromToken(token);
-      setUsername(user?.username ?? null);
+      window.setTimeout(() => setUsername(user?.username ?? null), 0);
     }
   }, []);
 
@@ -110,12 +107,11 @@ export default function Header() {
 
           <Box sx={{ flex: 1 }} />
 
-          {isMobile ? (
-            <IconButton onClick={() => setSidebarOpen(true)} sx={{ flexShrink: 0 }}>
-              <MenuIcon sx={{ color: INK }} />
-            </IconButton>
-          ) : (
-            <Box sx={{ display: "flex", gap: { sm: 2.5, md: 3.5 }, alignItems: "center", flexShrink: 0 }}>
+          <IconButton onClick={() => setSidebarOpen(true)} sx={{ flexShrink: 0, display: { xs: "flex", sm: "none" } }}>
+            <MenuIcon sx={{ color: INK }} />
+          </IconButton>
+
+          <Box sx={{ display: { xs: "none", sm: "flex" }, gap: { sm: 2.5, md: 3.5 }, alignItems: "center", flexShrink: 0 }}>
               {navItems.map((item) => (
                 <Link key={item.label} href={item.href} style={{ textDecoration: "none" }}>
                   <NavLink>{navLabels[item.label] ?? item.label}</NavLink>
@@ -228,8 +224,7 @@ export default function Header() {
                   {t.nav.login}
                 </Button>
               )}
-            </Box>
-          )}
+          </Box>
         </Toolbar>
       </AppBar>
 

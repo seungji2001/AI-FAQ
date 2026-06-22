@@ -20,7 +20,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    @Value("${app.frontend-url}")
+    @Value("${frontend.url:http://localhost:3000}")
     private String frontendUrl;
 
     @Override

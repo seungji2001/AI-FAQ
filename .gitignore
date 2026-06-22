@@ -62,3 +62,5 @@ src/main/resources/static/bo/css/output.css
 
 ### Claude ###
 .claude/settings.local.json
+DEPLOYMENT_PLAN.md
+STATUS_UPDATE.md

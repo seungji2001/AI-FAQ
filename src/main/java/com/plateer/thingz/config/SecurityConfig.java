@@ -50,9 +50,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/fo/articles", "/api/fo/articles/**").authenticated()
                         .requestMatchers("/api/fo/users/**").authenticated()
                         .requestMatchers("/api/fo/upload/**").authenticated()
-                        // BO 엔드포인트(/api/v1, /bo, /batch)와 기타 경로는 별도 인증 없이 허용
-                        // 프로덕션 전환 시 명시적 경로 허용 후 .denyAll() 검토 필요
-                        .anyRequest().permitAll()
+                        // 미지정 경로(BO/batch 등 비-GET 쓰기 요청 포함)는 인증 필요.
+                        // 공개가 필요한 경로는 위에 명시적으로 permitAll 추가할 것.
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(info -> info.userService(kakaoOAuth2UserService))
