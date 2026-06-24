@@ -58,6 +58,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "회원 탈퇴", description = "계정을 비활성화하고 개인 식별 정보를 제거합니다.")
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deactivateMyAccount(@AuthenticationPrincipal CustomOAuth2User user) {
+        userService.deactivateMyAccount(user.getUserId());
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "유저 프로필 조회", description = "특정 유저의 프로필 정보를 반환합니다.",
         responses = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),

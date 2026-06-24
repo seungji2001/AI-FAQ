@@ -18,7 +18,14 @@ function AuthCallback() {
       tokenStorage.setTokens(accessToken, refreshToken);
     }
 
-    router.replace("/");
+    const returnLocale = document.cookie
+      .split(";")
+      .map((cookie) => cookie.trim())
+      .find((cookie) => cookie.startsWith("auth_return_locale="))
+      ?.split("=")[1];
+    document.cookie = "auth_return_locale=; path=/; max-age=0; SameSite=Lax";
+    const locale = returnLocale === "en" || returnLocale === "ja" ? returnLocale : "ko";
+    router.replace(`/${locale}`);
   }, [params, router]);
 
   return (

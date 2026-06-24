@@ -82,4 +82,20 @@ public class User {
     public void updateAvatar(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
+
+    public void deactivate() {
+        String suffix = id.toString().replace("-", "").substring(0, 12);
+        this.username = "deleted_" + suffix;
+        this.displayName = "탈퇴한 사용자";
+        this.bio = null;
+        this.avatarUrl = null;
+        this.coverUrl = null;
+        this.instagramId = null;
+        this.kakaoUrl = null;
+        this.kakaoId = null;
+        this.appleId = null;
+        this.email = null;
+        this.password = null;
+        this.isActive = false;
+    }
 }

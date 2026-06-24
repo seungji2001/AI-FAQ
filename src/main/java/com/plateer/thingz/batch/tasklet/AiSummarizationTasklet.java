@@ -5,6 +5,7 @@ import com.plateer.thingz.batch.service.FaqSummarizationService;
 import com.plateer.thingz.bo.service.FaqSumrInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -16,6 +17,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "thingz.batch.enabled", havingValue = "true")
 public class AiSummarizationTasklet implements Tasklet {
 
     private final FaqSumrInfoService faqSumrService;

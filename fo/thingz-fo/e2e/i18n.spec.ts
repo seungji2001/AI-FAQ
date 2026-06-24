@@ -42,4 +42,17 @@ test.describe("locale routing", () => {
     await expect(page.getByRole("button", { name: "ログイン" })).not.toBeVisible();
     expect(consoleErrors.filter((message) => message.includes("Hydration"))).toEqual([]);
   });
+
+  test("OAuth callback returns to the stored Japanese locale", async ({ page, context }) => {
+    await context.addCookies([{
+      name: "auth_return_locale",
+      value: "ja",
+      domain: "localhost",
+      path: "/",
+    }]);
+
+    await page.goto("/ko/auth/callback?accessToken=fake-access&refreshToken=fake-refresh");
+
+    await expect(page).toHaveURL(/\/ja$/);
+  });
 });

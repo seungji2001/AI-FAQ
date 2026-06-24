@@ -18,7 +18,7 @@ import { squareBtn } from "@/lib/styles/sx";
 import { KAKAO_COLOR, KAKAO_COLOR_HOVER, KAKAO_TEXT_COLOR, IVORY, INK } from "@/lib/constants/theme";
 import { getKakaoLoginUrl, loginWithEmail, signup } from "@/lib/api/auth";
 import { tokenStorage } from "@/lib/auth/token";
-import { useT } from "@/lib/i18n/context";
+import { useLocale, useT } from "@/lib/i18n/context";
 import { useToast } from "@/app/components/ui/Toast";
 
 interface LoginDialogProps {
@@ -31,6 +31,7 @@ type Mode = "login" | "signup";
 
 export default function LoginDialog({ open, onClose, onSuccess }: LoginDialogProps) {
   const t = useT();
+  const { locale } = useLocale();
   const toast = useToast();
   const router = useRouter();
 
@@ -91,6 +92,11 @@ export default function LoginDialog({ open, onClose, onSuccess }: LoginDialogPro
     }
   };
 
+  const handleKakaoLogin = () => {
+    document.cookie = `auth_return_locale=${locale}; path=/; max-age=600; SameSite=Lax`;
+    window.location.href = getKakaoLoginUrl();
+  };
+
   return (
     <Dialog
       open={open}
@@ -134,7 +140,7 @@ export default function LoginDialog({ open, onClose, onSuccess }: LoginDialogPro
           <>
             <Button
               fullWidth
-              onClick={() => { window.location.href = getKakaoLoginUrl(); }}
+              onClick={handleKakaoLogin}
               variant="contained"
               disableElevation
               sx={{

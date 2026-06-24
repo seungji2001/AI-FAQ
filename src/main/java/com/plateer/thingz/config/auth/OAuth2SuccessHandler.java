@@ -1,24 +1,23 @@
 package com.plateer.thingz.config.auth;
 
 import com.plateer.thingz.config.JwtTokenProvider;
+import com.plateer.thingz.fo.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.Duration;
 
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RefreshTokenService refreshTokenService;
 
     @Value("${frontend.url:http://localhost:3000}")
     private String frontendUrl;
@@ -30,15 +29,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtTokenProvider.createAccessToken(user.getUserId(), user.getUsername());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId());
 
-        try {
-            redisTemplate.opsForValue().set(
-                    "refresh:" + user.getUserId(),
-                    refreshToken,
-                    Duration.ofDays(7)
-            );
-        } catch (Exception ignored) {
-            // Redis 미설정 환경에서도 로그인 완료되도록 허용
-        }
+        refreshTokenService.store(user.getUserId(), refreshToken);
 
         String redirectUrl = frontendUrl + "/ko/auth/callback"
                 + "?accessToken=" + accessToken

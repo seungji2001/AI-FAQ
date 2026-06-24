@@ -54,6 +54,8 @@ export interface Translations {
   common: { loading: string; noArticles: string };
   notFound: { heading: string; title: string; description: string; backToHome: string };
   error: { title: string; description: string; retry: string; home: string };
+  report: { button: string; title: string; description: string; placeholder: string; submit: string; success: string; failed: string };
+  account: { delete: string; title: string; description: string; confirmHint: string; confirm: string; deleting: string; failed: string };
 }
 
 export const ko: Translations = {
@@ -118,6 +120,8 @@ export const ko: Translations = {
   common: { loading: "불러오는 중...", noArticles: "아티클이 없어요." },
   notFound: { heading: "404", title: "페이지를 찾을 수 없어요", description: "요청하신 페이지가 존재하지 않거나 이동되었습니다.", backToHome: "홈으로 돌아가기" },
   error: { title: "오류가 발생했습니다", description: "잠시 후 다시 시도해주세요.", retry: "다시 시도", home: "홈으로" },
+  report: { button: "신고", title: "아티클 신고", description: "검토가 필요한 이유를 알려주세요.", placeholder: "신고 사유를 입력해주세요.", submit: "신고하기", success: "신고가 접수되었습니다.", failed: "신고 접수에 실패했습니다." },
+  account: { delete: "회원 탈퇴", title: "회원 탈퇴", description: "프로필의 개인 정보가 제거되고 계정이 비활성화됩니다. 작성한 글은 탈퇴한 사용자 이름으로 유지됩니다.", confirmHint: "확인을 위해 사용자명을 입력해주세요: {username}", confirm: "탈퇴하기", deleting: "처리 중...", failed: "회원 탈퇴에 실패했습니다." },
 };
 
 export const en: Translations = {
@@ -182,6 +186,8 @@ export const en: Translations = {
   common: { loading: "Loading...", noArticles: "No articles found." },
   notFound: { heading: "404", title: "Page Not Found", description: "The page you requested doesn't exist or has been moved.", backToHome: "Back to Home" },
   error: { title: "Something went wrong", description: "Please try again later.", retry: "Try Again", home: "Home" },
+  report: { button: "Report", title: "Report Article", description: "Tell us why this article needs review.", placeholder: "Enter a reason for the report.", submit: "Submit Report", success: "Your report has been submitted.", failed: "Failed to submit the report." },
+  account: { delete: "Delete Account", title: "Delete Account", description: "Your personal profile information will be removed and the account will be disabled. Your articles will remain under an anonymized user.", confirmHint: "Enter your username to confirm: {username}", confirm: "Delete Account", deleting: "Deleting...", failed: "Failed to delete the account." },
 };
 
 export const ja: Translations = {
@@ -246,6 +252,8 @@ export const ja: Translations = {
   common: { loading: "読み込み中...", noArticles: "記事がありません。" },
   notFound: { heading: "404", title: "ページが見つかりません", description: "お探しのページは存在しないか、移動されました。", backToHome: "ホームに戻る" },
   error: { title: "エラーが発生しました", description: "しばらくしてから再試行してください。", retry: "再試行", home: "ホーム" },
+  report: { button: "通報", title: "記事を通報", description: "確認が必要な理由を入力してください。", placeholder: "通報理由を入力してください。", submit: "通報する", success: "通報を受け付けました。", failed: "通報の送信に失敗しました。" },
+  account: { delete: "アカウント削除", title: "アカウント削除", description: "プロフィールの個人情報が削除され、アカウントが無効になります。投稿は匿名化されたユーザー名で残ります。", confirmHint: "確認のためユーザー名を入力してください：{username}", confirm: "削除する", deleting: "処理中...", failed: "アカウントの削除に失敗しました。" },
 };
 
 const dict: Record<Locale, Translations> = { ko, en, ja };

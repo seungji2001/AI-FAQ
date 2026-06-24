@@ -4,7 +4,7 @@ const BASE = process.env.NEXT_PUBLIC_API_BASE;
 if (!BASE) throw new Error("NEXT_PUBLIC_API_BASE is not defined");
 
 export class ApiError extends Error {
-  constructor(public status: number, message: string) {
+  constructor(public status: number, message: string, public requestId?: string) {
     super(message);
     this.name = "ApiError";
   }
@@ -23,7 +23,11 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
-    throw new ApiError(res.status, `API error ${res.status}: ${path}`);
+    throw new ApiError(
+      res.status,
+      `API error ${res.status}: ${path}`,
+      res.headers.get("X-Request-Id") ?? undefined,
+    );
   }
 
   if (res.status === 204 || res.headers.get("content-length") === "0") {

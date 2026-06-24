@@ -24,6 +24,7 @@ export function LanguageProvider({ children, initialLocale = "ko" }: { children:
 
   useEffect(() => {
     document.documentElement.lang = initialLocale;
+    writeLocale(initialLocale);
   }, [initialLocale]);
 
   const setLocale = (l: Locale) => {

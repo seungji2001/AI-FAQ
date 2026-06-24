@@ -10,7 +10,6 @@ import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,7 +18,6 @@ import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
-import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +32,7 @@ public class AppleAuthService {
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RefreshTokenService refreshTokenService;
     private final WebClient.Builder webClientBuilder;
     private final ObjectMapper objectMapper;
 
@@ -54,7 +52,7 @@ public class AppleAuthService {
 
             String accessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getUsername());
             String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
-            redisTemplate.opsForValue().set("refresh:" + user.getId(), refreshToken, Duration.ofDays(7));
+            refreshTokenService.store(user.getId(), refreshToken);
 
             return new TokenDto(accessToken, refreshToken);
         } catch (IllegalArgumentException e) {

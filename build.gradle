@@ -60,6 +60,7 @@ dependencies {
 
     // Actuator (헬스 체크 - Jenkins 배포 검증용)
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.flywaydb:flyway-core'
 
     // Firebase Admin SDK (FCM 푸시 알림)
     implementation 'com.google.firebase:firebase-admin:9.2.0'

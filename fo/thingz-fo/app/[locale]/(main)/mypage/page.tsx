@@ -14,13 +14,14 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import TextField from "@mui/material/TextField";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PublishIcon from "@mui/icons-material/Publish";
 import Link from "next/link";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
 import { fetchArticlesByUser, fetchMyDrafts, deleteArticle, publishDraft } from "@/lib/api/articles";
-import { fetchMyProfile, updateMyProfile, updateMyAvatar } from "@/lib/api/users";
+import { deactivateMyAccount, fetchMyProfile, updateMyProfile, updateMyAvatar } from "@/lib/api/users";
 import { uploadImage } from "@/lib/api/upload";
 import { fetchFollowing, fetchFollowers } from "@/lib/api/follow";
 import { ApiError } from "@/lib/api/client";
@@ -63,6 +64,9 @@ export default function MyPage() {
   const [editForm, setEditForm] = useState<UserUpdateRequest>({});
   const [saving, setSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
+  const [deleteAccountConfirm, setDeleteAccountConfirm] = useState("");
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   useEffect(() => {
     const token = tokenStorage.getAccessToken();
@@ -157,6 +161,19 @@ export default function MyPage() {
     } finally {
       setAvatarUploading(false);
       e.target.value = "";
+    }
+  };
+
+  const handleDeactivateAccount = async () => {
+    if (!username || deleteAccountConfirm !== username) return;
+    setDeletingAccount(true);
+    try {
+      await deactivateMyAccount();
+      tokenStorage.clear();
+      router.replace(`/${locale}`);
+    } catch {
+      toast.error(t.account.failed);
+      setDeletingAccount(false);
     }
   };
 
@@ -348,6 +365,42 @@ export default function MyPage() {
           <Button onClick={() => setEditOpen(false)} sx={{ fontSize: fs.sm }}>{t.mypage.cancel}</Button>
           <Button variant="contained" disabled={saving} onClick={handleSaveProfile} color="primary" sx={{ fontSize: fs.sm }}>
             {saving ? t.mypage.saving : t.mypage.save}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Divider sx={{ mt: 6, mb: 2 }} />
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button color="error" size="small" onClick={() => setDeleteAccountOpen(true)}>
+          {t.account.delete}
+        </Button>
+      </Box>
+
+      <Dialog open={deleteAccountOpen} onClose={() => !deletingAccount && setDeleteAccountOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle>{t.account.title}</DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: "text.secondary", mb: 2 }}>
+            {t.account.description}
+          </Typography>
+          <Typography sx={{ fontSize: fs.sm, fontWeight: fw.semibold, mb: 1 }}>
+            {t.account.confirmHint.replace("{username}", username)}
+          </Typography>
+          <TextField
+            fullWidth
+            value={deleteAccountConfirm}
+            onChange={(event) => setDeleteAccountConfirm(event.target.value)}
+            autoComplete="off"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button disabled={deletingAccount} onClick={() => setDeleteAccountOpen(false)}>{t.mypage.cancel}</Button>
+          <Button
+            variant="contained"
+            color="error"
+            disabled={deletingAccount || deleteAccountConfirm !== username}
+            onClick={handleDeactivateAccount}
+          >
+            {deletingAccount ? t.account.deleting : t.account.confirm}
           </Button>
         </DialogActions>
       </Dialog>

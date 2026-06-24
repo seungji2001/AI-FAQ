@@ -48,3 +48,7 @@ export async function publishDraft(id: string): Promise<void> {
 export async function markArticleSold(id: string): Promise<void> {
   return apiClient.patch(`/articles/${id}/item/sold`);
 }
+
+export async function reportArticle(id: string, reason: string): Promise<void> {
+  return apiClient.post(`/articles/${id}/reports`, { reason });
+}

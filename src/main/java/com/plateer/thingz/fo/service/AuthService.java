@@ -7,12 +7,11 @@ import com.plateer.thingz.fo.dto.TokenDto;
 import com.plateer.thingz.fo.entity.User;
 import com.plateer.thingz.fo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public void signup(SignupRequest request) {
@@ -54,12 +53,36 @@ public class AuthService {
         String accessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getUsername());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
 
-        try {
-            redisTemplate.opsForValue().set("refresh:" + user.getId(), refreshToken, Duration.ofDays(7));
-        } catch (Exception ignored) {
-            // Redis 미설정 환경에서도 로그인 완료되도록 허용
-        }
+        refreshTokenService.store(user.getId(), refreshToken);
 
         return new TokenDto(accessToken, refreshToken);
+    }
+
+    @Transactional
+    public TokenDto refresh(String refreshToken) {
+        if (!jwtTokenProvider.isValid(refreshToken)) {
+            throw new IllegalArgumentException("유효하지 않은 Refresh Token입니다.");
+        }
+
+        UUID userId = jwtTokenProvider.getUserId(refreshToken);
+        if (!refreshTokenService.matches(userId, refreshToken)) {
+            throw new IllegalArgumentException("만료되었거나 폐기된 Refresh Token입니다.");
+        }
+
+        User user = userRepository.findById(userId)
+                .filter(found -> Boolean.TRUE.equals(found.getIsActive()))
+                .orElseThrow(() -> new IllegalArgumentException("활성 사용자 정보를 찾을 수 없습니다."));
+
+        String newAccessToken = jwtTokenProvider.createAccessToken(userId, user.getUsername());
+        String newRefreshToken = jwtTokenProvider.createRefreshToken(userId);
+        refreshTokenService.store(userId, newRefreshToken);
+        return new TokenDto(newAccessToken, newRefreshToken);
+    }
+
+    @Transactional
+    public void logout(String refreshToken) {
+        if (jwtTokenProvider.isValid(refreshToken)) {
+            refreshTokenService.delete(jwtTokenProvider.getUserId(refreshToken));
+        }
     }
 }

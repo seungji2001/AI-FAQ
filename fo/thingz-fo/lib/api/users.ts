@@ -20,3 +20,7 @@ export async function updateMyProfile(body: UserUpdateRequest): Promise<void> {
 export async function updateMyAvatar(avatarUrl: string): Promise<void> {
   return apiClient.patch("/users/me/avatar", { avatarUrl });
 }
+
+export async function deactivateMyAccount(): Promise<void> {
+  return apiClient.delete("/users/me");
+}

@@ -4,6 +4,7 @@ import com.plateer.thingz.fo.dto.UserDto;
 import com.plateer.thingz.fo.dto.UserUpdateRequest;
 import com.plateer.thingz.fo.entity.User;
 import com.plateer.thingz.fo.repository.FollowRepository;
+import com.plateer.thingz.fo.repository.DeviceTokenRepository;
 import com.plateer.thingz.fo.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final DeviceTokenRepository deviceTokenRepository;
+    private final RefreshTokenService refreshTokenService;
 
     @Cacheable(value = "users", key = "'active'")
     public List<UserDto> getActiveUsers() {
@@ -50,5 +53,16 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
         user.updateAvatar(avatarUrl);
+    }
+
+    @CacheEvict(value = "users", allEntries = true)
+    @Transactional
+    public void deactivateMyAccount(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        followRepository.deleteByFollowerOrFollowing(user, user);
+        deviceTokenRepository.deleteAllByUserId(userId);
+        refreshTokenService.delete(userId);
+        user.deactivate();
     }
 }
