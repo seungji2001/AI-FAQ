@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { Locale, Translations, getT } from "./translations";
 
 interface LanguageContextValue {
@@ -22,8 +22,13 @@ function writeLocale(locale: Locale) {
 export function LanguageProvider({ children, initialLocale = "ko" }: { children: ReactNode; initialLocale?: Locale }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
+  useEffect(() => {
+    document.documentElement.lang = initialLocale;
+  }, [initialLocale]);
+
   const setLocale = (l: Locale) => {
     writeLocale(l);
+    document.documentElement.lang = l;
     setLocaleState(l);
   };
 

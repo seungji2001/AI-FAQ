@@ -26,7 +26,7 @@ import { IVORY, INK } from "@/lib/constants/theme";
 import { fs, fw, dim } from "@/lib/styles/typography";
 import { toolbarInner } from "@/lib/styles/sx";
 import { tokenStorage, getUserFromToken } from "@/lib/auth/token";
-import { useAccessToken } from "@/lib/auth/useAccessToken";
+import { useAuthState } from "@/lib/auth/useAccessToken";
 import { logout } from "@/lib/api/auth";
 import { useT } from "@/lib/i18n/context";
 
@@ -49,7 +49,7 @@ export default function Header() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const router = useRouter();
-  const accessToken = useAccessToken();
+  const { accessToken, isHydrated } = useAuthState();
   const username = accessToken ? getUserFromToken(accessToken)?.username ?? null : null;
 
   const handleLogout = async () => {
@@ -125,7 +125,9 @@ export default function Header() {
 
               <LanguageSwitcher />
 
-              {username ? (
+              {!isHydrated ? (
+                <Box aria-hidden sx={{ width: 72, height: 34, flexShrink: 0 }} />
+              ) : username ? (
                 <>
                   <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)} sx={{ p: 0 }}>
                     <Avatar

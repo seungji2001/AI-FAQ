@@ -1,0 +1,103 @@
+{
+  "nav": {
+    "feed": "フィード",
+    "explore": "探索",
+    "publish": "公開",
+    "mypage": "マイページ"
+  },
+  "header": {
+    "searchPlaceholder": "物の物語を検索"
+  },
+  "home": {
+    "recentArticles": "最近の記事",
+    "noArticles": "まだ記事がありません。",
+    "todayEditors": "今日のエディター",
+    "noEditors": "エディターがいません。"
+  },
+  "article": {
+    "backToFeed": "← フィードに戻る"
+  },
+  "writeHeader": {
+    "saveDraft": "下書き保存",
+    "processing": "処理中...",
+    "publish": "公開する"
+  },
+  "writeEditor": {
+    "uploadPhoto": "写真をドラッグするかクリックしてアップロード",
+    "uploadHint": "（最大10枚・最初の写真がカバーになります）",
+    "titlePlaceholder": "この物との物語をタイトルに...",
+    "contentPlaceholder": "どんな物ですか？どこで出会いましたか？どのように一緒に過ごしましたか？\n\n自由に物語を書いてください。200文字以上をおすすめします。",
+    "addTag": "タグを追加",
+    "tagPlaceholder": "+ タグ"
+  },
+  "writeSaleSettings": {
+    "title": "販売設定",
+    "forSale": "この商品を販売する",
+    "price": "販売価格",
+    "priceUnit": "ウォン",
+    "condition": "商品の状態",
+    "delivery": "取引方法",
+    "contact": "取引の連絡先",
+    "instagramPlaceholder": "Instagram ID（例：@thingz_official）",
+    "kakaoPlaceholder": "カカオオープンチャットのリンク",
+    "conditionS": "S級",
+    "conditionA": "A級",
+    "conditionB": "B級",
+    "conditionC": "C級",
+    "deliveryParcel": "宅配",
+    "deliveryDirect": "手渡し",
+    "deliveryNegotiate": "相談"
+  },
+  "writePage": {
+    "alertTitle": "タイトルを入力してください。",
+    "alertContent": "本文を入力してください。",
+    "saveDraftSuccess": "下書きを保存しました！",
+    "saveDraftFailStatus": "保存に失敗しました（{status}）",
+    "saveDraftFailGeneric": "保存中にエラーが発生しました。",
+    "publishFailStatus": "公開に失敗しました（{status}）",
+    "publishFailGeneric": "公開中にエラーが発生しました。"
+  },
+  "articleTrade": {
+    "conditionLabel": "状態",
+    "deliveryLabel": "取引",
+    "locationLabel": "地域",
+    "inquire": "取引について問い合わせる",
+    "instagram": "Instagram DM",
+    "kakao": "カカオトーク",
+    "seller": "販売者"
+  },
+  "editorItem": {
+    "followers": "フォロワー {followers}・記事 {articles}",
+    "following": "フォロー中",
+    "follow": "フォロー"
+  },
+  "todayEditors": {
+    "title": "今日のエディター"
+  },
+  "login": {
+    "description": "物との物語を記録してシェアしましょう。",
+    "startWithKakao": "カカオで始める",
+    "terms": "ログインすることで利用規約に同意したことになります。",
+    "email": "メール",
+    "password": "パスワード",
+    "username": "ユーザー名",
+    "loginBtn": "ログイン",
+    "signupBtn": "会員登録",
+    "switchToSignup": "アカウントがありませんか？会員登録",
+    "switchToLogin": "すでにアカウントがありますか？ログイン",
+    "orDivider": "または",
+    "emailRequired": "メールを入力してください。",
+    "passwordRequired": "パスワードを入力してください。",
+    "usernameRequired": "ユーザー名を入力してください。",
+    "passwordMinLength": "パスワードは8文字以上必要です。",
+    "usernameMinLength": "ユーザー名は2文字以上必要です。",
+    "loginFailed": "メールまたはパスワードが正しくありません。",
+    "signupFailed": "会員登録に失敗しました。",
+    "signupSuccess": "会員登録が完了しました。ログインしてください。"
+  },
+  "users": {
+    "notFound": "ユーザーが見つかりません。",
+    "articles": "記事",
+    "noArticles": "まだ記事がありません。"
+  }
+}

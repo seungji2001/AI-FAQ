@@ -2,6 +2,8 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { getMessages } from "next-intl/server";
+import { LanguageProvider } from "@/lib/i18n/context";
+import type { Locale } from "@/lib/i18n/translations";
 
 export default async function LocaleLayout({
   children,
@@ -17,7 +19,9 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      {children}
+      <LanguageProvider key={locale} initialLocale={locale as Locale}>
+        {children}
+      </LanguageProvider>
     </NextIntlClientProvider>
   );
 }

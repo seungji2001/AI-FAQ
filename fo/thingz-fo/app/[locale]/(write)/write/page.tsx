@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import WriteHeader from "@/app/components/write/WriteHeader";
 import WriteEditor from "@/app/components/write/WriteEditor";
@@ -12,7 +13,7 @@ import { createArticle } from "@/lib/api/articles";
 import { ApiError } from "@/lib/api/client";
 import { pageWithSidebar, sidebarWidth, mobileSidebar, mainContent, panelBase } from "@/lib/styles/sx";
 import { tokenStorage } from "@/lib/auth/token";
-import { useAccessToken } from "@/lib/auth/useAccessToken";
+import { useAuthState } from "@/lib/auth/useAccessToken";
 import LoginDialog from "@/app/components/LoginDialog";
 import { useT } from "@/lib/i18n/context";
 import { useToast } from "@/app/components/ui/Toast";
@@ -26,7 +27,8 @@ export default function WritePage() {
   const router = useRouter();
   const { locale } = useParams() as { locale: string };
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
-  const isAuthed = Boolean(useAccessToken());
+  const { accessToken, isHydrated } = useAuthState();
+  const isAuthed = Boolean(accessToken);
 
   const {
     title, setTitle, content, setContent,
@@ -69,7 +71,11 @@ export default function WritePage() {
   return (
     <>
       <LoginDialog open={loginDialogOpen} onClose={() => setLoginDialogOpen(false)} />
-      {isAuthed ? (
+      {!isHydrated ? (
+        <Box sx={{ minHeight: "calc(100vh - 64px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <CircularProgress size={28} aria-label="Loading authentication" />
+        </Box>
+      ) : isAuthed ? (
         <>
           <WriteHeader onSaveDraft={handleSaveDraft} onPublish={handlePublish} loading={loading} />
           <Box sx={pageWithSidebar}>

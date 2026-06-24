@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import { useLocale } from "@/lib/i18n/context";
 import { Locale } from "@/lib/i18n/translations";
 import { fs, fw } from "@/lib/styles/typography";
+import { usePathname, useRouter } from "next/navigation";
 
 const LOCALES: { value: Locale; label: string }[] = [
   { value: "ko", label: "한" },
@@ -13,6 +14,18 @@ const LOCALES: { value: Locale; label: string }[] = [
 
 export default function LanguageSwitcher() {
   const { locale, setLocale } = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLocaleChange = (nextLocale: Locale) => {
+    if (nextLocale === locale) return;
+
+    setLocale(nextLocale);
+    const localizedPath = pathname.match(/^\/(ko|en|ja)(?=\/|$)/)
+      ? pathname.replace(/^\/(ko|en|ja)(?=\/|$)/, `/${nextLocale}`)
+      : `/${nextLocale}${pathname === "/" ? "" : pathname}`;
+    router.replace(localizedPath);
+  };
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
@@ -20,7 +33,7 @@ export default function LanguageSwitcher() {
         <Box key={value} sx={{ display: "flex", alignItems: "center" }}>
           <Box
             component="button"
-            onClick={() => setLocale(value)}
+            onClick={() => handleLocaleChange(value)}
             sx={{
               background: "none",
               border: "none",
